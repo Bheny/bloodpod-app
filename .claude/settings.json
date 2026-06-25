@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx --yes create-next-app@latest . --typescript --tailwind --eslint --app --src-dir=false --import-alias \"@/*\" --use-npm --no-turbopack)",
+      "Bash(NEXT_PUBLIC_SUPABASE_URL=\"https://example.supabase.co\" NEXT_PUBLIC_SUPABASE_ANON_KEY=\"placeholder\" npx next build)"
+    ]
+  }
+}

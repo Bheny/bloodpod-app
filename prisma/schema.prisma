@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id             String      @id @default(cuid())
+  supabaseId     String      @unique
+  email          String      @unique
+  name           String?
+  phone          String?
+  bloodType      BloodType?
+  location       String?
+  avatarUrl      String?
+  isPublic       Boolean     @default(false)
+  isEligible     Boolean     @default(true)
+  lastDonated    DateTime?
+  nextEligible   DateTime?
+  plan           Plan        @default(FREE)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  ownedPods      Pod[]       @relation("PodOwner")
+  podMemberships PodMember[]
+  donations      Donation[]
+  sentInvites    PodInvite[] @relation("InviteSender")
+}
+
+model Pod {
+  id        String      @id @default(cuid())
+  name      String
+  slug      String      @unique
+  ownerId   String
+  owner     User        @relation("PodOwner", fields: [ownerId], references: [id])
+  members   PodMember[]
+  invites   PodInvite[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model PodMember {
+  id       String   @id @default(cuid())
+  podId    String
+  userId   String
+  pod      Pod      @relation(fields: [podId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+  joinedAt DateTime @default(now())
+
+  @@unique([podId, userId])
+}
+
+model PodInvite {
+  id        String       @id @default(cuid())
+  podId     String
+  pod       Pod          @relation(fields: [podId], references: [id])
+  senderId  String
+  sender    User         @relation("InviteSender", fields: [senderId], references: [id])
+  email     String?
+  token     String       @unique @default(cuid())
+  status    InviteStatus @default(PENDING)
+  expiresAt DateTime
+  createdAt DateTime     @default(now())
+}
+
+model Donation {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  facility  String
+  location  String?
+  donatedAt DateTime
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+enum BloodType {
+  A_POS
+  A_NEG
+  B_POS
+  B_NEG
+  O_POS
+  O_NEG
+  AB_POS
+  AB_NEG
+}
+
+enum Plan {
+  FREE
+  PREMIUM
+}
+
+enum InviteStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  EXPIRED
+}
