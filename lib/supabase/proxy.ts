@@ -9,6 +9,8 @@ const PROTECTED_PREFIXES = [
   "/discover",
   "/feed",
   "/profile",
+  "/essentials",
+  "/medical-history",
 ];
 const AUTH_ROUTES = ["/sign-in", "/sign-up"];
 

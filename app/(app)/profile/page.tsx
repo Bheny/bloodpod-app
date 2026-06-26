@@ -1,12 +1,13 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { ChevronRight, Pencil, Bell } from "lucide-react";
+import { ChevronRight, Pencil, Bell, Wallet, HeartPulse } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { getPassportData } from "@/lib/passport-data";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
 import { getInitials } from "@/lib/formatters";
 import { VisibilityRow } from "@/components/profile/VisibilityRow";
 import { SignOutButton } from "@/components/profile/SignOutButton";
+import { JoinByCodeForm } from "@/components/invite/JoinByCodeForm";
 
 export default async function ProfilePage() {
   const user = await getCurrentUser();
@@ -54,6 +55,30 @@ export default async function ProfilePage() {
         </Link>
 
         <VisibilityRow initiallyPublic={user.isPublic} />
+
+        <JoinByCodeForm />
+
+        <Link
+          href="/essentials"
+          className="flex items-center gap-2.5 rounded-2xl border-[0.5px] border-[#E5E5EA] bg-white px-3.5 py-3"
+        >
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-surface">
+            <Wallet className="size-4 text-ink-mid" />
+          </span>
+          <span className="flex-1 text-[12px] font-bold text-ink">My Essentials</span>
+          <ChevronRight className="size-4 text-ink-faint" />
+        </Link>
+
+        <Link
+          href="/medical-history"
+          className="flex items-center gap-2.5 rounded-2xl border-[0.5px] border-[#E5E5EA] bg-white px-3.5 py-3"
+        >
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-surface">
+            <HeartPulse className="size-4 text-ink-mid" />
+          </span>
+          <span className="flex-1 text-[12px] font-bold text-ink">Medical History</span>
+          <ChevronRight className="size-4 text-ink-faint" />
+        </Link>
 
         <Link
           href="/profile/edit"

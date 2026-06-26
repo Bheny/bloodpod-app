@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Share2 } from "lucide-react";
+import { Mail, Share2, RefreshCw } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 
@@ -16,29 +16,44 @@ function WhatsAppIcon() {
 export function InviteOptions({
   podId,
   podName,
-  podSlug,
+  inviteUrl: initialInviteUrl,
+  inviteCode: initialInviteCode,
 }: {
   podId: string;
   podName: string;
-  podSlug: string;
+  inviteUrl: string;
+  inviteCode: string;
 }) {
-  const [copied, setCopied] = useState(false);
+  const [inviteUrl, setInviteUrl] = useState(initialInviteUrl);
+  const [inviteCode, setInviteCode] = useState(initialInviteCode);
+  const [copiedLink, setCopiedLink] = useState(false);
+  const [copiedCode, setCopiedCode] = useState(false);
+  const [regenerating, setRegenerating] = useState(false);
   const [showEmailInput, setShowEmailInput] = useState(false);
   const [email, setEmail] = useState("");
   const [emailSentTo, setEmailSentTo] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [sendingEmail, setSendingEmail] = useState(false);
 
-  const fullUrl = `https://bloodpod.gh/pod/${podSlug}`;
   const whatsAppText = encodeURIComponent(
-    `I just built my emergency blood network on BloodPod. If anything ever happened to me, I'd want you in my circle. Join my pod here: ${fullUrl}`,
+    `I just built my emergency blood network on BloodPod. If anything ever happened to me, I'd want you in my circle. Join my pod here: ${inviteUrl} (or use code ${inviteCode})`,
   );
 
-  async function handleCopy() {
+  async function handleCopyLink() {
     try {
-      await navigator.clipboard.writeText(fullUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      await navigator.clipboard.writeText(inviteUrl);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
+    } catch {
+      // clipboard access can fail silently in some browser contexts
+    }
+  }
+
+  async function handleCopyCode() {
+    try {
+      await navigator.clipboard.writeText(inviteCode);
+      setCopiedCode(true);
+      setTimeout(() => setCopiedCode(false), 2000);
     } catch {
       // clipboard access can fail silently in some browser contexts
     }
@@ -46,6 +61,25 @@ export function InviteOptions({
 
   function handleWhatsApp() {
     window.open(`https://wa.me/?text=${whatsAppText}`, "_blank", "noopener,noreferrer");
+  }
+
+  async function handleRegenerate() {
+    setRegenerating(true);
+    try {
+      const res = await fetch("/api/pod/share-invite/regenerate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ podId }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Something went wrong");
+      setInviteUrl(data.inviteUrl);
+      setInviteCode(data.code);
+    } catch {
+      // keep showing the previous code/link if regeneration fails
+    } finally {
+      setRegenerating(false);
+    }
   }
 
   async function handleSendEmail() {
@@ -71,12 +105,12 @@ export function InviteOptions({
   async function handleMore() {
     if (navigator.share) {
       try {
-        await navigator.share({ title: podName, text: "Join my pod on BloodPod", url: fullUrl });
+        await navigator.share({ title: podName, text: "Join my pod on BloodPod", url: inviteUrl });
       } catch {
         // user cancelled the native share sheet
       }
     } else {
-      handleCopy();
+      handleCopyLink();
     }
   }
 
@@ -84,20 +118,49 @@ export function InviteOptions({
     <div className="px-4 py-4">
       <div className="rounded-2xl bg-surface p-3">
         <p className="text-[11px] font-extrabold text-ink">{podName}</p>
-        <p className="mb-1.5 text-[8px] text-ink-faint">bloodpod.gh/pod/{podSlug}</p>
+        <p className="mb-1.5 text-[8px] text-ink-faint">Anyone with this link or code can join</p>
 
         <div className="rounded-xl border border-[#E5E5EA] bg-white px-2.5 py-2">
-          <p className="truncate text-[9px] font-medium text-red">{fullUrl}</p>
+          <p className="truncate text-[9px] font-medium text-red">{inviteUrl}</p>
         </div>
 
         <button
           type="button"
-          onClick={handleCopy}
+          onClick={handleCopyLink}
           className="mt-2 w-full rounded-full py-2 text-[9px] font-bold text-white transition-colors duration-200"
-          style={{ backgroundColor: copied ? "#22C55E" : "#1C1C1E" }}
+          style={{ backgroundColor: copiedLink ? "#22C55E" : "#1C1C1E" }}
         >
-          {copied ? "Copied ✓" : "Copy pod link"}
+          {copiedLink ? "Copied ✓" : "Copy pod link"}
         </button>
+      </div>
+
+      <div className="mt-2.5 rounded-2xl bg-surface p-3">
+        <p className="text-[11px] font-extrabold text-ink">Your pod code</p>
+        <p className="mb-1.5 text-[8px] text-ink-faint">Easier to share out loud or by text</p>
+
+        <div className="rounded-xl border border-[#E5E5EA] bg-white px-2.5 py-2.5 text-center">
+          <p className="font-mono text-lg font-extrabold tracking-[4px] text-ink">{inviteCode}</p>
+        </div>
+
+        <div className="mt-2 flex gap-1.5">
+          <button
+            type="button"
+            onClick={handleCopyCode}
+            className="flex-1 rounded-full py-2 text-[9px] font-bold text-white transition-colors duration-200"
+            style={{ backgroundColor: copiedCode ? "#22C55E" : "#1C1C1E" }}
+          >
+            {copiedCode ? "Copied ✓" : "Copy code"}
+          </button>
+          <button
+            type="button"
+            onClick={handleRegenerate}
+            disabled={regenerating}
+            className="flex items-center gap-1 rounded-full bg-white px-3 text-[9px] font-bold text-ink-mid disabled:opacity-60"
+          >
+            <RefreshCw className={`size-3 ${regenerating ? "animate-spin" : ""}`} />
+            Regenerate
+          </button>
+        </div>
       </div>
 
       <p className="mt-5 text-[9px] font-bold uppercase tracking-wide text-ink-muted">Share via</p>

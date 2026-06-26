@@ -36,6 +36,7 @@ That's really it. No special diet, no fasting, no supplements required. Show up 
     title: "What actually happens when you donate",
     excerpt: "A step-by-step walkthrough for first-timers who aren't sure what to expect.",
     category: "ARTICLE" as const,
+    featured: true,
     body: `If you've never donated before, the uncertainty is often scarier than the process itself. Here's exactly what happens.
 
 First, a quick health screening: your temperature, blood pressure, pulse, and a small finger-prick to check your hemoglobin level. This takes a few minutes and is mostly just questions.
@@ -64,6 +65,7 @@ If you're a frequent donor, eating iron-rich foods (red meat, leafy greens, bean
     title: "Blood type compatibility, explained simply",
     excerpt: "Why O− is everyone's emergency backup, and why AB+ can receive from anyone.",
     category: "ARTICLE" as const,
+    featured: true,
     body: `Blood types matter because your immune system attacks blood markers it doesn't recognize. Getting this wrong in a transfusion is dangerous — which is why hospitals are strict about matching.
 
 O− has no A, B, or Rh markers at all, so any blood type can receive it without conflict. That's why it's called the universal donor type, and why it's used in emergencies when there's no time to test the patient's exact type. It's also rare — only a small share of any population has it — which is why O− donors are disproportionately valuable.
@@ -92,6 +94,7 @@ Myth 5: "My blood type isn't needed." Every type is needed somewhere, every day.
     title: "Why response time is the real emergency",
     excerpt: "It's rarely the lack of blood. It's how long it takes to find the right donor.",
     category: "ARTICLE" as const,
+    featured: true,
     body: `When someone needs blood urgently, the blood usually exists somewhere nearby. The actual emergency is almost always speed: finding a compatible, eligible, willing donor fast enough.
 
 In Ghana, the average search for a compatible donor during an emergency can take hours — phone calls to family, friends, friends of friends, often starting from zero. Every one of those hours is spent on logistics, not medicine.
@@ -115,6 +118,45 @@ Most donors who follow this feel completely normal within a few hours and back t
   },
 ];
 
+const PARTNERS = [
+  {
+    name: "Accra General Hospital",
+    type: "HOSPITAL" as const,
+    city: "Accra",
+    description: "Emergency and trauma care partner accepting verified donations.",
+  },
+  {
+    name: "Kumasi Community Blood Bank",
+    type: "BLOOD_BANK" as const,
+    city: "Kumasi",
+    description: "Regional blood bank coordinating supply across Ashanti clinics.",
+  },
+  {
+    name: "Tema Regional Diagnostic Lab",
+    type: "LAB" as const,
+    city: "Tema",
+    description: "Blood typing and screening lab for donor verification.",
+  },
+  {
+    name: "Cape Coast Medical Centre",
+    type: "HOSPITAL" as const,
+    city: "Cape Coast",
+    description: "Maternity and surgical hospital with ongoing donor needs.",
+  },
+  {
+    name: "Sunyani District Blood Bank",
+    type: "BLOOD_BANK" as const,
+    city: "Sunyani",
+    description: "Serves district hospitals across the Bono region.",
+  },
+  {
+    name: "Ho Teaching Clinic",
+    type: "HOSPITAL" as const,
+    city: "Ho",
+    description: "Teaching hospital partner for the Volta region.",
+  },
+];
+
 async function main() {
   for (const article of ARTICLES) {
     await prisma.article.upsert({
@@ -124,6 +166,14 @@ async function main() {
     });
   }
   console.log(`Seeded ${ARTICLES.length} articles.`);
+
+  const existingPartners = await prisma.partner.count();
+  if (existingPartners === 0) {
+    await prisma.partner.createMany({ data: PARTNERS });
+    console.log(`Seeded ${PARTNERS.length} partners.`);
+  } else {
+    console.log("Partners already seeded, skipping.");
+  }
 }
 
 main()

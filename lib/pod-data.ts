@@ -1,6 +1,6 @@
 import { BloodType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { recalculatePodStrength } from "@/lib/pod-strength";
+import { recalculatePodStrength, type PodStrengthStep } from "@/lib/pod-strength";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
 import { getAvatarColor, getAvatarTextColor, getInitials } from "@/lib/formatters";
 
@@ -26,6 +26,7 @@ export interface PodDataResult {
     createdAt: Date;
     memberCount: number;
     strengthScore: number;
+    strengthSteps: PodStrengthStep[];
     bloodTypesCovered: string[];
     bloodTypeGaps: string[];
     members: PodMemberView[];
@@ -50,13 +51,13 @@ export async function getPodData(userId: string): Promise<PodDataResult> {
         include: { user: { include: { _count: { select: { donations: true } } } } },
         orderBy: { joinedAt: "asc" },
       },
-      invites: { orderBy: { createdAt: "desc" } },
+      invites: { where: { kind: "DIRECT" }, orderBy: { createdAt: "desc" } },
     },
   });
 
   if (!pod) return { pod: null, pendingInvites: [] };
 
-  const { score } = await recalculatePodStrength(userId);
+  const strength = await recalculatePodStrength(userId);
 
   const memberViews: PodMemberView[] = [
     {
@@ -103,7 +104,8 @@ export async function getPodData(userId: string): Promise<PodDataResult> {
       slug: pod.slug,
       createdAt: pod.createdAt,
       memberCount: memberViews.length,
-      strengthScore: score,
+      strengthScore: strength.score,
+      strengthSteps: strength.steps,
       bloodTypesCovered,
       bloodTypeGaps,
       members: memberViews,

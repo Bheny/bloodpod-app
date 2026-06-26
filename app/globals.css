@@ -103,3 +103,11 @@ body {
 .animate-pulse-scale {
   animation: pulse-scale 1.4s ease-in-out infinite;
 }
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

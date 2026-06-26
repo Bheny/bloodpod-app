@@ -45,6 +45,14 @@ model User {
   donationStreak Int       @default(0)
   lastStreakDate DateTime?
 
+  // Medical history
+  genotype              Genotype?
+  allergies             String?
+  chronicConditions     String?
+  medications           String?
+  emergencyContactName  String?
+  emergencyContactPhone String?
+
   ownedPods      Pod[]          @relation("PodOwner")
   podMemberships PodMember[]
   donations      Donation[]
@@ -52,6 +60,18 @@ model User {
   bloodRequests  BloodRequest[] @relation("Requester")
   activities     Activity[]
   articles       Article[]
+  idCards        IdCard[]
+  documents      Document[]
+}
+
+enum Genotype {
+  AA
+  AS
+  SS
+  AC
+  SC
+  CC
+  UNKNOWN
 }
 
 model Pod {
@@ -85,9 +105,16 @@ model PodInvite {
   sender    User         @relation("InviteSender", fields: [senderId], references: [id])
   email     String?
   token     String       @unique @default(cuid())
+  code      String       @unique
+  kind      InviteKind   @default(DIRECT)
   status    InviteStatus @default(PENDING)
   expiresAt DateTime
   createdAt DateTime     @default(now())
+}
+
+enum InviteKind {
+  DIRECT
+  SHARE
 }
 
 model Donation {
@@ -124,6 +151,7 @@ enum InviteStatus {
   ACCEPTED
   DECLINED
   EXPIRED
+  REVOKED
 }
 
 enum PassportTier {
@@ -189,6 +217,7 @@ model Article {
   body          String
   coverImageUrl String?
   category      ArticleCategory @default(TIP)
+  featured      Boolean         @default(false)
   authorName    String          @default("BloodPod Team")
   authorId      String?
   author        User?           @relation(fields: [authorId], references: [id])
@@ -204,4 +233,69 @@ enum ArticleCategory {
   ARTICLE
   NEWS
   FAQ
+}
+
+model Partner {
+  id          String      @id @default(cuid())
+  name        String
+  type        PartnerType @default(HOSPITAL)
+  city        String?
+  logoUrl     String?
+  verified    Boolean     @default(true)
+  description String?
+  createdAt   DateTime    @default(now())
+}
+
+enum PartnerType {
+  HOSPITAL
+  BLOOD_BANK
+  LAB
+}
+
+model IdCard {
+  id               String     @id @default(cuid())
+  userId           String
+  user             User       @relation(fields: [userId], references: [id])
+  type             IdCardType
+  label            String?
+  cardNumber       String?
+  issuingAuthority String?
+  expiryDate       DateTime?
+  frontImagePath   String?
+  backImagePath    String?
+  notes            String?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+}
+
+enum IdCardType {
+  NATIONAL_ID
+  NHIS
+  VOTER_ID
+  DRIVERS_LICENSE
+  PASSPORT
+  STUDENT_ID
+  OTHER
+}
+
+model Document {
+  id           String       @id @default(cuid())
+  userId       String
+  user         User         @relation(fields: [userId], references: [id])
+  type         DocumentType
+  title        String
+  filePath     String?
+  notes        String?
+  documentDate DateTime?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+enum DocumentType {
+  MEDICAL_RECORD
+  INSURANCE
+  VACCINATION
+  PRESCRIPTION
+  LAB_RESULT
+  OTHER
 }

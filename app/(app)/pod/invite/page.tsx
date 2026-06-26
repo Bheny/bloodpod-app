@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { getPodData } from "@/lib/pod-data";
+import { getOrCreateShareInvite, inviteUrlFor } from "@/lib/pod-invite";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { InviteOptions } from "@/components/invite/InviteOptions";
 import { PendingInvites } from "@/components/invite/PendingInvites";
@@ -13,6 +14,8 @@ export default async function PodInvitePage() {
   const { pod, pendingInvites } = await getPodData(user.id);
   if (!pod) redirect("/dashboard");
 
+  const shareInvite = await getOrCreateShareInvite(pod.id, user.id);
+
   return (
     <div>
       <AppHeader
@@ -21,7 +24,12 @@ export default async function PodInvitePage() {
         backHref="/pod"
       />
 
-      <InviteOptions podId={pod.id} podName={pod.name} podSlug={pod.slug} />
+      <InviteOptions
+        podId={pod.id}
+        podName={pod.name}
+        inviteUrl={inviteUrlFor(shareInvite.token)}
+        inviteCode={shareInvite.code}
+      />
 
       <PendingInvites
         initialInvites={pendingInvites.map((inv) => ({

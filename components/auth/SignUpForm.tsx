@@ -1,26 +1,75 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpSchema, bloodTypeOptions, type SignUpValues } from "@/lib/validations/auth";
 import { createClient } from "@/lib/supabase/client";
+import { parseInviteIdentifier } from "@/lib/invite-identifier";
 import { Field, Input, PasswordInput } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import { GoogleButton } from "@/components/auth/OAuthButtons";
 
+interface InvitePreview {
+  podName: string;
+  inviterName: string | null;
+}
+
+interface CheckResult {
+  identifier: string;
+  preview: InvitePreview | null;
+}
+
+function fetchInvitePreview(identifier: string, onResult: (result: CheckResult) => void) {
+  fetch(`/api/invite/${identifier}`)
+    .then(async (res) => {
+      if (!res.ok) {
+        onResult({ identifier, preview: null });
+        return;
+      }
+      const data = await res.json();
+      onResult({ identifier, preview: { podName: data.pod.name, inviterName: data.inviter.name } });
+    })
+    .catch(() => onResult({ identifier, preview: null }));
+}
+
 export function SignUpForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const urlInviteToken = searchParams.get("invite");
+
   const [formError, setFormError] = useState<string | null>(null);
+  const [showCodeField, setShowCodeField] = useState(false);
+  const [codeValue, setCodeValue] = useState("");
+  const [checkResult, setCheckResult] = useState<CheckResult | null>(null);
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<SignUpValues>({ resolver: zodResolver(signUpSchema) });
+
+  const targetIdentifier = urlInviteToken || (codeValue.trim() ? parseInviteIdentifier(codeValue.trim()) : "");
+  const checking = targetIdentifier !== "" && checkResult?.identifier !== targetIdentifier;
+  const showResult = targetIdentifier !== "" && checkResult?.identifier === targetIdentifier;
+  const preview = showResult ? checkResult?.preview ?? null : null;
+  const notFound = showResult && !preview;
+
+  useEffect(() => {
+    if (urlInviteToken) fetchInvitePreview(urlInviteToken, setCheckResult);
+  }, [urlInviteToken]);
+
+  useEffect(() => {
+    if (urlInviteToken) return;
+    const trimmed = codeValue.trim();
+    if (!trimmed) return;
+    const identifier = parseInviteIdentifier(trimmed);
+    const timer = setTimeout(() => fetchInvitePreview(identifier, setCheckResult), 400);
+    return () => clearTimeout(timer);
+  }, [codeValue, urlInviteToken]);
 
   async function onSubmit(values: SignUpValues) {
     setFormError(null);
@@ -50,9 +99,8 @@ export function SignUpForm() {
       });
     }
 
-    const inviteToken = searchParams.get("invite");
-    if (inviteToken) {
-      localStorage.setItem("pending_invite_token", inviteToken);
+    if (targetIdentifier) {
+      localStorage.setItem("pending_invite_token", targetIdentifier);
     }
 
     router.push("/onboarding");
@@ -108,6 +156,46 @@ export function SignUpForm() {
             ))}
           </Select>
         </Field>
+
+        {urlInviteToken ? (
+          preview && (
+            <p className="rounded-xl bg-red-light px-3 py-2.5 text-xs font-semibold text-red">
+              You&apos;ll join {preview.podName}
+              {preview.inviterName ? ` · invited by ${preview.inviterName}` : ""} →
+            </p>
+          )
+        ) : (
+          <div>
+            <button
+              type="button"
+              onClick={() => setShowCodeField((v) => !v)}
+              className="text-sm font-semibold text-red"
+            >
+              Have an invite code?
+            </button>
+            {showCodeField && (
+              <div className="mt-2">
+                <Input
+                  placeholder="Enter code or paste invite link"
+                  value={codeValue}
+                  onChange={(e) => setCodeValue(e.target.value)}
+                />
+                {checking && <p className="mt-1.5 text-xs text-ink-muted">Checking...</p>}
+                {!checking && preview && (
+                  <p className="mt-1.5 text-xs font-semibold text-red">
+                    You&apos;ll join {preview.podName}
+                    {preview.inviterName ? ` · invited by ${preview.inviterName}` : ""} →
+                  </p>
+                )}
+                {!checking && notFound && (
+                  <p className="mt-1.5 text-xs text-ink-muted">
+                    That code wasn&apos;t found — you can still create your own pod.
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
         {formError && <p className="text-sm text-red">{formError}</p>}
 

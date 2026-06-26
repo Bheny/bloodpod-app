@@ -6,6 +6,7 @@ import { getPodData } from "@/lib/pod-data";
 import { PodHeader } from "@/components/pod/PodHeader";
 import { BloodTypeCoverage } from "@/components/pod/BloodTypeCoverage";
 import { MemberList } from "@/components/pod/MemberList";
+import { PodStrengthMeter } from "@/components/pod/PodStrengthMeter";
 
 export default async function PodPage() {
   const user = await getCurrentUser();
@@ -26,6 +27,16 @@ export default async function PodPage() {
         strengthScore={pod.strengthScore}
         typesCount={pod.bloodTypesCovered.length}
       />
+
+      {pod.strengthScore < 100 && (
+        <div className="bg-white px-4 pb-3 pt-3">
+          <PodStrengthMeter
+            score={pod.strengthScore}
+            steps={pod.strengthSteps}
+            podName={pod.name}
+          />
+        </div>
+      )}
 
       <BloodTypeCoverage covered={pod.bloodTypesCovered} gaps={pod.bloodTypeGaps} />
 

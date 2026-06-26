@@ -1,11 +1,24 @@
-import { ComingSoon } from "@/components/layout/ComingSoon";
+import { redirect } from "next/navigation";
+import { getCurrentUser } from "@/lib/auth/current-user";
+import { AppHeader } from "@/components/layout/AppHeader";
+import { EditProfileForm } from "@/components/profile/EditProfileForm";
 
-export default function EditProfilePage() {
+export default async function EditProfilePage() {
+  const user = await getCurrentUser();
+  if (!user) redirect("/sign-in");
+  if (!user.onboardingComplete) redirect("/onboarding");
+
   return (
-    <ComingSoon
-      title="Edit profile"
-      subtitle="Editing your name, blood type, and location is landing in a future update."
-      backHref="/profile"
-    />
+    <div>
+      <AppHeader title="Edit profile" backHref="/profile" />
+      <EditProfileForm
+        defaultValues={{
+          name: user.name ?? "",
+          phone: user.phone ?? "",
+          city: user.city ?? "",
+          bloodType: user.bloodType ?? "",
+        }}
+      />
+    </div>
   );
 }

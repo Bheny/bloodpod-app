@@ -35,7 +35,7 @@ export interface DiscoverResult {
 }
 
 /** First name + last initial — never expose a donor's full name to the discover feed. */
-function privacyName(name: string | null): string {
+export function privacyName(name: string | null): string {
   if (!name) return "Anonymous donor";
   const parts = name.trim().split(/\s+/);
   if (parts.length === 1) return parts[0];

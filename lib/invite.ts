@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
+import { findInviteByIdentifier } from "@/lib/pod-invite";
 
 const AVATAR_COLORS = ["#FFE0E0", "#E0F2FE", "#DCFCE7", "#FEF9C3", "#F3E8FF"];
 
@@ -18,9 +19,14 @@ export interface InvitePreview {
   members: { initials: string; bgColor: string }[];
 }
 
-export async function getInvitePreview(token: string): Promise<InvitePreview | null> {
+export async function getInvitePreview(identifier: string): Promise<InvitePreview | null> {
+  const resolved = await findInviteByIdentifier(identifier);
+  if (!resolved || resolved.status !== "PENDING" || resolved.expiresAt < new Date()) {
+    return null;
+  }
+
   const invite = await prisma.podInvite.findUnique({
-    where: { token },
+    where: { id: resolved.id },
     include: {
       sender: { include: { donations: true } },
       pod: {
@@ -32,9 +38,7 @@ export async function getInvitePreview(token: string): Promise<InvitePreview | n
     },
   });
 
-  if (!invite || invite.status !== "PENDING" || invite.expiresAt < new Date()) {
-    return null;
-  }
+  if (!invite) return null;
 
   const allUsers = [invite.pod.owner, ...invite.pod.members.map((m) => m.user)];
   const bloodTypesCovered = Array.from(

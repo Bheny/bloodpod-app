@@ -11,14 +11,15 @@ export function VisibilityToggle({ initiallyPublic }: { initiallyPublic: boolean
   async function enableVisibility() {
     setSaving(true);
     try {
-      await fetch("/api/discover/visibility", {
+      const res = await fetch("/api/discover/visibility", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isPublic: true }),
       });
+      if (!res.ok) throw new Error("Failed to save");
       setIsPublic(true);
     } catch {
-      // best-effort — the banner just stays visible if this fails
+      // banner stays visible since the save didn't actually succeed
     } finally {
       setSaving(false);
     }

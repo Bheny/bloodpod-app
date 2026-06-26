@@ -13,11 +13,12 @@ export function VisibilityRow({ initiallyPublic }: { initiallyPublic: boolean })
     setSaving(true);
     setIsPublic(next);
     try {
-      await fetch("/api/discover/visibility", {
+      const res = await fetch("/api/discover/visibility", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isPublic: next }),
       });
+      if (!res.ok) throw new Error("Failed to save");
     } catch {
       setIsPublic(!next);
     } finally {
@@ -47,8 +48,8 @@ export function VisibilityRow({ initiallyPublic }: { initiallyPublic: boolean })
       >
         <span
           className={cn(
-            "absolute top-0.5 size-5 rounded-full bg-white shadow transition-transform duration-200",
-            isPublic ? "translate-x-[18px]" : "translate-x-0.5",
+            "absolute left-0.5 top-0.5 size-5 rounded-full bg-white shadow transition-transform duration-200",
+            isPublic ? "translate-x-[18px]" : "translate-x-0",
           )}
         />
       </button>
