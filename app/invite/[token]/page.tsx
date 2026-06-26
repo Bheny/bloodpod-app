@@ -24,5 +24,12 @@ export default async function InvitePage({
     );
   }
 
-  return <InviteLanding token={token} preview={preview} isAuthenticated={Boolean(user)} />;
+  return (
+    <InviteLanding
+      token={token}
+      preview={preview}
+      isAuthenticated={Boolean(user)}
+      isOwner={user?.id === preview.pod.ownerId}
+    />
+  );
 }

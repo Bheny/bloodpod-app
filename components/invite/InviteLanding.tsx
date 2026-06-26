@@ -17,10 +17,12 @@ export function InviteLanding({
   token,
   preview,
   isAuthenticated,
+  isOwner,
 }: {
   token: string;
   preview: InvitePreview;
   isAuthenticated: boolean;
+  isOwner: boolean;
 }) {
   const router = useRouter();
   const [accepting, setAccepting] = useState(false);
@@ -48,7 +50,18 @@ export function InviteLanding({
           <Logo />
         </div>
 
-        {accepted ? (
+        {isOwner ? (
+          <div className="mt-8 text-center">
+            <p className="text-lg font-extrabold text-ink">This is your pod!</p>
+            <p className="mt-1 text-sm text-ink-muted">
+              You&apos;re the owner of {preview.pod.name} — share this link with someone else to
+              grow it.
+            </p>
+            <Button asChild size="lg" className="mt-5 w-full">
+              <Link href="/pod/invite">Manage invites →</Link>
+            </Button>
+          </div>
+        ) : accepted ? (
           <div className="mt-8 text-center">
             <p className="text-lg font-extrabold text-ink">You&apos;re in {preview.pod.name}!</p>
             <p className="mt-1 text-sm text-ink-muted">Taking you to your dashboard...</p>

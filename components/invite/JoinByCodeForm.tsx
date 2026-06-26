@@ -23,6 +23,10 @@ export function JoinByCodeForm() {
       const res = await fetch(`/api/invite/${identifier}/accept`, { method: "POST" });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "That code didn't work");
+      if (data.alreadyOwner) {
+        setError("That's your own pod's code — share it with someone else instead.");
+        return;
+      }
       setJoinedPod(data.pod.name);
       setCode("");
       router.refresh();

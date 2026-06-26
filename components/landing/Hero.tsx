@@ -41,20 +41,20 @@ export function Hero() {
             {...fadeUp(0.2)}
             className="mt-6 text-[40px] font-extrabold leading-[1.05] tracking-[-1.5px] text-ink lg:text-[64px] lg:tracking-[-2px]"
           >
-            The people who will
+            The blood you need
             <br />
-            save your life —
+            already exists.
             <br />
-            before you need them.
+            Finding it fast doesn&apos;t.
           </m.h1>
 
           <m.p
             {...fadeUp(0.35)}
             className="mt-6 max-w-[520px] text-lg leading-[1.7] text-ink-mid"
           >
-            BloodPod is a personal blood network. You invite the people you
-            trust, they join your pod, and when an emergency strikes — your
-            circle is already there.
+            BloodPod organizes your circle by blood type before the
+            emergency — so when it happens, you already know exactly who
+            to call.
           </m.p>
 
           <m.div {...fadeUp(0.5)} className="mt-10 flex flex-wrap items-center gap-6">

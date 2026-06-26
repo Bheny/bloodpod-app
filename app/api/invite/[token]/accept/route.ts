@@ -32,6 +32,16 @@ export async function POST(
     return NextResponse.json({ error: "This invite is no longer valid" }, { status: 410 });
   }
 
+  // The pod owner "accepting" their own pod's invite (e.g. testing their own
+  // share link while already signed in) isn't a join — it's a no-op.
+  if (invite.pod.ownerId === user.id) {
+    return NextResponse.json({
+      success: true,
+      alreadyOwner: true,
+      pod: { name: invite.pod.name, slug: invite.pod.slug },
+    });
+  }
+
   // A DIRECT invite is addressed to one person and is single-use: once
   // accepted, re-using it is a no-op success rather than a second join.
   // A SHARE invite (the durable pod link/code) stays PENDING for its whole
