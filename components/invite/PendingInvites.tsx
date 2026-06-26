@@ -3,14 +3,23 @@
 import { useState } from "react";
 import { PendingInviteItem, type PendingInvite } from "@/components/invite/PendingInviteItem";
 
+type ResendState = "idle" | "sending" | "sent";
+
 export function PendingInvites({ initialInvites }: { initialInvites: PendingInvite[] }) {
   const [invites, setInvites] = useState(initialInvites);
+  const [resendStates, setResendStates] = useState<Record<string, ResendState>>({});
 
   async function handleResend(id: string) {
+    setResendStates((prev) => ({ ...prev, [id]: "sending" }));
     try {
-      await fetch(`/api/pod/invite/resend/${id}`, { method: "POST" });
+      const res = await fetch(`/api/pod/invite/resend/${id}`, { method: "POST" });
+      setResendStates((prev) => ({ ...prev, [id]: res.ok ? "sent" : "idle" }));
     } catch {
-      // best-effort — the invite stays visible either way
+      setResendStates((prev) => ({ ...prev, [id]: "idle" }));
+    } finally {
+      setTimeout(() => {
+        setResendStates((prev) => ({ ...prev, [id]: "idle" }));
+      }, 2000);
     }
   }
 
@@ -37,6 +46,7 @@ export function PendingInvites({ initialInvites }: { initialInvites: PendingInvi
             <PendingInviteItem
               key={invite.id}
               invite={invite}
+              resendState={resendStates[invite.id] ?? "idle"}
               onResend={handleResend}
               onCancel={handleCancel}
             />

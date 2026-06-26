@@ -17,10 +17,12 @@ function displayStatus(invite: PendingInvite): "Pending" | "Joined" | "Expired" 
 
 export function PendingInviteItem({
   invite,
+  resendState,
   onResend,
   onCancel,
 }: {
   invite: PendingInvite;
+  resendState: "idle" | "sending" | "sent";
   onResend: (id: string) => void;
   onCancel: (id: string) => void;
 }) {
@@ -45,9 +47,10 @@ export function PendingInviteItem({
           <button
             type="button"
             onClick={() => onResend(invite.id)}
-            className="text-[8px] font-bold text-red"
+            disabled={resendState !== "idle"}
+            className="text-[8px] font-bold text-red disabled:opacity-60"
           >
-            Resend
+            {resendState === "sending" ? "Sending…" : resendState === "sent" ? "Sent ✓" : "Resend"}
           </button>
         )}
         <button

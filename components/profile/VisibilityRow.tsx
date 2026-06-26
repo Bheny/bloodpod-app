@@ -44,12 +44,14 @@ export function VisibilityRow({ initiallyPublic }: { initiallyPublic: boolean })
         className={cn(
           "relative h-6 w-10 shrink-0 rounded-full transition-colors duration-200",
           isPublic ? "bg-red" : "bg-[#E5E5EA]",
+          saving && "opacity-60",
         )}
       >
         <span
           className={cn(
             "absolute left-0.5 top-0.5 size-5 rounded-full bg-white shadow transition-transform duration-200",
             isPublic ? "translate-x-[18px]" : "translate-x-0",
+            saving && "animate-pulse",
           )}
         />
       </button>
