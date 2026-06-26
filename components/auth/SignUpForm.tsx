@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +14,7 @@ import { GoogleButton } from "@/components/auth/OAuthButtons";
 
 export function SignUpForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [formError, setFormError] = useState<string | null>(null);
   const {
     register,
@@ -47,6 +48,11 @@ export function SignUpForm() {
           bloodType: values.bloodType,
         }),
       });
+    }
+
+    const inviteToken = searchParams.get("invite");
+    if (inviteToken) {
+      localStorage.setItem("pending_invite_token", inviteToken);
     }
 
     router.push("/onboarding");

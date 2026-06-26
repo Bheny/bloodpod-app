@@ -9,26 +9,49 @@ datasource db {
 }
 
 model User {
-  id             String      @id @default(cuid())
-  supabaseId     String      @unique
-  email          String      @unique
-  name           String?
-  phone          String?
-  bloodType      BloodType?
-  location       String?
-  avatarUrl      String?
-  isPublic       Boolean     @default(false)
-  isEligible     Boolean     @default(true)
-  lastDonated    DateTime?
-  nextEligible   DateTime?
-  plan           Plan        @default(FREE)
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  id           String     @id @default(cuid())
+  supabaseId   String     @unique
+  email        String     @unique
+  name         String?
+  phone        String?
+  bloodType    BloodType?
+  location     String?
+  avatarUrl    String?
+  isPublic     Boolean    @default(false)
+  isEligible   Boolean    @default(true)
+  isAvailable  Boolean    @default(false)
+  lastDonated  DateTime?
+  nextEligible DateTime?
+  plan         Plan       @default(FREE)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 
-  ownedPods      Pod[]       @relation("PodOwner")
+  // Onboarding
+  onboardingComplete Boolean @default(false)
+  onboardingStep     Int     @default(0)
+
+  // Pod strength tracking
+  podStrengthScore Int @default(0) // 0–100
+
+  // Location
+  city      String?
+  latitude  Float?
+  longitude Float?
+
+  // Donation passport tier
+  passportTier PassportTier @default(STARTER)
+
+  // Donation streak
+  donationStreak Int       @default(0)
+  lastStreakDate DateTime?
+
+  ownedPods      Pod[]          @relation("PodOwner")
   podMemberships PodMember[]
   donations      Donation[]
-  sentInvites    PodInvite[] @relation("InviteSender")
+  sentInvites    PodInvite[]    @relation("InviteSender")
+  bloodRequests  BloodRequest[] @relation("Requester")
+  activities     Activity[]
+  articles       Article[]
 }
 
 model Pod {
@@ -68,14 +91,16 @@ model PodInvite {
 }
 
 model Donation {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
   facility  String
   location  String?
   donatedAt DateTime
-  verified  Boolean  @default(false)
-  createdAt DateTime @default(now())
+  bloodType BloodType
+  verified  Boolean   @default(false)
+  notes     String?
+  createdAt DateTime  @default(now())
 }
 
 enum BloodType {
@@ -99,4 +124,84 @@ enum InviteStatus {
   ACCEPTED
   DECLINED
   EXPIRED
+}
+
+enum PassportTier {
+  STARTER // 0–4 donations
+  VERIFIED // 5–24 donations
+  LEGEND // 25+ donations
+}
+
+model BloodRequest {
+  id          String         @id @default(cuid())
+  podId       String?
+  requesterId String
+  requester   User           @relation("Requester", fields: [requesterId], references: [id])
+  bloodType   BloodType
+  urgency     RequestUrgency @default(URGENT)
+  facility    String
+  location    String?
+  message     String?
+  status      RequestStatus  @default(OPEN)
+  respondedBy String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model Activity {
+  id        String       @id @default(cuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id])
+  type      ActivityType
+  title     String
+  subtitle  String?
+  metadata  Json?
+  createdAt DateTime     @default(now())
+}
+
+enum RequestUrgency {
+  STANDARD
+  URGENT
+  CRITICAL
+}
+
+enum RequestStatus {
+  OPEN
+  MATCHED
+  FULFILLED
+  CANCELLED
+}
+
+enum ActivityType {
+  BLOOD_REQUEST
+  MEMBER_JOINED
+  DONATION_LOGGED
+  INVITE_ACCEPTED
+  HOSPITAL_VERIFIED
+  BADGE_EARNED
+}
+
+model Article {
+  id            String          @id @default(cuid())
+  slug          String          @unique
+  title         String
+  excerpt       String
+  body          String
+  coverImageUrl String?
+  category      ArticleCategory @default(TIP)
+  authorName    String          @default("BloodPod Team")
+  authorId      String?
+  author        User?           @relation(fields: [authorId], references: [id])
+  publishedAt   DateTime        @default(now())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@index([publishedAt])
+}
+
+enum ArticleCategory {
+  TIP
+  ARTICLE
+  NEWS
+  FAQ
 }

@@ -36,6 +36,11 @@ export function SignInForm() {
     });
 
     if (error) {
+      if (error.code === "email_not_confirmed") {
+        setFormError("Please confirm your email before signing in — check your inbox for the link.");
+        return;
+      }
+
       const attempts = failedAttempts + 1;
       setFailedAttempts(attempts);
 

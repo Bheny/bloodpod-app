@@ -1,0 +1,84 @@
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import { ChevronRight, Pencil, Bell } from "lucide-react";
+import { getCurrentUser } from "@/lib/auth/current-user";
+import { getPassportData } from "@/lib/passport-data";
+import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
+import { getInitials } from "@/lib/formatters";
+import { VisibilityRow } from "@/components/profile/VisibilityRow";
+import { SignOutButton } from "@/components/profile/SignOutButton";
+
+export default async function ProfilePage() {
+  const user = await getCurrentUser();
+  if (!user) redirect("/sign-in");
+  if (!user.onboardingComplete) redirect("/onboarding");
+
+  const passportData = await getPassportData(user.id);
+
+  return (
+    <div>
+      <div className="border-b-[0.5px] border-[#E5E5EA] bg-white px-4 py-3.5">
+        <h1 className="text-[13px] font-extrabold tracking-[-0.4px] text-ink">Profile</h1>
+      </div>
+
+      <div className="flex flex-col items-center gap-2 px-4 py-6">
+        <span className="flex size-16 items-center justify-center rounded-full bg-red text-xl font-bold text-white">
+          {user.name ? getInitials(user.name) : "?"}
+        </span>
+        <p className="text-base font-extrabold text-ink">{user.name ?? "BloodPod member"}</p>
+        <p className="text-xs text-ink-muted">{user.email}</p>
+        <p className="text-[11px] text-ink-faint">
+          {user.bloodType ? BLOOD_TYPE_LABELS[user.bloodType] : "No blood type"} ·{" "}
+          {user.city ?? "No city set"} · {user.plan === "PREMIUM" ? "Pod Pro" : "Free"}
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-2.5 px-4 pb-4">
+        <Link
+          href="/passport"
+          className="flex items-center gap-3 rounded-2xl bg-ink px-3.5 py-3.5"
+        >
+          <div className="min-w-0 flex-1">
+            <p className="text-[11px] font-bold uppercase tracking-wide text-white/40">
+              Donation passport
+            </p>
+            <p className="mt-1 text-sm font-extrabold text-white">
+              {passportData?.passport.donationCount ?? 0} donation
+              {passportData?.passport.donationCount === 1 ? "" : "s"} ·{" "}
+              {passportData?.passport.tier ?? "STARTER"}
+            </p>
+          </div>
+          <span className="shrink-0 rounded-full bg-red px-3 py-2 text-[11px] font-bold text-white">
+            View Passport →
+          </span>
+        </Link>
+
+        <VisibilityRow initiallyPublic={user.isPublic} />
+
+        <Link
+          href="/profile/edit"
+          className="flex items-center gap-2.5 rounded-2xl border-[0.5px] border-[#E5E5EA] bg-white px-3.5 py-3"
+        >
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-surface">
+            <Pencil className="size-4 text-ink-mid" />
+          </span>
+          <span className="flex-1 text-[12px] font-bold text-ink">Edit profile</span>
+          <ChevronRight className="size-4 text-ink-faint" />
+        </Link>
+
+        <Link
+          href="/profile/notifications"
+          className="flex items-center gap-2.5 rounded-2xl border-[0.5px] border-[#E5E5EA] bg-white px-3.5 py-3"
+        >
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-surface">
+            <Bell className="size-4 text-ink-mid" />
+          </span>
+          <span className="flex-1 text-[12px] font-bold text-ink">Notifications</span>
+          <ChevronRight className="size-4 text-ink-faint" />
+        </Link>
+
+        <SignOutButton />
+      </div>
+    </div>
+  );
+}

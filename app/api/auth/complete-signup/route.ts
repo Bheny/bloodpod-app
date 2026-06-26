@@ -1,20 +1,7 @@
 import { NextResponse } from "next/server";
-import { BloodType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-
-function slugify(input: string) {
-  const slug = input
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .slice(0, 40);
-  return slug || "pod";
-}
-
-function isBloodType(value: string): value is BloodType {
-  return (Object.values(BloodType) as string[]).includes(value);
-}
+import { slugify } from "@/lib/slugify";
+import { isBloodType } from "@/lib/blood-type";
 
 export async function POST(request: Request) {
   const body = await request.json();

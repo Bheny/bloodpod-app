@@ -78,6 +78,16 @@ body {
   }
 }
 
+@keyframes pulse-scale {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
 .animate-pulse-dot {
   animation: pulse-dot 2s ease-in-out infinite;
 }
@@ -88,4 +98,8 @@ body {
 
 .animate-marquee {
   animation: marquee 30s linear infinite;
+}
+
+.animate-pulse-scale {
+  animation: pulse-scale 1.4s ease-in-out infinite;
 }
