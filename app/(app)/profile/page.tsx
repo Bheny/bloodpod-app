@@ -6,6 +6,7 @@ import { getPassportData } from "@/lib/passport-data";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
 import { getInitials } from "@/lib/formatters";
 import { VisibilityRow } from "@/components/profile/VisibilityRow";
+import { AvailabilityRow } from "@/components/profile/AvailabilityRow";
 import { SignOutButton } from "@/components/profile/SignOutButton";
 import { JoinByCodeForm } from "@/components/invite/JoinByCodeForm";
 
@@ -55,6 +56,8 @@ export default async function ProfilePage() {
         </Link>
 
         <VisibilityRow initiallyPublic={user.isPublic} />
+
+        <AvailabilityRow initiallyAvailable={user.isAvailable} />
 
         <JoinByCodeForm />
 

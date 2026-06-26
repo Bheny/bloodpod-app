@@ -28,27 +28,40 @@ function GoogleIcon() {
 
 export function GoogleButton({ label }: { label: string }) {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleClick() {
     setLoading(true);
+    setError(null);
     const supabase = createClient();
-    await supabase.auth.signInWithOAuth({
+    const { error: oauthError } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
     });
+
+    // On success the browser navigates away to Google immediately, so this
+    // only ever runs when the request itself failed (e.g. provider not
+    // configured) — without it the button would stay stuck on "Redirecting…".
+    if (oauthError) {
+      setError(oauthError.message);
+      setLoading(false);
+    }
   }
 
   return (
-    <button
-      type="button"
-      onClick={handleClick}
-      disabled={loading}
-      className="flex w-full items-center justify-center gap-3 rounded-full border-[1.5px] border-[#E5E5EA] bg-white py-3 font-semibold text-ink transition-colors duration-150 hover:border-ink-faint hover:bg-[#F9F9F9] disabled:opacity-60"
-    >
-      <GoogleIcon />
-      {loading ? "Redirecting…" : label}
-    </button>
+    <div>
+      <button
+        type="button"
+        onClick={handleClick}
+        disabled={loading}
+        className="flex w-full items-center justify-center gap-3 rounded-full border-[1.5px] border-[#E5E5EA] bg-white py-3 font-semibold text-ink transition-colors duration-150 hover:border-ink-faint hover:bg-[#F9F9F9] disabled:opacity-60"
+      >
+        <GoogleIcon />
+        {loading ? "Redirecting…" : label}
+      </button>
+      {error && <p className="mt-2 text-center text-xs text-red">{error}</p>}
+    </div>
   );
 }

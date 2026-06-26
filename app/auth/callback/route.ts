@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error && data.user) {
-      await fetch(`${origin}/api/auth/complete-signup`, {
+      const res = await fetch(`${origin}/api/auth/complete-signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -19,7 +19,8 @@ export async function GET(request: Request) {
           name: data.user.user_metadata?.full_name ?? data.user.user_metadata?.name,
         }),
       });
-      return NextResponse.redirect(`${origin}/onboarding`);
+      const { user } = await res.json();
+      return NextResponse.redirect(`${origin}${user?.onboardingComplete ? "/dashboard" : "/onboarding"}`);
     }
   }
 

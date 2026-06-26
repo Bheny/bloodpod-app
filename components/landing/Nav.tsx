@@ -17,48 +17,50 @@ export function Nav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <m.header
-      initial={{ opacity: 0, y: -8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-      className="sticky top-0 z-50 h-16 border-b-[0.5px] border-[#E5E5EA] bg-white/92 backdrop-blur-md"
-    >
-      <nav className="mx-auto flex h-full max-w-[1280px] items-center justify-between px-5 lg:px-12">
-        <Link href="/" className="shrink-0">
-          <Logo />
-        </Link>
-
-        <div className="hidden items-center gap-8 lg:flex">
-          {LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="relative text-sm font-medium text-ink-mid transition-colors after:absolute after:-bottom-1 after:left-0 after:h-[1.5px] after:w-full after:origin-left after:scale-x-0 after:bg-red after:transition-transform after:duration-200 hover:text-ink hover:after:scale-x-100"
-            >
-              {link.label}
-            </a>
-          ))}
-        </div>
-
-        <div className="hidden items-center gap-4 lg:flex">
-          <Link href="/sign-in" className="text-sm font-semibold text-ink-mid hover:text-ink">
-            Sign in
+    <>
+      <m.header
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+        className="sticky top-0 z-50 h-16 border-b-[0.5px] border-[#E5E5EA] bg-white/92 backdrop-blur-md"
+      >
+        <nav className="mx-auto flex h-full max-w-[1280px] items-center justify-between px-5 lg:px-12">
+          <Link href="/" className="shrink-0">
+            <Logo />
           </Link>
-          <Button asChild size="sm">
-            <Link href="/sign-up">Build your pod →</Link>
-          </Button>
-        </div>
 
-        <button
-          type="button"
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-          className="-mr-2 flex size-10 items-center justify-center rounded-full text-ink lg:hidden"
-        >
-          {open ? <X className="size-6" /> : <Menu className="size-6" />}
-        </button>
-      </nav>
+          <div className="hidden items-center gap-8 lg:flex">
+            {LINKS.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="relative text-sm font-medium text-ink-mid transition-colors after:absolute after:-bottom-1 after:left-0 after:h-[1.5px] after:w-full after:origin-left after:scale-x-0 after:bg-red after:transition-transform after:duration-200 hover:text-ink hover:after:scale-x-100"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+
+          <div className="hidden items-center gap-4 lg:flex">
+            <Link href="/sign-in" className="text-sm font-semibold text-ink-mid hover:text-ink">
+              Sign in
+            </Link>
+            <Button asChild size="sm">
+              <Link href="/sign-up">Build your pod →</Link>
+            </Button>
+          </div>
+
+          <button
+            type="button"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+            className="-mr-2 flex size-10 items-center justify-center rounded-full text-ink lg:hidden"
+          >
+            {open ? <X className="size-6" /> : <Menu className="size-6" />}
+          </button>
+        </nav>
+      </m.header>
 
       <AnimatePresence>
         {open && (
@@ -96,6 +98,6 @@ export function Nav() {
           </m.div>
         )}
       </AnimatePresence>
-    </m.header>
+    </>
   );
 }
