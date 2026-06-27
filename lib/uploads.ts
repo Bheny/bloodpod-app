@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/client";
 
 export const UPLOADS_BUCKET = "uploads";
+export const AVATARS_BUCKET = "avatars";
 export const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
 export const ACCEPTED_UPLOAD_TYPES = "image/*,application/pdf";
 
@@ -44,4 +45,20 @@ export async function deleteFromStorage(paths: string[]): Promise<void> {
   if (valid.length === 0) return;
   const supabase = createClient();
   await supabase.storage.from(UPLOADS_BUCKET).remove(valid);
+}
+
+export async function uploadAvatar(file: File): Promise<string> {
+  const supabase = createClient();
+  const { data: userData } = await supabase.auth.getUser();
+  if (!userData.user) throw new Error("Not signed in");
+
+  const path = `${userData.user.id}/avatar.${extensionFor(file)}`;
+  const { error } = await supabase.storage
+    .from(AVATARS_BUCKET)
+    .upload(path, file, { upsert: true, contentType: file.type || undefined });
+  if (error) throw error;
+
+  const { data } = supabase.storage.from(AVATARS_BUCKET).getPublicUrl(path);
+  // the path is stable across re-uploads (upsert), so cache-bust with a version param
+  return `${data.publicUrl}?v=${Date.now()}`;
 }

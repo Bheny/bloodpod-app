@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { AppHeader } from "@/components/layout/AppHeader";
+import { AvatarUpload } from "@/components/profile/AvatarUpload";
 import { EditProfileForm } from "@/components/profile/EditProfileForm";
 
 export default async function EditProfilePage() {
@@ -11,6 +12,7 @@ export default async function EditProfilePage() {
   return (
     <div>
       <AppHeader title="Edit profile" backHref="/profile" />
+      <AvatarUpload name={user.name ?? ""} initialAvatarUrl={user.avatarUrl} />
       <EditProfileForm
         defaultValues={{
           name: user.name ?? "",

@@ -24,9 +24,18 @@ export default async function ProfilePage() {
       </div>
 
       <div className="flex flex-col items-center gap-2 px-4 py-6">
-        <span className="flex size-16 items-center justify-center rounded-full bg-red text-xl font-bold text-white">
-          {user.name ? getInitials(user.name) : "?"}
-        </span>
+        {user.avatarUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element -- external Supabase Storage URL, not a local optimizable asset
+          <img
+            src={user.avatarUrl}
+            alt={user.name ?? "Profile photo"}
+            className="size-16 rounded-full object-cover"
+          />
+        ) : (
+          <span className="flex size-16 items-center justify-center rounded-full bg-red text-xl font-bold text-white">
+            {user.name ? getInitials(user.name) : "?"}
+          </span>
+        )}
         <p className="text-base font-extrabold text-ink">{user.name ?? "BloodPod member"}</p>
         <p className="text-xs text-ink-muted">{user.email}</p>
         <p className="text-[11px] text-ink-faint">
