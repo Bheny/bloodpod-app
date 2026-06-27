@@ -23,10 +23,16 @@ export function MemberItem({ member }: { member: PodMemberView }) {
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5">
           <p className="truncate text-[10px] font-semibold text-ink">{member.name}</p>
-          {member.isOwner && (
+          {member.isCurrentUser ? (
             <span className="rounded-full bg-red-light px-1.5 py-0.5 text-[8px] font-bold text-red">
               You
             </span>
+          ) : (
+            member.isOwner && (
+              <span className="rounded-full bg-surface px-1.5 py-0.5 text-[8px] font-bold text-ink-muted">
+                Owner
+              </span>
+            )
           )}
         </div>
         <p className="truncate text-[9px] text-ink-muted">

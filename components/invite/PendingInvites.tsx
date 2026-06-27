@@ -34,12 +34,12 @@ export function PendingInvites({ initialInvites }: { initialInvites: PendingInvi
 
   return (
     <div className="px-4 py-4">
-      <p className="text-[9px] font-bold uppercase tracking-wide text-ink-muted">
+      <p className="text-[11px] font-bold uppercase tracking-wide text-ink-muted">
         Pending invites ({invites.length})
       </p>
 
       {invites.length === 0 ? (
-        <p className="mt-3 text-center text-[11px] text-ink-muted">No pending invites yet.</p>
+        <p className="mt-3 text-center text-xs text-ink-muted">No pending invites yet.</p>
       ) : (
         <div className="mt-2 divide-y-[0.5px] divide-surface rounded-2xl bg-white">
           {invites.map((invite) => (
