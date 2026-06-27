@@ -4,7 +4,9 @@
       "Bash(npx --yes create-next-app@latest . --typescript --tailwind --eslint --app --src-dir=false --import-alias \"@/*\" --use-npm --no-turbopack)",
       "Bash(NEXT_PUBLIC_SUPABASE_URL=\"https://example.supabase.co\" NEXT_PUBLIC_SUPABASE_ANON_KEY=\"placeholder\" npx next build)",
       "Bash(cd \"c:\\\\Users\\\\EPIGNOSIS\\\\Documents\\\\Startups\\\\bloodpod-app\" && mkdir -p app/api/feed \"app/\\(app\\)/feed/[slug]\" && echo ok)",
-      "Bash(npx eslint *)"
+      "Bash(npx eslint *)",
+      "Bash(reg query *)",
+      "PowerShell(Get-PhysicalDisk | Select-Object FriendlyName, MediaType, BusType, Size; Write-Output \"---\"; Get-Volume | Where-Object {$_.DriveLetter} | Select-Object DriveLetter, FileSystemLabel, @{N='SizeGB';E={[math]::Round\\($_.Size/1GB,1\\)}})"
     ],
     "additionalDirectories": [
       "C:\\Users\\EPIGNOSIS\\Documents\\Startups\\bloodpod-app\\app\\(app)\\feed"

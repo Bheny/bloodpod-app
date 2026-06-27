@@ -5,11 +5,12 @@ import { isBloodType } from "@/lib/blood-type";
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { supabaseId, email, name, bloodType } = body as {
+  const { supabaseId, email, name, bloodType, avatarUrl } = body as {
     supabaseId?: string;
     email?: string;
     name?: string;
     bloodType?: string;
+    avatarUrl?: string;
   };
 
   if (!supabaseId || !email) {
@@ -33,6 +34,7 @@ export async function POST(request: Request) {
       supabaseId,
       email,
       name,
+      avatarUrl,
       bloodType: bloodType && isBloodType(bloodType) ? bloodType : undefined,
       ownedPods: {
         create: {

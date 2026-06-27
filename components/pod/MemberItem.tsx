@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { StatusDot, type StatusDotColor } from "@/components/ui/StatusDot";
 import type { PodMemberView } from "@/lib/pod-data";
 
@@ -7,11 +6,18 @@ function statusFor(member: PodMemberView): StatusDotColor {
   return member.isEligible ? "green" : "amber";
 }
 
-export function MemberItem({ member }: { member: PodMemberView }) {
+export function MemberItem({
+  member,
+  onSelect,
+}: {
+  member: PodMemberView;
+  onSelect: (member: PodMemberView) => void;
+}) {
   return (
-    <Link
-      href={`/pod/member/${member.id}`}
-      className="flex items-center gap-3 px-4 py-3 transition-colors duration-150 hover:bg-surface"
+    <button
+      type="button"
+      onClick={() => onSelect(member)}
+      className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors duration-150 hover:bg-surface"
     >
       <span
         style={{ backgroundColor: member.bgColor, color: member.textColor }}
@@ -48,6 +54,6 @@ export function MemberItem({ member }: { member: PodMemberView }) {
         {member.bloodType ?? "—"}
       </p>
       <StatusDot status={statusFor(member)} />
-    </Link>
+    </button>
   );
 }

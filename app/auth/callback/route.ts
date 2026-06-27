@@ -17,6 +17,7 @@ export async function GET(request: Request) {
           supabaseId: data.user.id,
           email: data.user.email,
           name: data.user.user_metadata?.full_name ?? data.user.user_metadata?.name,
+          avatarUrl: data.user.user_metadata?.avatar_url ?? data.user.user_metadata?.picture,
         }),
       });
       const { user } = await res.json();

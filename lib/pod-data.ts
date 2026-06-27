@@ -10,6 +10,7 @@ export interface PodMemberView {
   initials: string;
   bgColor: string;
   textColor: string;
+  avatarUrl: string | null;
   bloodType: string | null;
   isEligible: boolean;
   nextEligible: Date | null;
@@ -62,6 +63,7 @@ export interface JoinedPodDetail {
 type UserWithDonationCount = {
   id: string;
   name: string | null;
+  avatarUrl: string | null;
   bloodType: BloodType | null;
   isEligible: boolean;
   nextEligible: Date | null;
@@ -83,6 +85,7 @@ function buildMemberViews(
       initials: getInitials(pod.owner.name ?? "Pod owner"),
       bgColor: getAvatarColor(pod.owner.id),
       textColor: getAvatarTextColor(pod.owner.id),
+      avatarUrl: pod.owner.avatarUrl,
       bloodType: pod.owner.bloodType ? BLOOD_TYPE_LABELS[pod.owner.bloodType] : null,
       isEligible: pod.owner.isEligible,
       nextEligible: pod.owner.nextEligible,
@@ -97,6 +100,7 @@ function buildMemberViews(
       initials: getInitials(m.user.name ?? "Pod member"),
       bgColor: getAvatarColor(m.user.id),
       textColor: getAvatarTextColor(m.user.id),
+      avatarUrl: m.user.avatarUrl,
       bloodType: m.user.bloodType ? BLOOD_TYPE_LABELS[m.user.bloodType] : null,
       isEligible: m.user.isEligible,
       nextEligible: m.user.nextEligible,
