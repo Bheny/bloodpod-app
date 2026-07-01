@@ -6,15 +6,15 @@ export function BloodTypeCoverage({
   gaps: string[];
 }) {
   return (
-    <div className="bg-white px-4 py-3.5">
-      <p className="text-[8px] font-bold uppercase tracking-wide text-ink-muted">
+    <div className="bg-white px-4 py-3.5 lg:px-6 lg:py-4">
+      <p className="text-[8px] font-bold uppercase tracking-wide text-ink-muted lg:text-[10px]">
         Blood types covered
       </p>
-      <div className="mt-2 flex flex-wrap gap-1.5">
+      <div className="mt-2 flex flex-wrap gap-1.5 lg:mt-2.5 lg:gap-2">
         {covered.map((type) => (
           <span
             key={type}
-            className="rounded-full px-2.5 py-1 text-[11px] font-bold text-white"
+            className="rounded-full px-2.5 py-1 text-[11px] font-bold text-white lg:px-3 lg:py-1.5 lg:text-[13px]"
             style={{ backgroundColor: type === "O+" ? "#DD0000" : "#1C1C1E" }}
           >
             {type}
@@ -23,7 +23,7 @@ export function BloodTypeCoverage({
         {gaps.map((type) => (
           <span
             key={type}
-            className="rounded-full border border-dashed border-red-mid bg-red-light px-2.5 py-1 text-[11px] font-bold text-red-mid"
+            className="rounded-full border border-dashed border-red-mid bg-red-light px-2.5 py-1 text-[11px] font-bold text-red-mid lg:px-3 lg:py-1.5 lg:text-[13px]"
           >
             {type}?
           </span>

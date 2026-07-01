@@ -38,26 +38,30 @@ export function JoinByCodeForm() {
   }
 
   return (
-    <div className="rounded-2xl border-[0.5px] border-[#E5E5EA] bg-white px-3.5 py-3">
-      <p className="text-[12px] font-bold text-ink">Have a pod code?</p>
-      <p className="text-[10px] text-ink-muted">Join a friend&apos;s pod with their code or link</p>
+    <div className="rounded-2xl border-[0.5px] border-[#E5E5EA] bg-white px-3.5 py-3 lg:px-5 lg:py-4">
+      <p className="text-[12px] font-bold text-ink lg:text-[14px]">Have a pod code?</p>
+      <p className="text-[10px] text-ink-muted lg:text-[12px]">
+        Join a friend&apos;s pod with their code or link
+      </p>
 
       {joinedPod ? (
-        <p className="mt-2 text-sm font-semibold text-[#1FA855]">You joined {joinedPod} ✓</p>
+        <p className="mt-2 text-sm font-semibold text-[#1FA855] lg:text-base">
+          You joined {joinedPod} ✓
+        </p>
       ) : (
         <div className="mt-2 flex gap-2">
           <Input
             placeholder="Enter code or link"
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            className="flex-1 text-sm"
+            className="flex-1 text-sm lg:py-3"
           />
           <Button onClick={handleJoin} loading={joining} disabled={!code.trim()} size="sm">
             Join
           </Button>
         </div>
       )}
-      {error && <p className="mt-1.5 text-xs text-red">{error}</p>}
+      {error && <p className="mt-1.5 text-xs text-red lg:text-sm">{error}</p>}
     </div>
   );
 }

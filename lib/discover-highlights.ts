@@ -9,6 +9,7 @@ export interface TopDonor {
   initials: string;
   bgColor: string;
   textColor: string;
+  avatarUrl: string | null;
   bloodType: string | null;
   donationCount: number;
   tier: string;
@@ -36,6 +37,7 @@ export async function getTopDonors(viewerId: string, limit = 10): Promise<TopDon
     initials: getInitials(u.name ?? "?"),
     bgColor: getAvatarColor(u.id),
     textColor: getAvatarTextColor(u.id),
+    avatarUrl: u.avatarUrl,
     bloodType: u.bloodType ? BLOOD_TYPE_LABELS[u.bloodType] : null,
     donationCount: u._count.donations,
     tier: u.passportTier,

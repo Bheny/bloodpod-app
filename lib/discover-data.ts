@@ -19,6 +19,7 @@ export interface DiscoverDonor {
   initials: string;
   bgColor: string;
   textColor: string;
+  avatarUrl: string | null;
   bloodType: string | null;
   city: string | null;
   distanceKm: number | null;
@@ -75,6 +76,7 @@ export async function getDiscoverDonors(
       initials: getInitials(u.name ?? "?"),
       bgColor: getAvatarColor(u.id),
       textColor: getAvatarTextColor(u.id),
+      avatarUrl: u.avatarUrl,
       bloodType: u.bloodType ? BLOOD_TYPE_LABELS[u.bloodType] : null,
       city: u.city,
       distanceKm,

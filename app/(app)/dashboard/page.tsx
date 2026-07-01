@@ -37,12 +37,12 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between border-b-[0.5px] border-[#E5E5EA] bg-white px-[18px] py-3.5">
+      <div className="flex items-center justify-between border-b-[0.5px] border-[#E5E5EA] bg-white px-[18px] py-3.5 lg:px-6 lg:py-5">
         <div>
-          <p className="text-[19px] font-extrabold leading-[1.1] tracking-[-0.7px] text-ink">
+          <p className="text-[19px] font-extrabold leading-[1.1] tracking-[-0.7px] text-ink lg:text-[26px]">
             {greeting()}, {firstName}.
           </p>
-          <p className="text-[11px] font-medium text-ink-muted">
+          <p className="text-[11px] font-medium text-ink-muted lg:text-[13px]">
             {data.user.bloodType ?? "No blood type"} · {data.user.city ?? "No city set"} ·{" "}
             {data.user.isEligible ? "eligible" : "not yet eligible"}
           </p>
@@ -52,17 +52,17 @@ export default async function DashboardPage() {
           <button
             type="button"
             aria-label="Notifications"
-            className="flex size-[38px] items-center justify-center rounded-full bg-surface"
+            className="flex size-[38px] items-center justify-center rounded-full bg-surface lg:size-11"
           >
-            <Bell className="size-[18px] text-ink-mid" />
+            <Bell className="size-[18px] text-ink-mid lg:size-5" />
           </button>
-          <span className="flex size-[38px] items-center justify-center rounded-full bg-red text-sm font-bold text-white">
+          <span className="flex size-[38px] items-center justify-center rounded-full bg-red text-sm font-bold text-white lg:size-11 lg:text-base">
             {data.user.name ? getInitials(data.user.name) : "?"}
           </span>
         </div>
       </div>
 
-      <div className="flex flex-col gap-2.5 px-3.5 py-3.5">
+      <div className="flex flex-col gap-2.5 px-3.5 py-3.5 lg:gap-4 lg:px-6 lg:py-6">
         {topRequest && <AlertBar request={topRequest} />}
 
         {strength.score < 100 && (
@@ -93,17 +93,17 @@ export default async function DashboardPage() {
             plan={data.user.plan}
           />
         ) : (
-          <div className="rounded-2xl bg-white p-6 text-center">
-            <LogoMark className="mx-auto size-10 opacity-30" />
-            <p className="mt-3 text-sm font-bold text-ink">Your pod is empty.</p>
-            <p className="mt-1 text-xs text-ink-muted">
+          <div className="rounded-2xl bg-white p-6 text-center lg:p-10">
+            <LogoMark className="mx-auto size-10 opacity-30 lg:size-12" />
+            <p className="mt-3 text-sm font-bold text-ink lg:text-base">Your pod is empty.</p>
+            <p className="mt-1 text-xs text-ink-muted lg:text-sm">
               Invite people you trust to build your blood network.
             </p>
             <Link
               href="/pod/invite"
-              className="mt-3 inline-block rounded-full bg-red px-5 py-2 text-xs font-bold text-white"
+              className="mt-3 inline-block rounded-full bg-red px-5 py-2 text-xs font-bold text-white lg:px-6 lg:py-2.5 lg:text-sm"
             >
-              Create your pod →
+              Create your pod
             </Link>
           </div>
         )}

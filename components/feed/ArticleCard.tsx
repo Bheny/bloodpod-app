@@ -35,20 +35,20 @@ export function ArticleCard({ article }: { article: Article }) {
         </div>
       )}
 
-      <div className="p-3.5">
+      <div className="p-3.5 lg:p-4">
         <span
-          className="rounded-full px-2 py-0.5 text-[9px] font-bold"
+          className="rounded-full px-2 py-0.5 text-[9px] font-bold lg:text-[11px]"
           style={{ backgroundColor: category.bg, color: category.color }}
         >
           {category.label}
         </span>
-        <p className="mt-2 text-[13px] font-extrabold leading-tight tracking-[-0.3px] text-ink">
+        <p className="mt-2 text-[13px] font-extrabold leading-tight tracking-[-0.3px] text-ink lg:text-[15px]">
           {article.title}
         </p>
-        <p className="mt-1 line-clamp-2 text-[11px] leading-snug text-ink-muted">
+        <p className="mt-1 line-clamp-2 text-[11px] leading-snug text-ink-muted lg:text-[13px]">
           {article.excerpt}
         </p>
-        <p className="mt-2 text-[9px] text-ink-faint">
+        <p className="mt-2 text-[9px] text-ink-faint lg:text-[11px]">
           {article.authorName} · {formatRelativeTime(article.publishedAt)}
         </p>
       </div>

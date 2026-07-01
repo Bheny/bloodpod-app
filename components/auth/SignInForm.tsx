@@ -106,14 +106,14 @@ export function SignInForm() {
         {formError && <p className="text-sm text-red">{formError}</p>}
 
         <Button type="submit" loading={isSubmitting} disabled={isLocked} className="mt-1 w-full">
-          {isSubmitting ? "Signing in..." : "Sign in →"}
+          {isSubmitting ? "Signing in..." : "Sign in"}
         </Button>
       </form>
 
       <p className="mt-6 text-center text-sm text-ink-mid">
         Don&apos;t have an account?{" "}
         <Link href="/sign-up" className="font-semibold text-red">
-          Build your pod →
+          Build your pod
         </Link>
       </p>
     </div>

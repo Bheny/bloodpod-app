@@ -58,7 +58,7 @@ export function InviteLanding({
               grow it.
             </p>
             <Button asChild size="lg" className="mt-5 w-full">
-              <Link href="/pod/invite">Manage invites →</Link>
+              <Link href="/pod/invite">Manage invites</Link>
             </Button>
           </div>
         ) : accepted ? (
@@ -137,7 +137,7 @@ export function InviteLanding({
 
             <p className="mt-3 text-center text-xs">
               <Link href="/sign-up" className="font-semibold text-red">
-                Create your own pod instead →
+                Create your own pod instead
               </Link>
             </p>
           </>

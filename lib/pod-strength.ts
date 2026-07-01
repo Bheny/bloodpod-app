@@ -5,7 +5,6 @@ export interface PodStrengthStep {
   id: string;
   label: string;
   complete: boolean;
-  ctaLabel: string;
   ctaRoute: string;
 }
 
@@ -37,35 +36,30 @@ export async function recalculatePodStrength(userId: string): Promise<PodStrengt
       id: "blood-type",
       label: "Add your blood type",
       complete: hasBloodType,
-      ctaLabel: "Add blood type →",
       ctaRoute: "/profile/edit",
     },
     {
       id: "profile",
       label: "Complete your profile",
       complete: hasProfile,
-      ctaLabel: "Complete profile →",
       ctaRoute: "/profile/edit",
     },
     {
       id: "invite",
       label: "Invite your first member",
       complete: hasMember,
-      ctaLabel: "Invite a member →",
       ctaRoute: "/pod/invite",
     },
     {
       id: "availability",
       label: "Turn on availability",
       complete: user.isAvailable,
-      ctaLabel: "Turn on availability →",
       ctaRoute: "/profile",
     },
     {
       id: "donation",
       label: "Log your first donation",
       complete: hasDonation,
-      ctaLabel: "Log a donation →",
       ctaRoute: "/passport/log",
     },
   ];

@@ -2,16 +2,9 @@
 
 import Link, { useLinkStatus } from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Users, Search, Newspaper, User, type LucideIcon } from "lucide-react";
+import { type LucideIcon } from "lucide-react";
+import { NAV_TABS } from "@/lib/nav-tabs";
 import { cn } from "@/lib/utils";
-
-const TABS = [
-  { href: "/dashboard", label: "Home", icon: Home },
-  { href: "/pod", label: "My Pod", icon: Users },
-  { href: "/discover", label: "Discover", icon: Search },
-  { href: "/feed", label: "Feed", icon: Newspaper },
-  { href: "/profile", label: "Profile", icon: User },
-];
 
 function TabContent({ active, label, Icon }: { active: boolean; label: string; Icon: LucideIcon }) {
   const { pending } = useLinkStatus();
@@ -43,10 +36,10 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-40 flex h-16 items-stretch border-t-[0.5px] border-[#E5E5EA] bg-white pb-[env(safe-area-inset-bottom)]"
+      className="fixed inset-x-0 bottom-0 z-40 flex h-16 items-stretch border-t-[0.5px] border-[#E5E5EA] bg-white pb-[env(safe-area-inset-bottom)] lg:hidden"
       aria-label="Primary"
     >
-      {TABS.map((tab) => {
+      {NAV_TABS.map((tab) => {
         const active = pathname === tab.href || pathname.startsWith(`${tab.href}/`);
 
         return (

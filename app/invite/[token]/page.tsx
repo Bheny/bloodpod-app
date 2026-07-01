@@ -18,7 +18,7 @@ export default async function InvitePage({
           This invite has expired or is no longer valid.
         </p>
         <Link href="/sign-up" className="text-sm font-semibold text-red">
-          Create your own pod →
+          Create your own pod
         </Link>
       </div>
     );

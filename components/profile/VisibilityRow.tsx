@@ -27,13 +27,13 @@ export function VisibilityRow({ initiallyPublic }: { initiallyPublic: boolean })
   }
 
   return (
-    <div className="flex items-center gap-2.5 rounded-2xl border-[0.5px] border-[#E5E5EA] bg-white px-3.5 py-3">
-      <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-surface">
-        <Eye className="size-4 text-ink-mid" />
+    <div className="flex items-center gap-2.5 rounded-2xl border-[0.5px] border-[#E5E5EA] bg-white px-3.5 py-3 lg:px-5 lg:py-4">
+      <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-surface lg:size-10">
+        <Eye className="size-4 text-ink-mid lg:size-5" />
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-[12px] font-bold text-ink">Visible to other donors</p>
-        <p className="text-[10px] text-ink-muted">Show up in Discover search results</p>
+        <p className="text-[12px] font-bold text-ink lg:text-[14px]">Visible to other donors</p>
+        <p className="text-[10px] text-ink-muted lg:text-[12px]">Show up in Discover search results</p>
       </div>
       <button
         type="button"

@@ -9,7 +9,7 @@ const TIERS: { id: PassportTier; name: string; range: string }[] = [
 
 export function PassportTiers({ currentTier }: { currentTier: PassportTier }) {
   return (
-    <div className="mx-2.5 flex gap-1.5">
+    <div className="mx-2.5 flex gap-1.5 lg:mx-6 lg:gap-2.5">
       {TIERS.map((tier) => {
         const isCurrent = tier.id === currentTier;
         const isLegend = tier.id === "LEGEND";
@@ -18,7 +18,7 @@ export function PassportTiers({ currentTier }: { currentTier: PassportTier }) {
           <div
             key={tier.id}
             className={cn(
-              "flex-1 rounded-[10px] py-[9px] text-center",
+              "flex-1 rounded-[10px] py-[9px] text-center lg:rounded-xl lg:py-4",
               isCurrent && !isLegend && "border-[1.5px] border-red bg-red-light",
               isCurrent && isLegend && "border-[1.5px] border-[#FFD700] bg-[#2A2410]",
               !isCurrent && "bg-surface",
@@ -26,7 +26,7 @@ export function PassportTiers({ currentTier }: { currentTier: PassportTier }) {
           >
             <p
               className={cn(
-                "text-[9px] font-bold",
+                "text-[9px] font-bold lg:text-[11px]",
                 isCurrent && !isLegend && "text-red",
                 isCurrent && isLegend && "text-[#FFD700]",
                 !isCurrent && "text-ink-muted",
@@ -36,7 +36,7 @@ export function PassportTiers({ currentTier }: { currentTier: PassportTier }) {
             </p>
             <p
               className={cn(
-                "text-sm font-extrabold",
+                "text-sm font-extrabold lg:text-lg",
                 isCurrent && !isLegend && "text-red",
                 isCurrent && isLegend && "text-[#FFD700]",
                 !isCurrent && "text-ink-faint",
@@ -46,7 +46,7 @@ export function PassportTiers({ currentTier }: { currentTier: PassportTier }) {
             </p>
             {isCurrent && (
               <p
-                className="text-[8px]"
+                className="text-[8px] lg:text-[10px]"
                 style={{ color: isLegend ? "#FFD700" : "#DD0000" }}
               >
                 you are here

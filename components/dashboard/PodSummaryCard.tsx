@@ -24,21 +24,21 @@ export function PodSummaryCard({
   const extra = Math.max(memberCount - members.length, 0);
 
   return (
-    <div className="rounded-2xl bg-white p-[15px]">
+    <div className="rounded-2xl bg-white p-[15px] lg:p-6">
       <div className="flex items-center justify-between">
-        <p className="text-[13px] font-bold text-ink">{podName}</p>
-        <Link href="/pod" className="text-xs font-bold text-red">
+        <p className="text-[13px] font-bold text-ink lg:text-[15px]">{podName}</p>
+        <Link href="/pod" className="text-xs font-bold text-red lg:text-sm">
           Manage
         </Link>
       </div>
 
       <div className="mt-3 flex items-center gap-2.5">
-        <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-red-light">
-          <LogoMark className="size-6" />
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-red-light lg:size-12">
+          <LogoMark className="size-6 lg:size-7" />
         </span>
         <div>
-          <p className="text-sm font-bold text-ink">{podName}</p>
-          <p className="text-[10px] text-ink-faint">bloodpod.gh/pod/{podSlug}</p>
+          <p className="text-sm font-bold text-ink lg:text-base">{podName}</p>
+          <p className="text-[10px] text-ink-faint lg:text-[12px]">bloodpod.gh/pod/{podSlug}</p>
         </div>
       </div>
 
@@ -47,23 +47,23 @@ export function PodSummaryCard({
           <span
             key={m.id}
             style={{ backgroundColor: m.bgColor }}
-            className="flex size-7 items-center justify-center rounded-full border-2 border-white text-[10px] font-bold text-ink"
+            className="flex size-7 items-center justify-center rounded-full border-2 border-white text-[10px] font-bold text-ink lg:size-8 lg:text-[11px]"
           >
             {m.initials}
           </span>
         ))}
         {extra > 0 && (
-          <span className="flex size-7 items-center justify-center rounded-full border-2 border-white bg-surface text-[10px] font-bold text-ink-muted">
+          <span className="flex size-7 items-center justify-center rounded-full border-2 border-white bg-surface text-[10px] font-bold text-ink-muted lg:size-8 lg:text-[11px]">
             +{extra}
           </span>
         )}
       </div>
 
       <div className="mt-3 flex items-center justify-between">
-        <p className="text-[11px] text-ink-muted">
+        <p className="text-[11px] text-ink-muted lg:text-[13px]">
           {memberCount} of 20 · {plan === "PREMIUM" ? "Pod Pro" : "Free"}
         </p>
-        <span className="rounded-full bg-[#F0FDF4] px-2 py-0.5 text-[10px] font-bold text-[#166534]">
+        <span className="rounded-full bg-[#F0FDF4] px-2 py-0.5 text-[10px] font-bold text-[#166534] lg:text-[11px]">
           Active
         </span>
       </div>

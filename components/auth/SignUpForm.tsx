@@ -161,7 +161,7 @@ export function SignUpForm() {
           preview && (
             <p className="rounded-xl bg-red-light px-3 py-2.5 text-xs font-semibold text-red">
               You&apos;ll join {preview.podName}
-              {preview.inviterName ? ` · invited by ${preview.inviterName}` : ""} →
+              {preview.inviterName ? ` · invited by ${preview.inviterName}` : ""}
             </p>
           )
         ) : (
@@ -207,7 +207,7 @@ export function SignUpForm() {
       <p className="mt-6 text-center text-sm text-ink-mid">
         Already have an account?{" "}
         <Link href="/sign-in" className="font-semibold text-red">
-          Sign in →
+          Sign in
         </Link>
       </p>
 

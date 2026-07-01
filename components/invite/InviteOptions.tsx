@@ -210,7 +210,7 @@ export function InviteOptions({
                   className="flex-1 text-xs"
                 />
                 <Button onClick={handleSendEmail} loading={sendingEmail} disabled={!email} size="sm">
-                  Send →
+                  Send
                 </Button>
               </div>
             )}

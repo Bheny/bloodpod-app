@@ -153,7 +153,7 @@ export function LogDonationForm({ defaultBloodType }: { defaultBloodType: BloodT
         {formError && <p className="text-[9px] text-red">{formError}</p>}
 
         <Button type="submit" loading={isSubmitting} size="lg" className="w-full">
-          {isSubmitting ? "Recording..." : "Record donation →"}
+          {isSubmitting ? "Recording..." : "Record donation"}
         </Button>
       </form>
 

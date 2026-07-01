@@ -29,7 +29,7 @@ export default async function PodPage() {
       />
 
       {pod.strengthScore < 100 && (
-        <div className="bg-white px-4 pb-3 pt-3">
+        <div className="bg-white px-4 pb-3 pt-3 lg:px-6 lg:pb-4 lg:pt-4">
           <PodStrengthMeter
             score={pod.strengthScore}
             steps={pod.strengthSteps}
@@ -40,27 +40,27 @@ export default async function PodPage() {
 
       <BloodTypeCoverage covered={pod.bloodTypesCovered} gaps={pod.bloodTypeGaps} />
 
-      <div className="mt-2 flex items-center justify-between bg-white px-4 pt-3">
-        <p className="text-[13px] font-bold text-ink">Members</p>
-        <Link href="/pod/invite" className="text-xs font-bold text-red">
+      <div className="mt-2 flex items-center justify-between bg-white px-4 pt-3 lg:px-6 lg:pt-4">
+        <p className="text-[13px] font-bold text-ink lg:text-[16px]">Members</p>
+        <Link href="/pod/invite" className="text-xs font-bold text-red lg:text-sm">
           + Invite
         </Link>
       </div>
 
       {hasOtherMembers ? (
-        <div className="bg-white pb-2">
+        <div className="bg-white pb-2 lg:pb-3">
           <MemberList members={pod.members} />
         </div>
       ) : (
-        <div className="bg-white px-4 py-8 text-center">
-          <Users className="mx-auto size-8 text-ink-faint" />
-          <p className="mt-3 text-sm font-bold text-ink">No one will get the call.</p>
-          <p className="mt-1 text-xs text-ink-muted">
+        <div className="bg-white px-4 py-8 text-center lg:px-6 lg:py-12">
+          <Users className="mx-auto size-8 text-ink-faint lg:size-10" />
+          <p className="mt-3 text-sm font-bold text-ink lg:text-base">No one will get the call.</p>
+          <p className="mt-1 text-xs text-ink-muted lg:text-sm">
             Your pod is empty. Add members to build your emergency network.
           </p>
           <Link
             href="/pod/invite"
-            className="mt-4 block w-full rounded-full bg-red py-3 text-[10px] font-bold text-white"
+            className="mt-4 block w-full rounded-full bg-red py-3 text-[10px] font-bold text-white lg:py-3.5 lg:text-sm"
           >
             Invite members
           </Link>
@@ -68,10 +68,10 @@ export default async function PodPage() {
       )}
 
       {hasOtherMembers && (
-        <div className="px-4 py-3">
+        <div className="px-4 py-3 lg:px-6 lg:py-4">
           <Link
             href="/pod/invite"
-            className="block w-full rounded-full bg-red py-3 text-center text-[10px] font-bold text-white"
+            className="block w-full rounded-full bg-red py-3 text-center text-[10px] font-bold text-white lg:py-3.5 lg:text-sm"
           >
             + Invite members
           </Link>
@@ -79,8 +79,8 @@ export default async function PodPage() {
       )}
 
       {joinedPods.length > 0 && (
-        <div className="mt-2 px-4 py-3">
-          <p className="text-[11px] font-bold uppercase tracking-wide text-ink-muted">
+        <div className="mt-2 px-4 py-3 lg:px-6 lg:py-4">
+          <p className="text-[11px] font-bold uppercase tracking-wide text-ink-muted lg:text-[13px]">
             Pods you&apos;ve joined
           </p>
           <div className="mt-2 flex flex-col gap-2">
@@ -88,14 +88,14 @@ export default async function PodPage() {
               <Link
                 key={jp.id}
                 href={`/pod/joined/${jp.id}`}
-                className="flex items-center gap-3 rounded-2xl border-[0.5px] border-[#E5E5EA] bg-white px-3.5 py-3 transition-colors duration-150 hover:bg-surface"
+                className="flex items-center gap-3 rounded-2xl border-[0.5px] border-[#E5E5EA] bg-white px-3.5 py-3 transition-colors duration-150 hover:bg-surface lg:px-4 lg:py-4"
               >
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-surface">
-                  <Users className="size-4 text-ink-mid" />
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-surface lg:size-10">
+                  <Users className="size-4 text-ink-mid lg:size-5" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-[12px] font-bold text-ink">{jp.name}</p>
-                  <p className="truncate text-[10px] text-ink-muted">
+                  <p className="truncate text-[12px] font-bold text-ink lg:text-[14px]">{jp.name}</p>
+                  <p className="truncate text-[10px] text-ink-muted lg:text-[12px]">
                     Owned by {jp.ownerName} · {jp.memberCount} member{jp.memberCount === 1 ? "" : "s"}
                   </p>
                 </div>
