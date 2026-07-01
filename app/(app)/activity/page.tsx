@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { getActivityFeed } from "@/lib/activity";
+import { prisma } from "@/lib/prisma";
 import { formatRelativeTime } from "@/lib/formatters";
 import { ACTIVITY_ICONS } from "@/components/dashboard/ActivityFeed";
 import { AppHeader } from "@/components/layout/AppHeader";
@@ -10,7 +11,12 @@ export default async function ActivityPage() {
   if (!user) redirect("/sign-in");
   if (!user.onboardingComplete) redirect("/onboarding");
 
-  const { items } = await getActivityFeed(user.id, 1, 50);
+  const [{ items }, ownedPodCount, joinedPodCount] = await Promise.all([
+    getActivityFeed(user.id, 1, 50),
+    prisma.pod.count({ where: { ownerId: user.id } }),
+    prisma.podMember.count({ where: { userId: user.id } }),
+  ]);
+  const showPodName = ownedPodCount + joinedPodCount > 1;
 
   return (
     <div>
@@ -37,7 +43,7 @@ export default async function ActivityPage() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-xs font-semibold text-ink">{activity.title}</p>
-                  {activity.subtitle && (
+                  {activity.subtitle && showPodName && (
                     <p className="truncate text-[10px] text-ink-muted">{activity.subtitle}</p>
                   )}
                 </div>

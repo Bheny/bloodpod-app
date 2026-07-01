@@ -12,9 +12,9 @@ export default async function FeedPage() {
 
   return (
     <div>
-      <div className="border-b-[0.5px] border-[#E5E5EA] bg-white px-4 py-3.5 lg:px-6 lg:py-5">
-        <h1 className="text-[13px] font-extrabold tracking-[-0.4px] text-ink lg:text-[16px]">Feed</h1>
-        <p className="text-[9px] text-ink-muted lg:text-[11px]">
+      <div className="border-b-[0.5px] border-hairline bg-white px-4 py-3.5 lg:px-6 lg:py-5">
+        <h1 className="text-body-sm font-extrabold tracking-[-0.4px] text-ink lg:text-title">Feed</h1>
+        <p className="text-label text-ink-muted">
           Tips and articles from the BloodPod team
         </p>
       </div>

@@ -11,7 +11,7 @@ export function MemberList({ members }: { members: PodMemberView[] }) {
 
   return (
     <>
-      <div className="divide-y-[0.5px] divide-surface">
+      <div className="divide-y-[0.5px] divide-hairline">
         {members.map((member, i) => (
           <m.div
             key={member.id}

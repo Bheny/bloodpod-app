@@ -1,5 +1,25 @@
 import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { extendTailwindMerge } from "tailwind-merge";
+
+// tailwind-merge doesn't know about our custom `--text-*` type-scale tokens
+// (globals.css) and was bucketing them into the text-color conflict group,
+// silently dropping real color classes like `text-white` whenever both
+// appeared in the same cn() call. Registering them under font-size fixes it.
+const twMerge = extendTailwindMerge({
+  extend: {
+    classGroups: {
+      "font-size": [
+        "text-display",
+        "text-title-lg",
+        "text-title",
+        "text-body",
+        "text-body-sm",
+        "text-caption",
+        "text-label",
+      ],
+    },
+  },
+});
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/auth/current-user";
 import { recalculatePodStrength } from "@/lib/pod-strength";
 import { logActivity } from "@/lib/activity";
 import { findInviteByIdentifier } from "@/lib/pod-invite";
+import { isPodFull } from "@/lib/pod-limits";
 
 export async function POST(
   _request: Request,
@@ -53,6 +54,24 @@ export async function POST(
   const alreadyMember = await prisma.podMember.findUnique({
     where: { podId_userId: { podId: invite.podId, userId: user.id } },
   });
+
+  // The SHARE link/code is a standing, reusable door - unlike a DIRECT invite
+  // (a promise already made to one specific person), each new join through it
+  // is a fresh admission decision, so it's the one place the Free cap is
+  // actually enforced at accept-time.
+  if (!alreadyMember && invite.kind === "SHARE") {
+    const pod = await prisma.pod.findUnique({
+      where: { id: invite.podId },
+      include: { owner: true, _count: { select: { members: true } } },
+    });
+    const memberCount = (pod?._count.members ?? 0) + 1; // +1 for the owner
+    if (pod && isPodFull(memberCount, pod.owner.plan)) {
+      return NextResponse.json(
+        { error: "This pod is full. Ask the owner to upgrade to Pod Pro." },
+        { status: 409 },
+      );
+    }
+  }
 
   await prisma.podMember.upsert({
     where: { podId_userId: { podId: invite.podId, userId: user.id } },

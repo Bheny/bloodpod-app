@@ -63,7 +63,7 @@ export function FeedList({
       )}
 
       {!nextCursor && articles.length > 0 && (
-        <p className="mt-4 text-center text-[11px] text-ink-faint lg:text-[13px]">
+        <p className="mt-4 text-center text-label text-ink-faint lg:text-body-sm">
           You&apos;re all caught up.
         </p>
       )}

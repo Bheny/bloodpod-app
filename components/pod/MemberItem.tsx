@@ -29,7 +29,7 @@ export function MemberItem({
       ) : (
         <span
           style={{ backgroundColor: member.bgColor, color: member.textColor }}
-          className="flex size-7 shrink-0 items-center justify-center rounded-full text-[10px] font-bold lg:size-9 lg:text-[12px]"
+          className="flex size-7 shrink-0 items-center justify-center rounded-full text-label font-bold lg:size-9 lg:text-caption"
         >
           {member.initials}
         </span>
@@ -37,27 +37,27 @@ export function MemberItem({
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5">
-          <p className="truncate text-[10px] font-semibold text-ink lg:text-[13px]">{member.name}</p>
+          <p className="truncate text-label font-semibold text-ink lg:text-body-sm">{member.name}</p>
           {member.isCurrentUser ? (
-            <span className="rounded-full bg-red-light px-1.5 py-0.5 text-[8px] font-bold text-red lg:text-[10px]">
+            <span className="rounded-full bg-red-light px-1.5 py-0.5 text-label font-bold text-red">
               You
             </span>
           ) : (
             member.isOwner && (
-              <span className="rounded-full bg-surface px-1.5 py-0.5 text-[8px] font-bold text-ink-muted lg:text-[10px]">
+              <span className="rounded-full bg-surface px-1.5 py-0.5 text-label font-bold text-ink-muted">
                 Owner
               </span>
             )
           )}
         </div>
-        <p className="truncate text-[9px] text-ink-muted lg:text-[12px]">
+        <p className="truncate text-label text-ink-muted lg:text-caption">
           {member.donationCount} donation{member.donationCount === 1 ? "" : "s"} ·{" "}
           {member.isEligible ? "eligible" : "not yet eligible"}
         </p>
       </div>
 
       <p
-        className="shrink-0 text-[10px] font-extrabold lg:text-[13px]"
+        className="shrink-0 text-label font-extrabold lg:text-body-sm"
         style={{ color: member.bloodType === "O+" ? "#DD0000" : "#1C1C1E" }}
       >
         {member.bloodType ?? "—"}

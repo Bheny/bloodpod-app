@@ -11,21 +11,29 @@ import {
 import type { Activity, ActivityType } from "@prisma/client";
 import { formatRelativeTime } from "@/lib/formatters";
 
+// Only genuine urgency (BLOOD_REQUEST) gets color. Everything else stays monochrome
+// so the one thing that actually needs attention is the only thing that stands out.
 export const ACTIVITY_ICONS: Record<ActivityType, { icon: LucideIcon; bg: string; color: string }> = {
   BLOOD_REQUEST: { icon: Bell, bg: "#FFF0F0", color: "#DD0000" },
-  MEMBER_JOINED: { icon: UserPlus, bg: "#F0FDF4", color: "#166534" },
-  DONATION_LOGGED: { icon: Droplet, bg: "#F0FDF4", color: "#166534" },
-  INVITE_ACCEPTED: { icon: Check, bg: "#F0FDF4", color: "#166534" },
-  HOSPITAL_VERIFIED: { icon: Hospital, bg: "#EFF6FF", color: "#1D4ED8" },
-  BADGE_EARNED: { icon: Award, bg: "#FFFBEB", color: "#92400E" },
+  MEMBER_JOINED: { icon: UserPlus, bg: "#F2F2F2", color: "#48484A" },
+  DONATION_LOGGED: { icon: Droplet, bg: "#F2F2F2", color: "#48484A" },
+  INVITE_ACCEPTED: { icon: Check, bg: "#F2F2F2", color: "#48484A" },
+  HOSPITAL_VERIFIED: { icon: Hospital, bg: "#F2F2F2", color: "#48484A" },
+  BADGE_EARNED: { icon: Award, bg: "#F2F2F2", color: "#48484A" },
 };
 
-export function ActivityFeed({ activities }: { activities: Activity[] }) {
+export function ActivityFeed({
+  activities,
+  showPodName = true,
+}: {
+  activities: Activity[];
+  showPodName?: boolean;
+}) {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <p className="text-[13px] font-bold text-ink lg:text-[16px]">Recent activity</p>
-        <Link href="/activity" className="text-xs font-bold text-red lg:text-sm">
+        <p className="text-body-sm font-bold text-ink lg:text-title">Recent activity</p>
+        <Link href="/activity" className="text-label font-bold text-ink-mid">
           See all
         </Link>
       </div>
@@ -49,7 +57,7 @@ export function ActivityFeed({ activities }: { activities: Activity[] }) {
                 key={activity.id}
                 className={
                   i < activities.length - 1
-                    ? "flex items-center gap-3 border-b-[0.5px] border-surface px-3.5 py-3 lg:px-5 lg:py-4"
+                    ? "flex items-center gap-3 border-b-[0.5px] border-hairline px-3.5 py-3 lg:px-5 lg:py-4"
                     : "flex items-center gap-3 px-3.5 py-3 lg:px-5 lg:py-4"
                 }
               >
@@ -61,13 +69,13 @@ export function ActivityFeed({ activities }: { activities: Activity[] }) {
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-xs font-semibold text-ink lg:text-sm">{activity.title}</p>
-                  {activity.subtitle && (
-                    <p className="truncate text-[10px] text-ink-muted lg:text-[12px]">
+                  {activity.subtitle && showPodName && (
+                    <p className="truncate text-label text-ink-muted">
                       {activity.subtitle}
                     </p>
                   )}
                 </div>
-                <span className="shrink-0 text-[10px] text-ink-faint lg:text-[12px]">
+                <span className="shrink-0 text-label text-ink-faint">
                   {formatRelativeTime(activity.createdAt)}
                 </span>
               </div>

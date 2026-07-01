@@ -20,7 +20,7 @@ export function AlertBar({ request }: { request: BloodRequest & { requester: Use
         <p className="truncate text-[13px] font-bold text-white lg:text-[15px]">
           {request.requester.name ?? "Someone"} needs {formatBloodType(request.bloodType)} blood
         </p>
-        <p className="truncate text-[10px] text-white/40 lg:text-[12px]">
+        <p className="truncate text-label text-white/40 lg:text-caption">
           {request.facility} · {request.urgency.toLowerCase()}
         </p>
       </div>

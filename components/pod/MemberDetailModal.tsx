@@ -39,12 +39,12 @@ export function MemberDetailModal({
               <div className="flex items-center gap-1.5">
                 <p className="truncate text-base font-extrabold text-ink">{member.name}</p>
                 {member.isCurrentUser ? (
-                  <span className="shrink-0 rounded-full bg-red-light px-1.5 py-0.5 text-[8px] font-bold text-red">
+                  <span className="shrink-0 rounded-full bg-red-light px-1.5 py-0.5 text-label font-bold text-red">
                     You
                   </span>
                 ) : (
                   member.isOwner && (
-                    <span className="shrink-0 rounded-full bg-surface px-1.5 py-0.5 text-[8px] font-bold text-ink-muted">
+                    <span className="shrink-0 rounded-full bg-surface px-1.5 py-0.5 text-label font-bold text-ink-muted">
                       Owner
                     </span>
                   )
@@ -62,22 +62,22 @@ export function MemberDetailModal({
               >
                 {member.bloodType ?? "—"}
               </p>
-              <p className="text-[9px] text-ink-muted">Blood type</p>
+              <p className="text-label text-ink-muted">Blood type</p>
             </div>
             <div className="rounded-xl bg-surface py-3 text-center">
               <p className="text-base font-extrabold text-ink">{member.donationCount}</p>
-              <p className="text-[9px] text-ink-muted">
+              <p className="text-label text-ink-muted">
                 Donation{member.donationCount === 1 ? "" : "s"}
               </p>
             </div>
             <div className="flex flex-col items-center justify-center gap-1 rounded-xl bg-surface py-3 text-center">
               <span className="flex items-center gap-1.5">
                 <StatusDot status={statusFor(member)} />
-                <p className="text-[11px] font-extrabold text-ink">
+                <p className="text-label font-extrabold text-ink">
                   {member.isEligible ? "Eligible" : "Not yet"}
                 </p>
               </span>
-              <p className="text-[9px] text-ink-muted">Status</p>
+              <p className="text-label text-ink-muted">Status</p>
             </div>
           </div>
 

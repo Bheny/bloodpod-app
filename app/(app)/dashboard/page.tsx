@@ -12,6 +12,7 @@ import { PodSummaryCard } from "@/components/dashboard/PodSummaryCard";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
 import { LogoMark } from "@/components/ui/Logo";
+import { PodStrengthCelebrationWatcher } from "@/components/celebration/PodStrengthCelebrationWatcher";
 
 function greeting() {
   const hour = new Date().getHours();
@@ -37,12 +38,14 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between border-b-[0.5px] border-[#E5E5EA] bg-white px-[18px] py-3.5 lg:px-6 lg:py-5">
+      <PodStrengthCelebrationWatcher userId={user.id} steps={strength.steps} />
+
+      <div className="flex items-center justify-between border-b-[0.5px] border-hairline bg-white px-[18px] py-3.5 lg:px-6 lg:py-5">
         <div>
           <p className="text-[19px] font-extrabold leading-[1.1] tracking-[-0.7px] text-ink lg:text-[26px]">
             {greeting()}, {firstName}.
           </p>
-          <p className="text-[11px] font-medium text-ink-muted lg:text-[13px]">
+          <p className="text-label font-medium text-ink-muted lg:text-body-sm">
             {data.user.bloodType ?? "No blood type"} · {data.user.city ?? "No city set"} ·{" "}
             {data.user.isEligible ? "eligible" : "not yet eligible"}
           </p>
@@ -62,7 +65,7 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-2.5 px-3.5 py-3.5 lg:gap-4 lg:px-6 lg:py-6">
+      <div className="flex flex-col gap-3.5 px-3.5 py-4 lg:gap-5 lg:px-6 lg:py-6">
         {topRequest && <AlertBar request={topRequest} />}
 
         {strength.score < 100 && (
@@ -109,7 +112,10 @@ export default async function DashboardPage() {
         )}
 
         <QuickActions />
-        <ActivityFeed activities={data.recentActivity} />
+        <ActivityFeed
+          activities={data.recentActivity}
+          showPodName={(data.pod ? 1 : 0) + data.user.podsJoined > 1}
+        />
       </div>
     </div>
   );

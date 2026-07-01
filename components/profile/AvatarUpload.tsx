@@ -81,8 +81,8 @@ export function AvatarUpload({
           onChange={handleChange}
         />
       </div>
-      {uploading && <p className="text-[10px] text-ink-muted">Uploading…</p>}
-      {error && <p className="text-[10px] text-red">{error}</p>}
+      {uploading && <p className="text-label text-ink-muted">Uploading…</p>}
+      {error && <p className="text-label text-red">{error}</p>}
     </div>
   );
 }

@@ -7,6 +7,7 @@ import { PodHeader } from "@/components/pod/PodHeader";
 import { BloodTypeCoverage } from "@/components/pod/BloodTypeCoverage";
 import { MemberList } from "@/components/pod/MemberList";
 import { PodStrengthMeter } from "@/components/pod/PodStrengthMeter";
+import { PodStrengthCelebrationWatcher } from "@/components/celebration/PodStrengthCelebrationWatcher";
 
 export default async function PodPage() {
   const user = await getCurrentUser();
@@ -20,6 +21,8 @@ export default async function PodPage() {
 
   return (
     <div>
+      <PodStrengthCelebrationWatcher userId={user.id} steps={pod.strengthSteps} />
+
       <PodHeader
         podName={pod.name}
         podSlug={pod.slug}
@@ -41,8 +44,8 @@ export default async function PodPage() {
       <BloodTypeCoverage covered={pod.bloodTypesCovered} gaps={pod.bloodTypeGaps} />
 
       <div className="mt-2 flex items-center justify-between bg-white px-4 pt-3 lg:px-6 lg:pt-4">
-        <p className="text-[13px] font-bold text-ink lg:text-[16px]">Members</p>
-        <Link href="/pod/invite" className="text-xs font-bold text-red lg:text-sm">
+        <p className="text-body-sm font-bold text-ink lg:text-title">Members</p>
+        <Link href="/pod/invite" className="text-label font-bold text-red">
           + Invite
         </Link>
       </div>
@@ -60,7 +63,7 @@ export default async function PodPage() {
           </p>
           <Link
             href="/pod/invite"
-            className="mt-4 block w-full rounded-full bg-red py-3 text-[10px] font-bold text-white lg:py-3.5 lg:text-sm"
+            className="mt-4 block w-full rounded-full bg-red py-3 text-label font-bold text-white lg:py-3.5 lg:text-sm"
           >
             Invite members
           </Link>
@@ -71,7 +74,7 @@ export default async function PodPage() {
         <div className="px-4 py-3 lg:px-6 lg:py-4">
           <Link
             href="/pod/invite"
-            className="block w-full rounded-full bg-red py-3 text-center text-[10px] font-bold text-white lg:py-3.5 lg:text-sm"
+            className="block w-full rounded-full bg-red py-3 text-center text-label font-bold text-white lg:py-3.5 lg:text-sm"
           >
             + Invite members
           </Link>
@@ -80,7 +83,7 @@ export default async function PodPage() {
 
       {joinedPods.length > 0 && (
         <div className="mt-2 px-4 py-3 lg:px-6 lg:py-4">
-          <p className="text-[11px] font-bold uppercase tracking-wide text-ink-muted lg:text-[13px]">
+          <p className="text-label font-bold uppercase tracking-wide text-ink-muted lg:text-body-sm">
             Pods you&apos;ve joined
           </p>
           <div className="mt-2 flex flex-col gap-2">
@@ -88,14 +91,14 @@ export default async function PodPage() {
               <Link
                 key={jp.id}
                 href={`/pod/joined/${jp.id}`}
-                className="flex items-center gap-3 rounded-2xl border-[0.5px] border-[#E5E5EA] bg-white px-3.5 py-3 transition-colors duration-150 hover:bg-surface lg:px-4 lg:py-4"
+                className="flex items-center gap-3 rounded-2xl border-[0.5px] border-hairline bg-white px-3.5 py-3 shadow-raised transition-colors duration-150 hover:bg-surface lg:px-4 lg:py-4"
               >
                 <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-surface lg:size-10">
                   <Users className="size-4 text-ink-mid lg:size-5" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-[12px] font-bold text-ink lg:text-[14px]">{jp.name}</p>
-                  <p className="truncate text-[10px] text-ink-muted lg:text-[12px]">
+                  <p className="truncate text-caption font-bold text-ink lg:text-sm">{jp.name}</p>
+                  <p className="truncate text-label text-ink-muted">
                     Owned by {jp.ownerName} · {jp.memberCount} member{jp.memberCount === 1 ? "" : "s"}
                   </p>
                 </div>

@@ -14,16 +14,16 @@ const ACTIONS: {
     label: "Invite to pod",
     sub: "Grow your circle",
     icon: Link2,
-    iconBg: "#FFF0F0",
-    iconColor: "#DD0000",
+    iconBg: "#F2F2F2",
+    iconColor: "#48484A",
   },
   {
     href: "/passport/log",
     label: "Log donation",
     sub: "Update your passport",
     icon: Droplet,
-    iconBg: "#F0FDF4",
-    iconColor: "#166534",
+    iconBg: "#F2F2F2",
+    iconColor: "#48484A",
   },
   {
     href: "/dashboard/request",
@@ -38,15 +38,15 @@ const ACTIONS: {
     label: "Find donors",
     sub: "Search nearby",
     icon: Search,
-    iconBg: "#FFF0F0",
-    iconColor: "#DD0000",
+    iconBg: "#F2F2F2",
+    iconColor: "#48484A",
   },
 ];
 
 export function QuickActions() {
   return (
     <div>
-      <p className="text-[13px] font-bold text-ink lg:text-[16px]">Quick actions</p>
+      <p className="text-body-sm font-bold text-ink lg:text-title">Quick actions</p>
       <div className="mt-2.5 grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-3">
         {ACTIONS.map((action) => {
           const Icon = action.icon;
@@ -54,7 +54,7 @@ export function QuickActions() {
             <Link
               key={action.href}
               href={action.href}
-              className="rounded-2xl bg-white px-3 py-[13px] transition-transform duration-150 active:scale-[0.97] lg:px-4 lg:py-4"
+              className="rounded-2xl bg-white px-3 py-[13px] shadow-raised transition-transform duration-150 active:scale-[0.97] lg:px-4 lg:py-4"
             >
               <span
                 className="flex size-8 items-center justify-center rounded-xl lg:size-10"
@@ -62,10 +62,10 @@ export function QuickActions() {
               >
                 <Icon className="size-4 lg:size-5" style={{ color: action.iconColor }} />
               </span>
-              <p className="mt-2 text-xs font-bold tracking-[-0.2px] text-ink lg:text-[13px]">
+              <p className="mt-2 text-label font-bold tracking-[-0.2px] text-ink">
                 {action.label}
               </p>
-              <p className="text-[10px] text-ink-muted lg:text-[12px]">{action.sub}</p>
+              <p className="text-label text-ink-muted">{action.sub}</p>
             </Link>
           );
         })}

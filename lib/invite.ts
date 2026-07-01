@@ -14,7 +14,12 @@ function initialsFor(name: string | null) {
 
 export interface InvitePreview {
   pod: { name: string; slug: string; memberCount: number; ownerId: string };
-  inviter: { name: string | null; bloodType: string | null; donationCount: number };
+  inviter: {
+    name: string | null;
+    bloodType: string | null;
+    donationCount: number;
+    avatarUrl: string | null;
+  };
   bloodTypesCovered: string[];
   members: { initials: string; bgColor: string }[];
 }
@@ -60,6 +65,7 @@ export async function getInvitePreview(identifier: string): Promise<InvitePrevie
       name: invite.sender.name,
       bloodType: invite.sender.bloodType ? BLOOD_TYPE_LABELS[invite.sender.bloodType] : null,
       donationCount: invite.sender.donations.length,
+      avatarUrl: invite.sender.avatarUrl,
     },
     bloodTypesCovered,
     members: allUsers.slice(0, 5).map((u, i) => ({

@@ -14,7 +14,7 @@ export function EligibilityPill({
     return (
       <span
         className={cn(
-          "rounded-full bg-[#F0FDF4] px-2 py-0.5 text-[10px] font-bold text-[#166534]",
+          "rounded-full bg-[#F0FDF4] px-2 py-0.5 text-label font-bold text-[#166534]",
           className,
         )}
       >
@@ -26,7 +26,7 @@ export function EligibilityPill({
   return (
     <span
       className={cn(
-        "rounded-full bg-[#FFFBEB] px-2 py-0.5 text-[10px] font-bold text-[#92400E]",
+        "rounded-full bg-[#FFFBEB] px-2 py-0.5 text-label font-bold text-[#92400E]",
         className,
       )}
     >

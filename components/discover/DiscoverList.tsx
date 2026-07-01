@@ -66,7 +66,7 @@ export function DiscoverList({
       />
 
       <div className="px-4 py-3 lg:px-6 lg:py-5">
-        <p className="text-[11px] font-semibold text-ink-muted lg:text-[13px]">
+        <p className="text-label font-semibold text-ink-muted lg:text-body-sm">
           {loading ? "Searching..." : `${total} donor${total === 1 ? "" : "s"} found`}
         </p>
 
@@ -85,7 +85,7 @@ export function DiscoverList({
             </p>
           </div>
         ) : (
-          <div className="mt-2.5 flex flex-col gap-2 lg:grid lg:grid-cols-2 lg:gap-3">
+          <div className="mt-2.5 grid grid-cols-2 gap-2 lg:grid-cols-3 lg:gap-3">
             {donors.map((donor) => (
               <DonorCard key={donor.id} donor={donor} />
             ))}

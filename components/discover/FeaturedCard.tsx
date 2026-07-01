@@ -17,7 +17,7 @@ export function FeaturedCard({ article }: { article: Article }) {
   return (
     <Link
       href={`/feed/${article.slug}`}
-      className="block w-[230px] shrink-0 snap-start overflow-hidden rounded-2xl border-[0.5px] border-[#E5E5EA] bg-white lg:w-[280px]"
+      className="block w-[230px] shrink-0 snap-start overflow-hidden rounded-2xl border-[0.5px] border-hairline bg-white shadow-raised lg:w-[280px]"
     >
       {article.coverImageUrl ? (
         <div className="relative h-28 lg:h-36">
@@ -31,15 +31,15 @@ export function FeaturedCard({ article }: { article: Article }) {
 
       <div className="p-3 lg:p-4">
         <span
-          className="rounded-full px-2 py-0.5 text-[9px] font-bold lg:text-[11px]"
+          className="rounded-full px-2 py-0.5 text-label font-bold"
           style={{ backgroundColor: category.bg, color: category.color }}
         >
           {category.label}
         </span>
-        <p className="mt-1.5 line-clamp-2 text-[12px] font-extrabold leading-tight text-ink lg:text-[14px]">
+        <p className="mt-1.5 line-clamp-2 text-caption font-extrabold leading-tight text-ink lg:text-body-sm">
           {article.title}
         </p>
-        <p className="mt-1.5 text-[9px] text-ink-faint lg:text-[11px]">
+        <p className="mt-1.5 text-label text-ink-faint">
           {formatRelativeTime(article.publishedAt)}
         </p>
       </div>

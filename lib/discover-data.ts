@@ -1,8 +1,10 @@
-import { BloodType } from "@prisma/client";
+import { BloodType, type PassportTier } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
 import { getAvatarColor, getAvatarTextColor, getInitials } from "@/lib/formatters";
 import { haversineDistanceKm } from "@/lib/geo";
+import { calculateTier } from "@/lib/passport";
+import { canDonateTo } from "@/lib/blood-compatibility";
 
 const RESULT_LIMIT = 30;
 const CANDIDATE_LIMIT = 200;
@@ -27,12 +29,19 @@ export interface DiscoverDonor {
   nextEligible: Date | null;
   isAvailable: boolean;
   donationCount: number;
+  tier: PassportTier;
+  /** Can this donor's blood type safely go to the viewer's? Undisclosed elsewhere - purely a quiet visual cue. */
+  isCompatibleMatch: boolean;
 }
 
 export interface DiscoverResult {
   donors: DiscoverDonor[];
   total: number;
   viewer: { city: string | null; bloodType: BloodType | null; isPublic: boolean };
+}
+
+export interface DonorDetail extends DiscoverDonor {
+  memberSince: Date;
 }
 
 /** First name + last initial — never expose a donor's full name to the discover feed. */
@@ -84,6 +93,11 @@ export async function getDiscoverDonors(
       nextEligible: u.nextEligible,
       isAvailable: u.isAvailable,
       donationCount: u._count.donations,
+      tier: calculateTier(u._count.donations),
+      isCompatibleMatch:
+        u.bloodType !== null && viewer.bloodType !== null
+          ? canDonateTo(u.bloodType, viewer.bloodType)
+          : false,
     };
   });
 
@@ -99,5 +113,50 @@ export async function getDiscoverDonors(
     donors: donors.slice(0, RESULT_LIMIT),
     total: donors.length,
     viewer: { city: viewer.city, bloodType: viewer.bloodType, isPublic: viewer.isPublic },
+  };
+}
+
+/** Public profile view for a single donor - only ever exposes what the Discover list already shows. */
+export async function getDonorDetail(
+  donorId: string,
+  viewerId: string,
+): Promise<DonorDetail | null> {
+  const donor = await prisma.user.findUnique({
+    where: { id: donorId },
+    include: { _count: { select: { donations: true } } },
+  });
+  if (!donor || !donor.isPublic) return null;
+
+  const viewer = donorId === viewerId ? donor : await prisma.user.findUnique({ where: { id: viewerId } });
+  if (!viewer) return null;
+
+  const distanceKm =
+    viewer.latitude !== null &&
+    viewer.longitude !== null &&
+    donor.latitude !== null &&
+    donor.longitude !== null
+      ? haversineDistanceKm(viewer.latitude, viewer.longitude, donor.latitude, donor.longitude)
+      : null;
+
+  return {
+    id: donor.id,
+    displayName: privacyName(donor.name),
+    initials: getInitials(donor.name ?? "?"),
+    bgColor: getAvatarColor(donor.id),
+    textColor: getAvatarTextColor(donor.id),
+    avatarUrl: donor.avatarUrl,
+    bloodType: donor.bloodType ? BLOOD_TYPE_LABELS[donor.bloodType] : null,
+    city: donor.city,
+    distanceKm,
+    isEligible: donor.isEligible,
+    nextEligible: donor.nextEligible,
+    isAvailable: donor.isAvailable,
+    donationCount: donor._count.donations,
+    tier: calculateTier(donor._count.donations),
+    isCompatibleMatch:
+      donor.bloodType !== null && viewer.bloodType !== null
+        ? canDonateTo(donor.bloodType, viewer.bloodType)
+        : false,
+    memberSince: donor.createdAt,
   };
 }

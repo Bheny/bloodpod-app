@@ -11,7 +11,7 @@ export function AppHeader({
   backHref?: string;
 }) {
   return (
-    <div className="flex items-center gap-3 border-b-[0.5px] border-[#E5E5EA] bg-white px-4 py-3.5 lg:px-6 lg:py-5">
+    <div className="flex items-center gap-3 border-b-[0.5px] border-hairline bg-white px-4 py-3.5 lg:px-6 lg:py-5">
       {backHref && (
         <Link
           href={backHref}
@@ -22,8 +22,8 @@ export function AppHeader({
         </Link>
       )}
       <div>
-        <h1 className="text-[13px] font-extrabold tracking-[-0.4px] text-ink lg:text-[16px]">{title}</h1>
-        {subtitle && <p className="text-[9px] text-ink-muted lg:text-[11px]">{subtitle}</p>}
+        <h1 className="text-body-sm font-extrabold tracking-[-0.4px] text-ink lg:text-title">{title}</h1>
+        {subtitle && <p className="text-label text-ink-muted">{subtitle}</p>}
       </div>
     </div>
   );

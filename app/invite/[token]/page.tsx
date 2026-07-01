@@ -14,8 +14,9 @@ export default async function InvitePage({
   if (!preview) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-surface px-6 text-center">
-        <p className="text-base font-semibold text-ink">
-          This invite has expired or is no longer valid.
+        <p className="text-base font-semibold text-ink">This invite has run its course.</p>
+        <p className="-mt-2 text-sm text-ink-muted">
+          Ask whoever sent it for a fresh link, or start your own circle.
         </p>
         <Link href="/sign-up" className="text-sm font-semibold text-red">
           Create your own pod

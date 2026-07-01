@@ -38,9 +38,9 @@ export function JoinByCodeForm() {
   }
 
   return (
-    <div className="rounded-2xl border-[0.5px] border-[#E5E5EA] bg-white px-3.5 py-3 lg:px-5 lg:py-4">
-      <p className="text-[12px] font-bold text-ink lg:text-[14px]">Have a pod code?</p>
-      <p className="text-[10px] text-ink-muted lg:text-[12px]">
+    <div className="rounded-2xl border-[0.5px] border-hairline bg-white px-3.5 py-3 shadow-raised lg:px-5 lg:py-4">
+      <p className="text-caption font-bold text-ink lg:text-body-sm">Have a pod code?</p>
+      <p className="text-label text-ink-muted">
         Join a friend&apos;s pod with their code or link
       </p>
 

@@ -19,8 +19,8 @@ export default async function ProfilePage() {
 
   return (
     <div>
-      <div className="border-b-[0.5px] border-[#E5E5EA] bg-white px-4 py-3.5 lg:px-6 lg:py-5">
-        <h1 className="text-[13px] font-extrabold tracking-[-0.4px] text-ink lg:text-[16px]">
+      <div className="border-b-[0.5px] border-hairline bg-white px-4 py-3.5 lg:px-6 lg:py-5">
+        <h1 className="text-body-sm font-extrabold tracking-[-0.4px] text-ink lg:text-title">
           Profile
         </h1>
       </div>
@@ -42,7 +42,7 @@ export default async function ProfilePage() {
           {user.name ?? "BloodPod member"}
         </p>
         <p className="text-xs text-ink-muted lg:text-sm">{user.email}</p>
-        <p className="text-[11px] text-ink-faint lg:text-[13px]">
+        <p className="text-label text-ink-faint lg:text-body-sm">
           {user.bloodType ? BLOOD_TYPE_LABELS[user.bloodType] : "No blood type"} ·{" "}
           {user.city ?? "No city set"} · {user.plan === "PREMIUM" ? "Pod Pro" : "Free"}
         </p>
@@ -51,10 +51,10 @@ export default async function ProfilePage() {
       <div className="flex flex-col gap-2.5 px-4 pb-4 lg:px-6 lg:pb-6">
         <Link
           href="/passport"
-          className="flex items-center gap-3 rounded-2xl bg-ink px-3.5 py-3.5 lg:px-5 lg:py-4"
+          className="flex items-center gap-3 rounded-2xl bg-ink px-3.5 py-3.5 shadow-raised lg:px-5 lg:py-4"
         >
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] font-bold uppercase tracking-wide text-white/40 lg:text-[13px]">
+            <p className="text-label font-bold uppercase tracking-wide text-white/45">
               Donation passport
             </p>
             <p className="mt-1 text-sm font-extrabold text-white lg:text-base">
@@ -63,7 +63,7 @@ export default async function ProfilePage() {
               {passportData?.passport.tier ?? "STARTER"}
             </p>
           </div>
-          <span className="shrink-0 rounded-full bg-red px-3 py-2 text-[11px] font-bold text-white lg:px-4 lg:py-2.5 lg:text-[13px]">
+          <span className="shrink-0 rounded-full bg-white/10 px-3 py-2 text-label font-bold text-white">
             View Passport
           </span>
         </Link>
@@ -76,45 +76,45 @@ export default async function ProfilePage() {
 
         <Link
           href="/essentials"
-          className="flex items-center gap-2.5 rounded-2xl border-[0.5px] border-[#E5E5EA] bg-white px-3.5 py-3 lg:px-5 lg:py-4"
+          className="flex items-center gap-2.5 rounded-2xl border-[0.5px] border-hairline bg-white px-3.5 py-3 shadow-raised lg:px-5 lg:py-4"
         >
           <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-surface lg:size-10">
             <Wallet className="size-4 text-ink-mid lg:size-5" />
           </span>
-          <span className="flex-1 text-[12px] font-bold text-ink lg:text-[14px]">My Essentials</span>
+          <span className="flex-1 text-caption font-bold text-ink lg:text-body-sm">My Essentials</span>
           <ChevronRight className="size-4 text-ink-faint" />
         </Link>
 
         <Link
           href="/medical-history"
-          className="flex items-center gap-2.5 rounded-2xl border-[0.5px] border-[#E5E5EA] bg-white px-3.5 py-3 lg:px-5 lg:py-4"
+          className="flex items-center gap-2.5 rounded-2xl border-[0.5px] border-hairline bg-white px-3.5 py-3 shadow-raised lg:px-5 lg:py-4"
         >
           <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-surface lg:size-10">
             <HeartPulse className="size-4 text-ink-mid lg:size-5" />
           </span>
-          <span className="flex-1 text-[12px] font-bold text-ink lg:text-[14px]">Medical History</span>
+          <span className="flex-1 text-caption font-bold text-ink lg:text-body-sm">Medical History</span>
           <ChevronRight className="size-4 text-ink-faint" />
         </Link>
 
         <Link
           href="/profile/edit"
-          className="flex items-center gap-2.5 rounded-2xl border-[0.5px] border-[#E5E5EA] bg-white px-3.5 py-3 lg:px-5 lg:py-4"
+          className="flex items-center gap-2.5 rounded-2xl border-[0.5px] border-hairline bg-white px-3.5 py-3 shadow-raised lg:px-5 lg:py-4"
         >
           <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-surface lg:size-10">
             <Pencil className="size-4 text-ink-mid lg:size-5" />
           </span>
-          <span className="flex-1 text-[12px] font-bold text-ink lg:text-[14px]">Edit profile</span>
+          <span className="flex-1 text-caption font-bold text-ink lg:text-body-sm">Edit profile</span>
           <ChevronRight className="size-4 text-ink-faint" />
         </Link>
 
         <Link
           href="/profile/notifications"
-          className="flex items-center gap-2.5 rounded-2xl border-[0.5px] border-[#E5E5EA] bg-white px-3.5 py-3 lg:px-5 lg:py-4"
+          className="flex items-center gap-2.5 rounded-2xl border-[0.5px] border-hairline bg-white px-3.5 py-3 shadow-raised lg:px-5 lg:py-4"
         >
           <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-surface lg:size-10">
             <Bell className="size-4 text-ink-mid lg:size-5" />
           </span>
-          <span className="flex-1 text-[12px] font-bold text-ink lg:text-[14px]">Notifications</span>
+          <span className="flex-1 text-caption font-bold text-ink lg:text-body-sm">Notifications</span>
           <ChevronRight className="size-4 text-ink-faint" />
         </Link>
 

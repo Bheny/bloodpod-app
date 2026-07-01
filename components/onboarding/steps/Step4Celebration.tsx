@@ -41,9 +41,9 @@ export function Step4Celebration({
           </span>
           <span className="flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-bold"
             style={{
-              backgroundColor: "rgba(221,0,0,0.15)",
-              borderColor: "rgba(221,0,0,0.3)",
-              color: "#FF8080",
+              backgroundColor: "rgba(22,163,74,0.15)",
+              borderColor: "rgba(22,163,74,0.3)",
+              color: "#86EFAC",
             }}
           >
             <ShieldCheck className="size-3" />

@@ -28,15 +28,15 @@ export function VisibilityToggle({ initiallyPublic }: { initiallyPublic: boolean
   if (isPublic) return null;
 
   return (
-    <div className="m-3.5 flex items-center gap-3 rounded-2xl bg-red-light px-3.5 py-3 lg:mx-6 lg:mt-5 lg:px-5 lg:py-4">
-      <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white lg:size-11">
-        <Eye className="size-4 text-red lg:size-5" />
+    <div className="m-3.5 flex items-center gap-3 rounded-2xl border-[0.5px] border-hairline bg-white px-3.5 py-3 shadow-raised lg:mx-6 lg:mt-5 lg:px-5 lg:py-4">
+      <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-surface lg:size-11">
+        <Eye className="size-4 text-ink-mid lg:size-5" />
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-[12px] font-bold text-ink lg:text-[14px]">
+        <p className="text-caption font-bold text-ink lg:text-body-sm">
           You&apos;re not visible to other donors
         </p>
-        <p className="text-[10px] text-ink-mid lg:text-[12px]">
+        <p className="text-label text-ink-mid">
           Opt in so people searching nearby can find you.
         </p>
       </div>
