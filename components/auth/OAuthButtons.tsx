@@ -26,13 +26,15 @@ function GoogleIcon() {
   );
 }
 
-export function GoogleButton({ label }: { label: string }) {
+export function GoogleButton({ label, beforeRedirect }: { label: string; beforeRedirect?: () => void }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function handleClick() {
     setLoading(true);
     setError(null);
+    // The page is left for Google, so anything to remember (like a pending invite) is saved first.
+    beforeRedirect?.();
     const supabase = createClient();
     const { error: oauthError } = await supabase.auth.signInWithOAuth({
       provider: "google",

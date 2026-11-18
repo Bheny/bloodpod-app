@@ -212,7 +212,17 @@ export function SignUpForm() {
       )}
 
       <div className="mt-8">
-        <GoogleButton label="Continue with Google" />
+        <GoogleButton
+          label="Continue with Google"
+          beforeRedirect={() => {
+            // Same key the email path uses; onboarding's last step joins the Pod with it.
+            if (targetIdentifier) {
+              try {
+                localStorage.setItem("pending_invite_token", targetIdentifier);
+              } catch {}
+            }
+          }}
+        />
       </div>
 
       <div className="my-6 flex items-center gap-3 text-[13px] text-ink-faint">
