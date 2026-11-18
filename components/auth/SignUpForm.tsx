@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/Button";
 import { GoogleButton } from "@/components/auth/OAuthButtons";
 import { isStartComplete, readStartState, type StartState } from "@/lib/start-state";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
+import { addPendingInvite } from "@/lib/pending-invites";
 import type { BloodType } from "@prisma/client";
 
 interface InvitePreview {
@@ -116,9 +117,7 @@ export function SignUpForm() {
       });
     }
 
-    if (targetIdentifier) {
-      localStorage.setItem("pending_invite_token", targetIdentifier);
-    }
+    if (targetIdentifier) addPendingInvite(targetIdentifier);
 
     // With email confirmation on, there is no session yet: tell them to check their inbox
     // instead of sending them to a page that would bounce them back to sign-in.
@@ -215,12 +214,8 @@ export function SignUpForm() {
         <GoogleButton
           label="Continue with Google"
           beforeRedirect={() => {
-            // Same key the email path uses; onboarding's last step joins the Pod with it.
-            if (targetIdentifier) {
-              try {
-                localStorage.setItem("pending_invite_token", targetIdentifier);
-              } catch {}
-            }
+            // Onboarding's last step joins every saved invite.
+            if (targetIdentifier) addPendingInvite(targetIdentifier);
           }}
         />
       </div>

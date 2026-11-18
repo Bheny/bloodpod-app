@@ -14,6 +14,8 @@ import { SendAlertButton } from "@/components/dashboard/SendAlertButton";
 import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 import { LogoMark } from "@/components/ui/Logo";
 import { isAdminEmail } from "@/lib/admin/auth";
+import { getReceivedInvitations } from "@/lib/pod-invitations";
+import { PodInvitations } from "@/components/pod/PodInvitations";
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
@@ -21,7 +23,10 @@ export default async function DashboardPage() {
   if (user.hospitalId) redirect("/hospital");
   if (!user.onboardingComplete) redirect("/onboarding");
 
-  const data = await getDashboardData(user.id);
+  const [data, invitations] = await Promise.all([
+    getDashboardData(user.id),
+    getReceivedInvitations({ id: user.id, email: user.email }),
+  ]);
   if (!data) redirect("/sign-in");
 
   const memberCount = data.pod?.memberCount ?? 1;
@@ -45,6 +50,12 @@ export default async function DashboardPage() {
           <div className="order-1 lg:order-none">
             <EmergencySlot initial={data.emergencies} bloodType={data.user.bloodType} />
           </div>
+
+          {invitations.length > 0 && (
+            <div className="order-1 lg:order-none">
+              <PodInvitations invitations={invitations} />
+            </div>
+          )}
 
           <div
             className={

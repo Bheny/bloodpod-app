@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { addPendingInvite } from "@/lib/pending-invites";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { HeartHandshake } from "lucide-react";
@@ -31,7 +32,12 @@ export function InviteLanding({
   const [accepted, setAccepted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const inviterFirstName = preview.inviter.name?.split(" ")[0] ?? "Your friend";
+  // Remember every invite a visitor opens, so several can be joined once they have an account.
+  useEffect(() => {
+    if (!isAuthenticated && !isOwner) addPendingInvite(token);
+  }, [token, isAuthenticated, isOwner]);
+
+  const inviterFirstName =preview.inviter.name?.split(" ")[0] ?? "Your friend";
 
   async function handleAccept() {
     setAccepting(true);

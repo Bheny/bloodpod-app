@@ -8,6 +8,8 @@ import { isPodFull } from "@/lib/pod-limits";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { Card, CardTitle } from "@/components/ui/Card";
 import { PodGarden } from "@/components/pod/PodGarden";
+import { PodInvitations } from "@/components/pod/PodInvitations";
+import { getReceivedInvitations } from "@/lib/pod-invitations";
 import { InviteCard } from "@/components/pod/InviteCard";
 import { MemberList } from "@/components/pod/MemberList";
 import { PodReadyCard } from "@/components/dashboard/PodReadyCard";
@@ -17,7 +19,11 @@ export default async function PodPage() {
   if (!user) redirect("/sign-in");
   if (!user.onboardingComplete) redirect("/onboarding");
 
-  const [{ pod }, joinedPods] = await Promise.all([getPodData(user.id), getJoinedPods(user.id)]);
+  const [{ pod }, joinedPods, invitations] = await Promise.all([
+    getPodData(user.id),
+    getJoinedPods(user.id),
+    getReceivedInvitations({ id: user.id, email: user.email }),
+  ]);
   if (!pod) redirect("/dashboard");
 
   const shareInvite = await getOrCreateShareInvite(pod.id, user.id);
@@ -51,6 +57,12 @@ export default async function PodPage() {
 
       <div className="flex flex-col gap-3.5 px-3.5 pb-8 pt-4 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-6 lg:px-0 lg:pb-8 lg:pt-0">
         <div className="contents lg:flex lg:flex-col lg:gap-6">
+          {invitations.length > 0 && (
+            <div className="order-1 lg:order-none">
+              <PodInvitations invitations={invitations} />
+            </div>
+          )}
+
           <div className="order-2 lg:order-none">
             <PodGarden members={pod.members} covered={pod.bloodTypesCovered} gaps={pod.bloodTypeGaps} />
           </div>

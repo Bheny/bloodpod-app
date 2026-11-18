@@ -7,8 +7,8 @@ import { BellRing } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 import { PushToggle } from "@/components/pwa/PushToggle";
+import { clearPendingInvites, readPendingInvites } from "@/lib/pending-invites";
 
-const PENDING_INVITE_KEY = "pending_invite_token";
 
 export function Step7Alerts() {
   const router = useRouter();
@@ -22,11 +22,12 @@ export function Step7Alerts() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ step: 7 }),
       });
-      const pendingToken = localStorage.getItem(PENDING_INVITE_KEY);
-      if (pendingToken) {
-        await fetch(`/api/invite/${pendingToken}/accept`, { method: "POST" });
-        localStorage.removeItem(PENDING_INVITE_KEY);
+      // Join every invite they opened. Each Pod is checked on its own, so one that is
+      // full or expired does not stop the others.
+      for (const identifier of readPendingInvites()) {
+        await fetch(`/api/invite/${encodeURIComponent(identifier)}/accept`, { method: "POST" }).catch(() => {});
       }
+      clearPendingInvites();
     } catch {
       // never block the redirect to the dashboard on a network hiccup
     }
