@@ -30,6 +30,17 @@ model User {
   onboardingComplete Boolean @default(false)
   onboardingStep     Int     @default(0)
 
+  // Emergency consent + phone (verification is switched on later)
+  emergencyConsentAt DateTime?
+  phoneVerifiedAt    DateTime?
+  // Set once the donor has answered the last-donation question (even "never").
+  donationInfoAt     DateTime?
+
+  // Hospital staff accounts
+  hospitalId String?
+  hospital   Hospital? @relation(fields: [hospitalId], references: [id])
+  jobTitle   String?
+
   // Pod strength tracking
   podStrengthScore Int @default(0) // 0–100
 
@@ -53,15 +64,25 @@ model User {
   emergencyContactName  String?
   emergencyContactPhone String?
 
-  ownedPods      Pod[]          @relation("PodOwner")
-  podMemberships PodMember[]
-  donations      Donation[]
-  sentInvites    PodInvite[]    @relation("InviteSender")
-  bloodRequests  BloodRequest[] @relation("Requester")
-  activities     Activity[]
-  articles       Article[]
-  idCards        IdCard[]
-  documents      Document[]
+  ownedPods         Pod[]              @relation("PodOwner")
+  podMemberships    PodMember[]        @relation("MemberUser")
+  invitedMembers    PodMember[]        @relation("MemberInvitedBy")
+  donations         Donation[]
+  sentInvites       PodInvite[]        @relation("InviteSender")
+  bloodRequests     BloodRequest[]     @relation("Requester")
+  activities        Activity[]
+  articles          Article[]
+  idCards           IdCard[]
+  documents         Document[]
+  pushSubscriptions PushSubscription[]
+
+  // Care Pod / Case Pod
+  careProfiles     CareProfile[]     @relation("CareOwner")
+  rotaEntries      RotaEntry[]
+  subscriptions    Subscription[]
+  payments         Payment[]
+  bookings         Booking[]
+  notificationLogs NotificationLog[]
 }
 
 enum Genotype {
@@ -91,8 +112,12 @@ model PodMember {
   podId    String
   userId   String
   pod      Pod      @relation(fields: [podId], references: [id])
-  user     User     @relation(fields: [userId], references: [id])
+  user     User     @relation("MemberUser", fields: [userId], references: [id])
   joinedAt DateTime @default(now())
+
+  // Who brought this person in (the sender of the invite they used), when known.
+  invitedById String?
+  invitedBy   User?   @relation("MemberInvitedBy", fields: [invitedById], references: [id], onDelete: SetNull)
 
   @@unique([podId, userId])
 }
@@ -298,4 +323,347 @@ enum DocumentType {
   PRESCRIPTION
   LAB_RESULT
   OTHER
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+enum HospitalKind {
+  HOSPITAL
+  CLINIC
+  BLOOD_BANK
+}
+
+enum HospitalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Hospital {
+  id        String         @id @default(cuid())
+  name      String
+  kind      HospitalKind   @default(HOSPITAL)
+  city      String
+  address   String
+  phone     String
+  note      String?
+  status    HospitalStatus @default(PENDING)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  // Set when an admin approves or rejects the application.
+  reviewedAt DateTime?
+  reviewedBy String?
+  reviewNote String?
+
+  staff         User[]
+  careProfiles  CareProfile[]
+  sponsorships  Sponsorship[]
+  ledgerEntries LedgerEntry[]
+  contracts     Contract[]
+
+  @@index([status])
+}
+
+enum LedgerType {
+  INCOME
+  EXPENSE
+}
+
+enum LedgerStatus {
+  PAID
+  PENDING // invoiced or owed, not yet settled
+}
+
+// Manual finance ledger. Amounts are in pesewas (1/100 of a GH₵) to avoid float errors.
+model LedgerEntry {
+  id            String       @id @default(cuid())
+  type          LedgerType
+  status        LedgerStatus @default(PAID)
+  category      String
+  description   String?
+  amountPesewas Int
+  date          DateTime
+  invoiceNo     String?
+  hospitalId    String?
+  hospital      Hospital?    @relation(fields: [hospitalId], references: [id], onDelete: SetNull)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([date])
+  @@index([type, status])
+}
+
+enum ContractStatus {
+  ACTIVE
+  PAUSED
+  ENDED
+}
+
+// A hospital's recurring monthly subscription. Active contracts make up MRR.
+model Contract {
+  id             String         @id @default(cuid())
+  hospitalId     String
+  hospital       Hospital       @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
+  monthlyPesewas Int
+  startsAt       DateTime
+  endsAt         DateTime?
+  status         ContractStatus @default(ACTIVE)
+  notes          String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([status])
+}
+
+// Small key/value store for founder settings, such as opening cash balance.
+model AppSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Care Pod / Case Pod (B2C). Money is integer pesewas. organisationId points at
+// Hospital, which is the organisation model in this codebase.
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum ConditionType {
+  SICKLE_CELL
+  THALASSEMIA
+  DIALYSIS
+  CANCER
+  OTHER
+}
+
+// Health data. PRIVATE means only the family owner sees conditionType.
+enum ConditionVisibility {
+  PRIVATE
+  SHARED
+}
+
+enum CareKind {
+  CARE // recurring, monthly
+  CASE // planned event, one-off, 90 days
+}
+
+model CareProfile {
+  id                      String              @id @default(cuid())
+  ownerId                 String
+  owner                   User                @relation("CareOwner", fields: [ownerId], references: [id])
+  podId                   String?
+  kind                    CareKind            @default(CARE)
+  displayName             String
+  conditionType           ConditionType
+  conditionVisibility     ConditionVisibility @default(PRIVATE)
+  bloodType               BloodType
+  // Linked organisation when the hospital is on BloodPod, otherwise free text.
+  organisationId          String?
+  organisation            Hospital?           @relation(fields: [organisationId], references: [id], onDelete: SetNull)
+  hospitalName            String?
+  transfusionIntervalDays Int?
+  nextTransfusionAt       DateTime?
+  donorsNeeded            Int                 @default(2)
+  // Case Pod window: 90 days around caseTargetDate. After expiresAt the profile is read-only.
+  caseTargetDate          DateTime?
+  expiresAt               DateTime?
+  consentAt               DateTime
+  createdAt               DateTime            @default(now())
+  updatedAt               DateTime            @updatedAt
+
+  transfusionDates TransfusionDate[]
+  subscriptions    Subscription[]
+  sponsorships     Sponsorship[]
+
+  @@index([ownerId])
+  @@index([organisationId])
+}
+
+model TransfusionDate {
+  id                   String      @id @default(cuid())
+  careProfileId        String
+  careProfile          CareProfile @relation(fields: [careProfileId], references: [id], onDelete: Cascade)
+  organisationId       String?
+  scheduledFor         DateTime
+  donorsNeeded         Int         @default(2)
+  completedAt          DateTime?
+  familyReminderSentAt DateTime?
+  createdAt            DateTime    @default(now())
+
+  rota RotaEntry[]
+
+  @@index([careProfileId, scheduledFor])
+}
+
+enum RotaStatus {
+  REQUESTED
+  YES
+  NO
+  EXPIRED
+}
+
+model RotaEntry {
+  id                String          @id @default(cuid())
+  donorId           String
+  donor             User            @relation(fields: [donorId], references: [id])
+  transfusionDateId String
+  transfusionDate   TransfusionDate @relation(fields: [transfusionDateId], references: [id], onDelete: Cascade)
+  status            RotaStatus      @default(REQUESTED)
+  respondedAt       DateTime?
+  remind3dSentAt    DateTime?
+  remind1dSentAt    DateTime?
+  createdAt         DateTime        @default(now())
+
+  // A donor is asked once per date.
+  @@unique([transfusionDateId, donorId])
+  @@index([donorId])
+}
+
+enum SubscriptionPlan {
+  FREE
+  CARE
+  CASE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+  EXPIRED
+}
+
+model Subscription {
+  id                       String             @id @default(cuid())
+  userId                   String
+  user                     User               @relation(fields: [userId], references: [id])
+  careProfileId            String?
+  careProfile              CareProfile?       @relation(fields: [careProfileId], references: [id], onDelete: SetNull)
+  plan                     SubscriptionPlan
+  status                   SubscriptionStatus @default(ACTIVE)
+  // Failed or cancelled plans keep access until this date, then downgrade.
+  currentPeriodEnd         DateTime
+  paystackSubscriptionCode String?            @unique
+  createdAt                DateTime           @default(now())
+  updatedAt                DateTime           @updatedAt
+
+  @@index([userId])
+  @@index([careProfileId])
+}
+
+enum PaymentKind {
+  CARE_SUBSCRIPTION
+  CASE_ONE_OFF
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  userId            String
+  user              User          @relation(fields: [userId], references: [id])
+  careProfileId     String?
+  amountPesewas     Int
+  currency          String        @default("GHS")
+  kind              PaymentKind
+  paystackReference String        @unique
+  status            PaymentStatus @default(PENDING)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  @@index([userId])
+}
+
+enum SponsorshipStatus {
+  ACTIVE
+  ENDED
+  CANCELLED
+}
+
+model Sponsorship {
+  id             String            @id @default(cuid())
+  organisationId String
+  organisation   Hospital          @relation(fields: [organisationId], references: [id])
+  careProfileId  String
+  careProfile    CareProfile       @relation(fields: [careProfileId], references: [id])
+  startsAt       DateTime
+  endsAt         DateTime
+  status         SponsorshipStatus @default(ACTIVE)
+  createdAt      DateTime          @default(now())
+
+  @@index([organisationId, status])
+  @@index([careProfileId])
+}
+
+// Tracks notifications sent per donor so the 3 non-critical alerts a day limit can be enforced.
+model NotificationLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind      String
+  critical  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
+
+// Lab-sponsored donor perks: data model only for now.
+model Perk {
+  id           String    @id @default(cuid())
+  partnerOrgId String?
+  title        String
+  description  String
+  validUntil   DateTime?
+  eligibility  String?
+  createdAt    DateTime  @default(now())
+}
+
+model Lab {
+  id             String   @id @default(cuid())
+  organisationId String?
+  name           String
+  town           String
+  // Tests offered with price per test, in pesewas: [{ "name": "Genotype", "pricePesewas": 5000 }]
+  tests          Json
+  // The lab pays this commission to BloodPod. The user pays the lab directly.
+  commissionRate Decimal  @db.Decimal(5, 4)
+  createdAt      DateTime @default(now())
+
+  bookings Booking[]
+}
+
+enum BookingStatus {
+  REQUESTED
+  CONFIRMED
+  CANCELLED
+}
+
+model Booking {
+  id        String        @id @default(cuid())
+  userId    String
+  user      User          @relation(fields: [userId], references: [id])
+  labId     String
+  lab       Lab           @relation(fields: [labId], references: [id])
+  testName  String
+  genotype  Genotype?
+  bloodType BloodType?
+  status    BookingStatus @default(REQUESTED)
+  createdAt DateTime      @default(now())
+
+  @@index([userId])
 }

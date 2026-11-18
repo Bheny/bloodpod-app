@@ -4,13 +4,13 @@ import { useCallback, useState } from "react";
 import { AnimatePresence, m } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import type { BloodType } from "@prisma/client";
-import { Step1Hook } from "@/components/onboarding/steps/Step1Hook";
+import { Step1Welcome } from "@/components/onboarding/steps/Step1Welcome";
 import { Step2BloodType } from "@/components/onboarding/steps/Step2BloodType";
-import { Step3PodName } from "@/components/onboarding/steps/Step3PodName";
-import { Step4Celebration } from "@/components/onboarding/steps/Step4Celebration";
-import { Step5Invite } from "@/components/onboarding/steps/Step5Invite";
+import { Step3Details } from "@/components/onboarding/steps/Step3Details";
 import { Step6Location } from "@/components/onboarding/steps/Step6Location";
-import { Step7Home } from "@/components/onboarding/steps/Step7Home";
+import { Step5Consent } from "@/components/onboarding/steps/Step5Consent";
+import { PodStep } from "@/components/onboarding/steps/PodStep";
+import { Step7Alerts } from "@/components/onboarding/steps/Step7Alerts";
 
 export interface OnboardingShellProps {
   initialStep: number;
@@ -18,54 +18,77 @@ export interface OnboardingShellProps {
   bloodType: BloodType | null;
   podName: string;
   podId: string | null;
-  podSlug: string | null;
+  inviteUrl: string;
+  inviteCode: string;
+  /** Steps whose answers we already have, so they are skipped. */
+  skip: number[];
+  needPhone: boolean;
+  needDonation: boolean;
 }
 
-// Dot position N (1-5) maps to onboarding step N+1 (steps 2-6).
-// Step 1 (hook), step 4 (celebration), and step 7 (bridge) never show dots.
-const HIDE_DOTS_ON = [1, 4, 7];
-const SHOW_BACK_ON = [2, 3, 5, 6];
+// 1 welcome, 2 blood type, 3 details, 4 location, 5 consent, 6 pod, 7 alerts.
+// Progress dots cover the steps that are actually shown; the welcome screen shows none.
 
 export function OnboardingShell(props: OnboardingShellProps) {
   const [step, setStep] = useState(props.initialStep);
   const [bloodType, setBloodType] = useState<BloodType | null>(props.bloodType);
   const [podName, setPodName] = useState(props.podName);
   const [podId, setPodId] = useState(props.podId);
-  const [podSlug, setPodSlug] = useState(props.podSlug);
-  const [, setCity] = useState<string | null>(null);
 
-  const advance = useCallback((completedStep: number) => {
-    fetch("/api/onboarding/complete", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ step: completedStep }),
-    }).catch(() => {
-      // never block onboarding progress on a network hiccup
+  const firstName = props.name?.split(" ")[0] ?? null;
+
+  const skipped = props.skip;
+
+  const advance = useCallback(
+    (completedStep: number) => {
+      fetch("/api/onboarding/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ step: completedStep }),
+      }).catch(() => {
+        // never block onboarding progress on a network hiccup
+      });
+      let next = completedStep + 1;
+      while (next < 7 && skipped.includes(next)) next++;
+      setStep(next);
+    },
+    [skipped],
+  );
+
+  const goBack = useCallback(() => {
+    setStep((s) => {
+      let prev = s - 1;
+      while (prev > 1 && skipped.includes(prev)) prev--;
+      // The welcome screen is only a way in, never somewhere to go back to when skipped.
+      return skipped.includes(prev) ? s : Math.max(1, prev);
     });
-    setStep(completedStep + 1);
-  }, []);
+  }, [skipped]);
 
-  const goBack = useCallback(() => setStep((s) => Math.max(1, s - 1)), []);
-
-  const dotPosition = step - 1; // step2->1 ... step6->5
-  const showDots = !HIDE_DOTS_ON.includes(step);
-  const showBack = SHOW_BACK_ON.includes(step);
+  const visible = [2, 3, 4, 5, 6, 7].filter((n) => !skipped.includes(n));
+  const dotCount = visible.length;
+  const dotPosition = visible.indexOf(step) + 1;
+  const showDots = dotPosition > 0;
+  const showBack = dotPosition > 1 || (dotPosition === 1 && !skipped.includes(1));
 
   return (
-    <div className="relative flex min-h-screen flex-col">
+    <div className="relative mx-auto flex min-h-screen w-full max-w-[480px] flex-col">
       {showDots && (
-        <div className="absolute inset-x-0 top-3 z-10 flex justify-center gap-1.5">
-          {[1, 2, 3, 4, 5].map((dot) => (
+        <div
+          className="absolute inset-x-0 top-3 z-10 flex justify-center gap-1.5"
+          role="progressbar"
+          aria-valuemin={1}
+          aria-valuemax={dotCount}
+          aria-valuenow={dotPosition}
+          aria-label={`Step ${dotPosition} of ${dotCount}`}
+        >
+          {Array.from({ length: dotCount }, (_, i) => i + 1).map((dot) => (
             <span
               key={dot}
-              className="size-1.5 rounded-full transition-colors duration-300"
+              className="h-1.5 rounded-full transition-all duration-300"
               style={{
+                width: dot === dotPosition ? 18 : 6,
                 backgroundColor:
-                  dot < dotPosition
-                    ? "rgba(221,0,0,0.4)"
-                    : dot === dotPosition
-                      ? "#DD0000"
-                      : "#F2F2F2",
+                  dot < dotPosition ? "rgba(221,0,0,0.4)" : dot === dotPosition ? "#DD0000" : "#E5E5EA",
               }}
             />
           ))}
@@ -92,41 +115,37 @@ export function OnboardingShell(props: OnboardingShellProps) {
           transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
           className="flex flex-1 flex-col pt-12"
         >
-          {step === 1 && <Step1Hook onNext={() => advance(1)} />}
+          {step === 1 && <Step1Welcome name={props.name} onNext={() => advance(1)} />}
 
           {step === 2 && (
             <Step2BloodType value={bloodType} onChange={setBloodType} onNext={() => advance(2)} />
           )}
 
           {step === 3 && (
-            <Step3PodName
+            <Step3Details needPhone={props.needPhone} needDonation={props.needDonation} onNext={() => advance(3)} />
+          )}
+
+          {step === 4 && <Step6Location onLocated={() => {}} onNext={() => advance(4)} />}
+
+          {step === 5 && <Step5Consent onNext={() => advance(5)} />}
+
+          {step === 6 && (
+            <PodStep
               defaultName={podName}
+              firstName={firstName}
               bloodType={bloodType}
-              onCreated={(id, slug, name) => {
+              podId={podId}
+              inviteUrl={props.inviteUrl}
+              inviteCode={props.inviteCode}
+              onCreated={(id, _slug, name) => {
                 setPodId(id);
-                setPodSlug(slug);
                 setPodName(name);
               }}
-              onNext={() => advance(3)}
+              onNext={() => advance(6)}
             />
           )}
 
-          {step === 4 && (
-            <Step4Celebration
-              name={props.name}
-              bloodType={bloodType}
-              podName={podName}
-              onNext={() => advance(4)}
-            />
-          )}
-
-          {step === 5 && (
-            <Step5Invite podId={podId} podSlug={podSlug} onNext={() => advance(5)} />
-          )}
-
-          {step === 6 && <Step6Location onLocated={setCity} onNext={() => advance(6)} />}
-
-          {step === 7 && <Step7Home />}
+          {step === 7 && <Step7Alerts />}
         </m.div>
       </AnimatePresence>
     </div>

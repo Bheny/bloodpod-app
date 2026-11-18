@@ -1,17 +1,30 @@
 import { BottomNav } from "@/components/layout/BottomNav";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { AppFrame } from "@/components/layout/AppFrame";
+import { getCurrentUser } from "@/lib/auth/current-user";
+import { prisma } from "@/lib/prisma";
+import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
+import { isAdminEmail } from "@/lib/admin/auth";
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+export default async function AppLayout({ children }: { children: React.ReactNode }) {
+  const user = await getCurrentUser();
+  const pushCount = user ? await prisma.pushSubscription.count({ where: { userId: user.id } }) : 0;
+
   return (
     <div className="min-h-screen bg-surface">
-      <Sidebar />
-      <main className="pb-20 lg:pb-0 lg:pl-60">
-        <div className="lg:mx-auto lg:max-w-220 lg:px-8 lg:py-8">
-          <div className="lg:overflow-hidden lg:rounded-card lg:border-[0.5px] lg:border-[#E5E5EA] lg:shadow-sm">
-            {children}
-          </div>
-        </div>
-      </main>
+      <Sidebar
+        isAdmin={isAdminEmail(user?.email)}
+        user={
+          user
+            ? {
+                name: user.name,
+                bloodType: user.bloodType ? BLOOD_TYPE_LABELS[user.bloodType] : null,
+                hasPush: pushCount > 0,
+              }
+            : null
+        }
+      />
+      <AppFrame>{children}</AppFrame>
       <BottomNav />
     </div>
   );

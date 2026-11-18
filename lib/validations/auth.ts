@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { normalizeGhanaPhone } from "@/lib/phone";
 
 export const bloodTypeOptions = [
   { label: "A+", value: "A_POS" },
@@ -15,8 +16,11 @@ export const bloodTypeOptions = [
 export const signUpSchema = z.object({
   name: z.string().trim().min(2, "Enter your full name"),
   email: z.string().trim().email("Enter a valid email address"),
+  phone: z
+    .string()
+    .trim()
+    .refine((v) => normalizeGhanaPhone(v) !== null, "Enter a Ghana mobile number, like 024 123 4567"),
   password: z.string().min(8, "Password must be at least 8 characters"),
-  bloodType: z.string().optional(),
 });
 
 export type SignUpValues = z.infer<typeof signUpSchema>;

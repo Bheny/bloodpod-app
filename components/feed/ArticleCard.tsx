@@ -20,7 +20,7 @@ export function ArticleCard({ article }: { article: Article }) {
       className="block overflow-hidden rounded-2xl border-[0.5px] border-hairline bg-white shadow-raised transition-colors duration-150 hover:border-red"
     >
       {article.coverImageUrl ? (
-        <div className="relative h-28">
+        <div className="relative h-32 lg:h-40">
           <Image
             src={article.coverImageUrl}
             alt=""
@@ -30,7 +30,7 @@ export function ArticleCard({ article }: { article: Article }) {
           />
         </div>
       ) : (
-        <div className="flex h-28 items-center justify-center bg-ink">
+        <div className="flex h-32 items-center justify-center bg-ink lg:h-40">
           <Droplet className="size-8 text-white/15" />
         </div>
       )}

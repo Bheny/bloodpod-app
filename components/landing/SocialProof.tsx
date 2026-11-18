@@ -1,11 +1,11 @@
 const ITEMS = [
   "Built in Ghana",
-  "O+ compatible matching",
-  "SMS alerts in under 60s",
-  "Verified donation history",
-  "Free to join as a donor",
-  "Hospital partnerships",
-  "Works offline via SMS",
+  "Matched by blood type",
+  "Alerts straight to your phone",
+  "No app store needed",
+  "Free for donors, always",
+  "Never pay to be listed",
+  "Private by default",
 ];
 
 function Row() {

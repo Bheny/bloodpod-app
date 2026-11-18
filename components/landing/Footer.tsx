@@ -3,7 +3,6 @@ import { Logo } from "@/components/ui/Logo";
 
 const LINKS = [
   { label: "How it works", href: "#how-it-works" },
-  { label: "Pricing", href: "#pricing" },
   { label: "For hospitals", href: "#hospitals" },
   { label: "Privacy", href: "/privacy" },
   { label: "Terms", href: "/terms" },

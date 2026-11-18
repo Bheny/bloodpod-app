@@ -32,8 +32,8 @@ export function PassportMini({
       />
 
       <div className="relative flex items-start justify-between">
-        <span className="text-label font-bold uppercase tracking-wide text-white/45">
-          Donation passport
+        <span className="text-label font-bold uppercase tracking-wide text-white/70">
+          Blood Card
         </span>
         {verificationStatus === "VERIFIED" ? (
           <span
@@ -48,8 +48,8 @@ export function PassportMini({
             Verified
           </span>
         ) : (
-          <span className="rounded-full bg-white/8 px-2 py-0.5 text-label font-semibold text-white/50">
-            Unverified
+          <span className="rounded-full bg-white/8 px-2 py-0.5 text-label font-semibold text-white/70">
+            Self-reported
           </span>
         )}
       </div>
@@ -59,11 +59,11 @@ export function PassportMini({
           <p className="text-sm font-extrabold tracking-[-0.4px] text-white lg:text-base">
             {name ?? "You"}
           </p>
-          <p className="text-label text-white/45">{city ?? "Ghana"}</p>
+          <p className="text-label text-white/70">{city ?? "Ghana"}</p>
           <p className="mt-1 text-[38px] font-extrabold leading-none tracking-[-2px] text-red lg:text-[52px]">
             {bloodType ?? "—"}
           </p>
-          <p className="mt-1 text-label font-bold uppercase tracking-wide text-white/45">
+          <p className="mt-1 text-label font-bold uppercase tracking-wide text-white/70">
             Blood type
           </p>
         </div>
@@ -71,13 +71,13 @@ export function PassportMini({
         <div className="flex flex-col items-end gap-1.5">
           <div className="text-right">
             <p className="text-lg font-bold text-white lg:text-2xl">{donationCount}</p>
-            <p className="text-label font-bold uppercase tracking-wide text-white/45">
+            <p className="text-label font-bold uppercase tracking-wide text-white/70">
               Donation{donationCount === 1 ? "" : "s"}
             </p>
           </div>
           <div className="text-right">
             <p className="text-lg font-bold text-white lg:text-2xl">{podCount}</p>
-            <p className="text-label font-bold uppercase tracking-wide text-white/45">
+            <p className="text-label font-bold uppercase tracking-wide text-white/70">
               Pod{podCount === 1 ? "" : "s"}
             </p>
           </div>
@@ -93,13 +93,13 @@ export function PassportMini({
       <div className="relative my-3 h-px bg-white/[0.07]" />
 
       <div className="relative flex items-center justify-between">
-        <p className="text-label text-white/45">
+        <p className="text-label text-white/70">
           Next eligible{" "}
           <span className="text-white/70">
             {isEligible ? "Now" : nextEligible ? formatDate(nextEligible) : "—"}
           </span>
         </p>
-        <QrCode className="size-5 text-white/35 lg:size-6" />
+        <QrCode className="size-5 text-white/60 lg:size-6" />
       </div>
     </Link>
   );

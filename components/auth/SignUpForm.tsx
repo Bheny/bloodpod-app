@@ -3,15 +3,18 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { MailCheck } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signUpSchema, bloodTypeOptions, type SignUpValues } from "@/lib/validations/auth";
+import { signUpSchema, type SignUpValues } from "@/lib/validations/auth";
 import { createClient } from "@/lib/supabase/client";
 import { parseInviteIdentifier } from "@/lib/invite-identifier";
 import { Field, Input, PasswordInput } from "@/components/ui/Input";
-import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import { GoogleButton } from "@/components/auth/OAuthButtons";
+import { isStartComplete, readStartState, type StartState } from "@/lib/start-state";
+import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
+import type { BloodType } from "@prisma/client";
 
 interface InvitePreview {
   podName: string;
@@ -40,8 +43,18 @@ export function SignUpForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const urlInviteToken = searchParams.get("invite");
+  const fromStart = searchParams.get("from") === "start";
+  const [saved, setSaved] = useState<StartState | null>(null);
+
+  useEffect(() => {
+    const s = readStartState();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- browser-only restore
+    if (isStartComplete(s)) setSaved(s);
+  }, []);
 
   const [formError, setFormError] = useState<string | null>(null);
+  const [sentTo, setSentTo] = useState<string | null>(null);
+  const [resendState, setResendState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [showCodeField, setShowCodeField] = useState(false);
   const [codeValue, setCodeValue] = useState("");
   const [checkResult, setCheckResult] = useState<CheckResult | null>(null);
@@ -78,7 +91,11 @@ export function SignUpForm() {
     const { data, error } = await supabase.auth.signUp({
       email: values.email,
       password: values.password,
-      options: { data: { full_name: values.name } },
+      options: {
+        data: { full_name: values.name },
+        // Without this the confirmation link lands on the site root and nothing signs the person in.
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
     });
 
     if (error) {
@@ -94,7 +111,7 @@ export function SignUpForm() {
           supabaseId: data.user.id,
           email: values.email,
           name: values.name,
-          bloodType: values.bloodType,
+          phone: values.phone,
         }),
       });
     }
@@ -103,15 +120,96 @@ export function SignUpForm() {
       localStorage.setItem("pending_invite_token", targetIdentifier);
     }
 
+    // With email confirmation on, there is no session yet: tell them to check their inbox
+    // instead of sending them to a page that would bounce them back to sign-in.
+    if (!data.session) {
+      setSentTo(values.email);
+      return;
+    }
+
     router.push("/onboarding");
+  }
+
+  async function resend() {
+    if (!sentTo) return;
+    setResendState("sending");
+    const { error } = await createClient().auth.resend({
+      type: "signup",
+      email: sentTo,
+      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+    });
+    setResendState(error ? "error" : "sent");
+  }
+
+  if (sentTo) {
+    return (
+      <div className="text-center">
+        <span className="mx-auto mt-6 flex size-14 items-center justify-center rounded-full bg-red-light">
+          <MailCheck className="size-7 text-red" />
+        </span>
+        <h1 className="mt-5 text-2xl font-bold text-ink">Check your email</h1>
+        <p className="mt-2 text-sm leading-relaxed text-ink-muted">
+          We sent a confirmation link to <span className="font-semibold text-ink">{sentTo}</span>.
+          Open it to finish creating your account
+          {preview ? ` and join ${preview.podName}` : ""}.
+        </p>
+
+        <ol className="mx-auto mt-6 max-w-xs space-y-2 text-left text-sm text-ink-mid">
+          <li className="flex gap-3">
+            <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-surface text-xs font-bold">1</span>
+            Open the email from BloodPod.
+          </li>
+          <li className="flex gap-3">
+            <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-surface text-xs font-bold">2</span>
+            Tap the confirm link, ideally on this device.
+          </li>
+          <li className="flex gap-3">
+            <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-surface text-xs font-bold">3</span>
+            You&apos;ll land back here, signed in, ready to finish setup.
+          </li>
+        </ol>
+
+        <p className="mt-6 text-xs text-ink-faint">Nothing there? Check spam or promotions.</p>
+        <button
+          type="button"
+          onClick={resend}
+          disabled={resendState === "sending" || resendState === "sent"}
+          className="mt-2 text-sm font-semibold text-red disabled:text-ink-faint"
+        >
+          {resendState === "sent" ? "Sent again" : resendState === "sending" ? "Sending..." : "Resend the email"}
+        </button>
+        {resendState === "error" && <p className="mt-1 text-xs text-red">Couldn&apos;t resend. Try again in a minute.</p>}
+
+        <p className="mt-6 text-sm text-ink-mid">
+          Already confirmed?{" "}
+          <Link href="/sign-in" className="font-semibold text-red">
+            Sign in
+          </Link>
+        </p>
+      </div>
+    );
   }
 
   return (
     <div>
-      <h1 className="mt-6 text-center text-2xl font-bold text-ink">Create your account</h1>
+      <h1 className="mt-6 text-center text-2xl font-bold text-ink">
+        {saved ? "Save your Blood Card" : "Create your account"}
+      </h1>
       <p className="mt-1 text-center text-sm text-ink-muted">
-        Free forever. Build your pod in 60 seconds.
+        {saved ? "Create your free account to keep it and get alerts." : "Free for donors. About two minutes to set up."}
       </p>
+
+      {saved && fromStart && (
+        <div className="mt-5 flex items-center gap-3 rounded-xl bg-red-light px-4 py-3">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-red text-sm font-extrabold text-white">
+            {BLOOD_TYPE_LABELS[saved.bloodType as BloodType]}
+          </span>
+          <p className="text-xs leading-snug text-ink-mid">
+            <span className="block font-bold text-ink">Your answers are ready</span>
+            {saved.city}, {saved.neverDonated ? "never donated" : "last donation saved"}
+          </p>
+        </div>
+      )}
 
       <div className="mt-8">
         <GoogleButton label="Continue with Google" />
@@ -138,6 +236,18 @@ export function SignUpForm() {
           />
         </Field>
 
+        <Field label="Mobile number" id="phone" error={errors.phone?.message}>
+          <Input
+            id="phone"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            placeholder="024 123 4567"
+            {...register("phone")}
+          />
+          <p className="text-xs text-ink-muted">Shared only if you say Yes to an alert.</p>
+        </Field>
+
         <Field label="Password" id="password" error={errors.password?.message}>
           <PasswordInput
             id="password"
@@ -147,15 +257,6 @@ export function SignUpForm() {
           />
         </Field>
 
-        <Field label="Blood type" id="bloodType" error={errors.bloodType?.message}>
-          <Select id="bloodType" defaultValue="" {...register("bloodType")}>
-            {bloodTypeOptions.map((opt) => (
-              <option key={opt.label} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </Select>
-        </Field>
 
         {urlInviteToken ? (
           preview && (
@@ -208,6 +309,13 @@ export function SignUpForm() {
         Already have an account?{" "}
         <Link href="/sign-in" className="font-semibold text-red">
           Sign in
+        </Link>
+      </p>
+
+      <p className="mt-3 text-center text-sm text-ink-mid">
+        Run a hospital or blood bank?{" "}
+        <Link href="/hospital/apply" className="font-semibold text-red">
+          Apply for hospital access
         </Link>
       </p>
 

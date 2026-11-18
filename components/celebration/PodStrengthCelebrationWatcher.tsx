@@ -46,7 +46,9 @@ export function PodStrengthCelebrationWatcher({
 
     newlyComplete.forEach((s) => celebrated.add(s.id));
     writeCelebrated(userId, celebrated);
-    setQueue(newlyComplete);
+    // Deferred rather than called directly in the effect body, so this doesn't
+    // trigger a synchronous cascading render during the effect's own commit.
+    queueMicrotask(() => setQueue(newlyComplete));
   }, [userId, steps]);
 
   const current = queue[0];

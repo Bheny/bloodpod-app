@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/Button";
 const LINKS = [
   { label: "How it works", href: "#how-it-works" },
   { label: "For hospitals", href: "#hospitals" },
-  { label: "Pricing", href: "#pricing" },
+  { label: "FAQ", href: "#faq" },
 ];
 
 export function Nav() {
@@ -46,7 +46,7 @@ export function Nav() {
               Sign in
             </Link>
             <Button asChild size="sm">
-              <Link href="/sign-up">Build your pod →</Link>
+              <Link href="/start">Get started →</Link>
             </Button>
           </div>
 
@@ -90,8 +90,8 @@ export function Nav() {
                 Sign in
               </Link>
               <Button asChild size="default">
-                <Link href="/sign-up" onClick={() => setOpen(false)}>
-                  Build your pod →
+                <Link href="/start" onClick={() => setOpen(false)}>
+                  Get started →
                 </Link>
               </Button>
             </div>

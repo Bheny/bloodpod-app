@@ -15,7 +15,7 @@ export default async function DonationHistoryPage() {
   return (
     <div>
       <AppHeader title="Donation history" subtitle="All logged donations" backHref="/passport" />
-      <div className="py-3">
+      <div className="p-3.5 lg:p-6">
         <DonationHistory
           donations={data.donations}
           totalCount={data.donations.length}

@@ -1,124 +1,151 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { ChevronRight, Pencil, Bell, Wallet, HeartPulse } from "lucide-react";
+import { ChevronRight, Pencil, Bell, Wallet, HeartPulse, IdCard, MapPin, Shield, type LucideIcon } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { getPassportData } from "@/lib/passport-data";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
 import { getInitials } from "@/lib/formatters";
-import { VisibilityRow } from "@/components/profile/VisibilityRow";
+import { AppHeader } from "@/components/layout/AppHeader";
+import { Card } from "@/components/ui/Card";
 import { AvailabilityRow } from "@/components/profile/AvailabilityRow";
 import { SignOutButton } from "@/components/profile/SignOutButton";
 import { JoinByCodeForm } from "@/components/invite/JoinByCodeForm";
+import { PushToggle } from "@/components/pwa/PushToggle";
+import { isAdminEmail } from "@/lib/admin/auth";
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return <h2 className="px-1 text-caption font-bold uppercase tracking-wide text-ink-muted">{children}</h2>;
+}
+
+function LinkRow({
+  href,
+  icon: Icon,
+  label,
+  hint,
+}: {
+  href: string;
+  icon: LucideIcon;
+  label: string;
+  hint?: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="flex items-center gap-3 rounded-2xl border-[0.5px] border-hairline bg-white px-4 py-3.5 shadow-raised transition-colors hover:bg-surface"
+    >
+      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-surface">
+        <Icon className="size-5 text-ink-mid" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-body-sm font-bold text-ink">{label}</span>
+        {hint && <span className="block text-caption text-ink-muted">{hint}</span>}
+      </span>
+      <ChevronRight className="size-4 shrink-0 text-ink-faint" />
+    </Link>
+  );
+}
 
 export default async function ProfilePage() {
   const user = await getCurrentUser();
   if (!user) redirect("/sign-in");
+  if (user.hospitalId) redirect("/hospital");
   if (!user.onboardingComplete) redirect("/onboarding");
 
   const passportData = await getPassportData(user.id);
+  const donations = passportData?.passport.donationCount ?? 0;
 
   return (
     <div>
-      <div className="border-b-[0.5px] border-hairline bg-white px-4 py-3.5 lg:px-6 lg:py-5">
-        <h1 className="text-body-sm font-extrabold tracking-[-0.4px] text-ink lg:text-title">
-          Profile
-        </h1>
-      </div>
+      <AppHeader wide title="Profile" subtitle="Your details, alerts and privacy" />
 
-      <div className="flex flex-col items-center gap-2 px-4 py-6 lg:py-8">
-        {user.avatarUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element -- external Supabase Storage URL, not a local optimizable asset
-          <img
-            src={user.avatarUrl}
-            alt={user.name ?? "Profile photo"}
-            className="size-16 rounded-full object-cover lg:size-20"
-          />
-        ) : (
-          <span className="flex size-16 items-center justify-center rounded-full bg-red text-xl font-bold text-white lg:size-20 lg:text-2xl">
-            {user.name ? getInitials(user.name) : "?"}
-          </span>
-        )}
-        <p className="text-base font-extrabold text-ink lg:text-lg">
-          {user.name ?? "BloodPod member"}
-        </p>
-        <p className="text-xs text-ink-muted lg:text-sm">{user.email}</p>
-        <p className="text-label text-ink-faint lg:text-body-sm">
-          {user.bloodType ? BLOOD_TYPE_LABELS[user.bloodType] : "No blood type"} ·{" "}
-          {user.city ?? "No city set"} · {user.plan === "PREMIUM" ? "Pod Pro" : "Free"}
-        </p>
-      </div>
+      <div className="flex flex-col gap-3.5 px-3.5 pb-8 pt-4 lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-6 lg:px-0 lg:pt-0">
+        {/* Identity: first on phones, a sticky rail on desktop */}
+        <div className="order-1 flex flex-col gap-3.5 lg:order-2 lg:sticky lg:top-8 lg:gap-6">
+          <Card className="text-center">
+            {user.avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element -- external Supabase Storage URL, not a local optimizable asset
+              <img
+                src={user.avatarUrl}
+                alt={user.name ?? "Profile photo"}
+                className="mx-auto size-20 rounded-full object-cover lg:size-24"
+              />
+            ) : (
+              <span className="mx-auto flex size-20 items-center justify-center rounded-full bg-red text-2xl font-bold text-white lg:size-24 lg:text-3xl">
+                {user.name ? getInitials(user.name) : "?"}
+              </span>
+            )}
+            <p className="mt-3 text-title font-extrabold tracking-[-0.4px] text-ink lg:text-title-lg">
+              {user.name ?? "BloodPod member"}
+            </p>
+            <p className="text-caption text-ink-muted lg:text-body-sm">{user.email}</p>
 
-      <div className="flex flex-col gap-2.5 px-4 pb-4 lg:px-6 lg:pb-6">
-        <Link
-          href="/passport"
-          className="flex items-center gap-3 rounded-2xl bg-ink px-3.5 py-3.5 shadow-raised lg:px-5 lg:py-4"
-        >
-          <div className="min-w-0 flex-1">
-            <p className="text-label font-bold uppercase tracking-wide text-white/45">
-              Donation passport
-            </p>
-            <p className="mt-1 text-sm font-extrabold text-white lg:text-base">
-              {passportData?.passport.donationCount ?? 0} donation
-              {passportData?.passport.donationCount === 1 ? "" : "s"} ·{" "}
-              {passportData?.passport.tier ?? "STARTER"}
-            </p>
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+              <span className="rounded-full bg-red-light px-3 py-1 text-caption font-bold text-red">
+                {user.bloodType ? BLOOD_TYPE_LABELS[user.bloodType] : "No blood type"}
+              </span>
+              <span className="flex items-center gap-1 rounded-full bg-surface px-3 py-1 text-caption font-semibold text-ink-mid">
+                <MapPin className="size-3" /> {user.city ?? "No city set"}
+              </span>
+            </div>
+
+            <Link
+              href="/profile/edit"
+              className="mt-4 flex items-center justify-center gap-2 rounded-full bg-surface py-2.5 text-body-sm font-bold text-ink transition-colors hover:bg-hairline"
+            >
+              <Pencil className="size-4" /> Edit profile
+            </Link>
+          </Card>
+
+          <Link
+            href="/passport"
+            className="flex items-center gap-3 rounded-2xl bg-ink px-4 py-4 shadow-raised transition-transform active:scale-[0.98]"
+          >
+            <span className="min-w-0 flex-1">
+              <span className="block text-label font-bold uppercase tracking-wide text-white/70">Blood Card</span>
+              <span className="mt-1 block text-body-sm font-extrabold text-white">
+                {donations} donation{donations === 1 ? "" : "s"} logged
+              </span>
+            </span>
+            <span className="shrink-0 rounded-full bg-white/10 px-3 py-2 text-caption font-bold text-white">View</span>
+          </Link>
+
+          <div className="hidden lg:block">
+            <SignOutButton />
           </div>
-          <span className="shrink-0 rounded-full bg-white/10 px-3 py-2 text-label font-bold text-white">
-            View Passport
-          </span>
-        </Link>
+        </div>
 
-        <VisibilityRow initiallyPublic={user.isPublic} />
+        {/* Settings, grouped */}
+        <div className="order-2 flex flex-col gap-6 lg:order-1">
+          <section className="flex flex-col gap-2.5">
+            <SectionLabel>Emergency alerts</SectionLabel>
+            <PushToggle />
+            <AvailabilityRow initiallyAvailable={user.isAvailable} />
+            <LinkRow href="/profile/notifications" icon={Bell} label="Notification settings" />
+          </section>
 
-        <AvailabilityRow initiallyAvailable={user.isAvailable} />
+          <section className="flex flex-col gap-2.5">
+            <SectionLabel>Your details</SectionLabel>
+            <LinkRow href="/medical-history" icon={HeartPulse} label="Medical history" hint="Allergies, genotype, emergency contact" />
+            <LinkRow href="/essentials" icon={Wallet} label="My Essentials" hint="Cards and documents you keep handy" />
+            <LinkRow href="/passport/history" icon={IdCard} label="Donation history" />
+          </section>
 
-        <JoinByCodeForm />
+          {isAdminEmail(user.email) && (
+            <section className="flex flex-col gap-2.5">
+              <SectionLabel>Founder</SectionLabel>
+              <LinkRow href="/admin" icon={Shield} label="Admin dashboard" hint="Users, network, hospitals and finance" />
+            </section>
+          )}
 
-        <Link
-          href="/essentials"
-          className="flex items-center gap-2.5 rounded-2xl border-[0.5px] border-hairline bg-white px-3.5 py-3 shadow-raised lg:px-5 lg:py-4"
-        >
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-surface lg:size-10">
-            <Wallet className="size-4 text-ink-mid lg:size-5" />
-          </span>
-          <span className="flex-1 text-caption font-bold text-ink lg:text-body-sm">My Essentials</span>
-          <ChevronRight className="size-4 text-ink-faint" />
-        </Link>
+          <section className="flex flex-col gap-2.5">
+            <SectionLabel>Pods</SectionLabel>
+            <JoinByCodeForm />
+          </section>
 
-        <Link
-          href="/medical-history"
-          className="flex items-center gap-2.5 rounded-2xl border-[0.5px] border-hairline bg-white px-3.5 py-3 shadow-raised lg:px-5 lg:py-4"
-        >
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-surface lg:size-10">
-            <HeartPulse className="size-4 text-ink-mid lg:size-5" />
-          </span>
-          <span className="flex-1 text-caption font-bold text-ink lg:text-body-sm">Medical History</span>
-          <ChevronRight className="size-4 text-ink-faint" />
-        </Link>
-
-        <Link
-          href="/profile/edit"
-          className="flex items-center gap-2.5 rounded-2xl border-[0.5px] border-hairline bg-white px-3.5 py-3 shadow-raised lg:px-5 lg:py-4"
-        >
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-surface lg:size-10">
-            <Pencil className="size-4 text-ink-mid lg:size-5" />
-          </span>
-          <span className="flex-1 text-caption font-bold text-ink lg:text-body-sm">Edit profile</span>
-          <ChevronRight className="size-4 text-ink-faint" />
-        </Link>
-
-        <Link
-          href="/profile/notifications"
-          className="flex items-center gap-2.5 rounded-2xl border-[0.5px] border-hairline bg-white px-3.5 py-3 shadow-raised lg:px-5 lg:py-4"
-        >
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-surface lg:size-10">
-            <Bell className="size-4 text-ink-mid lg:size-5" />
-          </span>
-          <span className="flex-1 text-caption font-bold text-ink lg:text-body-sm">Notifications</span>
-          <ChevronRight className="size-4 text-ink-faint" />
-        </Link>
-
-        <SignOutButton />
+          <div className="lg:hidden">
+            <SignOutButton />
+          </div>
+        </div>
       </div>
     </div>
   );

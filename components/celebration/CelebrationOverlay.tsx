@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, m } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 import { playCelebrationChime } from "@/lib/celebration-sound";
@@ -19,18 +19,20 @@ interface ConfettiPiece {
 }
 
 function useConfettiPieces(): ConfettiPiece[] {
-  return useMemo(
-    () =>
-      Array.from({ length: CONFETTI_COUNT }, (_, id) => ({
-        id,
-        left: Math.random() * 100,
-        color: CONFETTI_COLORS[id % CONFETTI_COLORS.length],
-        delay: Math.random() * 0.25,
-        duration: 1.1 + Math.random() * 0.6,
-        rotate: Math.random() * 360,
-      })),
-    [],
+  // useState's lazy initializer (not useMemo) is the React-sanctioned place for
+  // one-time non-deterministic setup - useMemo carries no guarantee it only
+  // runs once, so calling Math.random() there is flagged as impure.
+  const [pieces] = useState<ConfettiPiece[]>(() =>
+    Array.from({ length: CONFETTI_COUNT }, (_, id) => ({
+      id,
+      left: Math.random() * 100,
+      color: CONFETTI_COLORS[id % CONFETTI_COLORS.length],
+      delay: Math.random() * 0.25,
+      duration: 1.1 + Math.random() * 0.6,
+      rotate: Math.random() * 360,
+    })),
   );
+  return pieces;
 }
 
 export function CelebrationOverlay({

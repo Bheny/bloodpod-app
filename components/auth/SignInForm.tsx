@@ -14,7 +14,7 @@ import { GoogleButton } from "@/components/auth/OAuthButtons";
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_MINUTES = 15;
 
-export function SignInForm() {
+export function SignInForm({ notice }: { notice?: string }) {
   const router = useRouter();
   const [formError, setFormError] = useState<string | null>(null);
   const [failedAttempts, setFailedAttempts] = useState(0);
@@ -61,6 +61,12 @@ export function SignInForm() {
     <div>
       <h1 className="mt-6 text-center text-2xl font-bold text-ink">Welcome back</h1>
       <p className="mt-1 text-center text-sm text-ink-muted">Sign in to your pod</p>
+
+      {notice && (
+        <p className="mt-5 rounded-xl bg-red-light px-4 py-3 text-center text-xs font-semibold leading-snug text-ink-mid">
+          {notice}
+        </p>
+      )}
 
       <div className="mt-8">
         <GoogleButton label="Continue with Google" />

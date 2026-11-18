@@ -65,7 +65,7 @@ export async function POST(
       include: { owner: true, _count: { select: { members: true } } },
     });
     const memberCount = (pod?._count.members ?? 0) + 1; // +1 for the owner
-    if (pod && isPodFull(memberCount, pod.owner.plan)) {
+    if (pod && isPodFull(memberCount)) {
       return NextResponse.json(
         { error: "This pod is full. Ask the owner to upgrade to Pod Pro." },
         { status: 409 },
@@ -75,7 +75,8 @@ export async function POST(
 
   await prisma.podMember.upsert({
     where: { podId_userId: { podId: invite.podId, userId: user.id } },
-    create: { podId: invite.podId, userId: user.id },
+    // Remember who brought this person in, so the network graph can show invite chains.
+    create: { podId: invite.podId, userId: user.id, invitedById: invite.senderId },
     update: {},
   });
 

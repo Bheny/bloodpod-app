@@ -47,7 +47,7 @@ export function FeedList({
   }, [loadMore]);
 
   return (
-    <div className="px-3.5 py-3 lg:px-6 lg:py-5">
+    <div className="px-3.5 pb-8 pt-4 lg:px-0 lg:pt-0">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4">
         {articles.map((article) => (
           <ArticleCard key={article.id} article={article} />

@@ -17,19 +17,19 @@ export function MemberItem({
     <button
       type="button"
       onClick={() => onSelect(member)}
-      className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors duration-150 hover:bg-surface lg:px-6 lg:py-4"
+      className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors duration-150 hover:bg-surface"
     >
       {member.avatarUrl ? (
         // eslint-disable-next-line @next/next/no-img-element -- external Supabase Storage URL, not a local optimizable asset
         <img
           src={member.avatarUrl}
           alt={member.name}
-          className="size-7 shrink-0 rounded-full object-cover lg:size-9"
+          className="size-9 shrink-0 rounded-full object-cover"
         />
       ) : (
         <span
           style={{ backgroundColor: member.bgColor, color: member.textColor }}
-          className="flex size-7 shrink-0 items-center justify-center rounded-full text-label font-bold lg:size-9 lg:text-caption"
+          className="flex size-9 shrink-0 items-center justify-center rounded-full text-caption font-bold"
         >
           {member.initials}
         </span>
@@ -37,7 +37,7 @@ export function MemberItem({
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5">
-          <p className="truncate text-label font-semibold text-ink lg:text-body-sm">{member.name}</p>
+          <p className="truncate text-body-sm font-semibold text-ink">{member.name}</p>
           {member.isCurrentUser ? (
             <span className="rounded-full bg-red-light px-1.5 py-0.5 text-label font-bold text-red">
               You
@@ -50,14 +50,14 @@ export function MemberItem({
             )
           )}
         </div>
-        <p className="truncate text-label text-ink-muted lg:text-caption">
+        <p className="truncate text-caption text-ink-muted">
           {member.donationCount} donation{member.donationCount === 1 ? "" : "s"} ·{" "}
           {member.isEligible ? "eligible" : "not yet eligible"}
         </p>
       </div>
 
       <p
-        className="shrink-0 text-label font-extrabold lg:text-body-sm"
+        className="shrink-0 text-body-sm font-extrabold"
         style={{ color: member.bloodType === "O+" ? "#DD0000" : "#1C1C1E" }}
       >
         {member.bloodType ?? "—"}

@@ -1,9 +1,10 @@
 "use client";
 
 import { m } from "framer-motion";
-import { ShieldCheck, QrCode } from "lucide-react";
+import { BadgeCheck, MapPin, QrCode } from "lucide-react";
 import { formatDate } from "@/lib/formatters";
 
+// The Blood Card: blood type, eligibility and verification at a glance.
 export function PassportCard({
   name,
   city,
@@ -23,83 +24,64 @@ export function PassportCard({
   nextEligible: Date | string | null;
   verificationStatus: string;
 }) {
+  const verified = verificationStatus === "VERIFIED";
+
   return (
     <m.div
-      initial={{ opacity: 0, y: 20, scale: 0.97 }}
+      initial={{ opacity: 0, y: 20, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-      className="relative mx-2.5 mt-2.5 overflow-hidden rounded-2xl bg-ink p-4.5 lg:mx-6 lg:p-7"
+      className="relative overflow-hidden rounded-card bg-ink p-5 text-white shadow-raised lg:p-8"
     >
-      <span
-        className="pointer-events-none absolute -right-6 -top-6 size-20 rounded-full lg:size-28"
-        style={{ backgroundColor: "rgba(221,0,0,0.1)" }}
-      />
+      <span className="pointer-events-none absolute -right-8 -top-8 size-32 rounded-full bg-red/10 lg:size-44" />
 
       <div className="relative flex items-start justify-between">
-        <span className="text-[8px] font-bold uppercase tracking-[2px] text-white/25 lg:text-[10px]">
-          BloodPod
+        <span className="text-label font-bold uppercase tracking-[2px] text-white/70">Blood Card</span>
+        <span
+          className={
+            verified
+              ? "flex items-center gap-1.5 rounded-full bg-[#16A34A]/20 px-3 py-1 text-caption font-bold text-[#86EFAC]"
+              : "rounded-full bg-white/10 px-3 py-1 text-caption font-semibold text-white/80"
+          }
+        >
+          {verified && <BadgeCheck className="size-3.5" />}
+          {verified ? "Lab-verified" : "Self-reported"}
         </span>
-        {verificationStatus === "VERIFIED" ? (
-          <span
-            className="flex items-center gap-1 rounded-full border px-2 py-0.5 text-[8px] font-bold lg:text-[10px]"
-            style={{
-              backgroundColor: "rgba(221,0,0,0.15)",
-              borderColor: "rgba(221,0,0,0.3)",
-              color: "#FF8080",
-            }}
-          >
-            <ShieldCheck className="size-2.5 lg:size-3" />
-            Verified
-          </span>
-        ) : (
-          <span className="rounded-full bg-white/8 px-2 py-0.5 text-[8px] font-semibold text-white/50 lg:text-[10px]">
-            Add a donation to verify
-          </span>
-        )}
       </div>
 
-      <div className="relative mt-3 flex items-end justify-between lg:mt-6">
-        <div>
-          <p className="text-sm font-extrabold tracking-[-0.4px] text-white lg:text-base">
-            {name ?? "You"}
-          </p>
-          <p className="text-[9px] text-white/30 lg:text-[11px]">{city ?? "Ghana"}</p>
-          <p className="mt-1 text-[40px] font-extrabold leading-none tracking-[-2px] text-red lg:text-[56px]">
+      <div className="relative mt-5 flex items-end justify-between gap-4 lg:mt-8">
+        <div className="min-w-0">
+          <p className="text-[56px] font-extrabold leading-none tracking-[-3px] text-red lg:text-[88px]">
             {bloodType ?? "—"}
           </p>
-          <p className="mt-1 text-[8px] font-bold uppercase tracking-[1.5px] text-white/20 lg:text-[10px]">
-            Blood type
+          <p className="mt-3 truncate text-title font-extrabold tracking-[-0.4px] lg:text-title-lg">{name ?? "You"}</p>
+          <p className="mt-0.5 flex items-center gap-1.5 text-caption text-white/70 lg:text-body-sm">
+            <MapPin className="size-3.5" /> {city ?? "Ghana"}
           </p>
         </div>
 
-        <div className="flex flex-col items-end gap-2">
-          <div className="text-right">
-            <p className="text-base font-bold text-white lg:text-xl">{donationCount}</p>
-            <p className="text-[8px] uppercase text-white/20 lg:text-[10px]">Donations</p>
+        <div className="flex shrink-0 gap-6 text-right lg:flex-col lg:gap-4">
+          <div>
+            <p className="text-title font-bold lg:text-title-lg">{donationCount}</p>
+            <p className="text-label uppercase tracking-wide text-white/70">Donation{donationCount === 1 ? "" : "s"}</p>
           </div>
-          <div className="text-right">
-            <p className="text-base font-bold text-white lg:text-xl">{podCount}</p>
-            <p className="text-[8px] uppercase text-white/20 lg:text-[10px]">Pods</p>
+          <div>
+            <p className="text-title font-bold lg:text-title-lg">{podCount}</p>
+            <p className="text-label uppercase tracking-wide text-white/70">Pod{podCount === 1 ? "" : "s"}</p>
           </div>
-          <p
-            className="text-[11px] font-bold lg:text-[13px]"
-            style={{ color: isEligible ? "#86EFAC" : "#F59E0B" }}
-          >
-            {isEligible ? "Active" : `Eligible ${nextEligible ? formatDate(nextEligible) : ""}`}
-          </p>
         </div>
       </div>
 
-      <div className="relative my-3 h-px bg-white/[0.07]" />
+      <div className="relative my-5 h-px bg-white/10 lg:my-6" />
 
       <div className="relative flex items-center justify-between">
-        <p className="text-[10px] text-white/50 lg:text-[12px]">
-          Next eligible{" "}
-          <span style={{ color: "#86EFAC" }}>
-            {isEligible ? "Now — ready to donate" : nextEligible ? formatDate(nextEligible) : "—"}
-          </span>
-        </p>
-        <QrCode className="size-5 text-white/18 lg:size-6" />
+        <div>
+          <p className="text-label uppercase tracking-wide text-white/70">Next eligible</p>
+          <p className={isEligible ? "text-body-sm font-bold text-[#86EFAC] lg:text-title" : "text-body-sm font-bold text-[#F59E0B] lg:text-title"}>
+            {isEligible ? "Now, ready to donate" : nextEligible ? formatDate(nextEligible) : "—"}
+          </p>
+        </div>
+        <QrCode className="size-7 text-white/50 lg:size-9" />
       </div>
     </m.div>
   );

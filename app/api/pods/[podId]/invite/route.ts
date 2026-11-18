@@ -24,7 +24,7 @@ export async function POST(
   if (!pod || pod.ownerId !== user.id) {
     return NextResponse.json({ error: "Pod not found" }, { status: 404 });
   }
-  if (isPodFull(pod._count.members + 1, pod.owner.plan)) {
+  if (isPodFull(pod._count.members + 1)) {
     return NextResponse.json(
       { error: "Your pod is at the Free plan's 20-member limit. Upgrade to Pod Pro to invite more." },
       { status: 402 },

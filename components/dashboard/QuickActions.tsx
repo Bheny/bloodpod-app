@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Link2, Droplet, AlertTriangle, Search, type LucideIcon } from "lucide-react";
+import { Link2, Droplet, Search, type LucideIcon } from "lucide-react";
 
 const ACTIONS: {
   href: string;
@@ -20,18 +20,10 @@ const ACTIONS: {
   {
     href: "/passport/log",
     label: "Log donation",
-    sub: "Update your passport",
+    sub: "Update your Blood Card",
     icon: Droplet,
     iconBg: "#F2F2F2",
     iconColor: "#48484A",
-  },
-  {
-    href: "/dashboard/request",
-    label: "Request blood",
-    sub: "Alert your pod",
-    icon: AlertTriangle,
-    iconBg: "#FFF0F0",
-    iconColor: "#DD0000",
   },
   {
     href: "/discover",
@@ -47,7 +39,7 @@ export function QuickActions() {
   return (
     <div>
       <p className="text-body-sm font-bold text-ink lg:text-title">Quick actions</p>
-      <div className="mt-2.5 grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-3">
+      <div className="mt-2.5 grid grid-cols-3 gap-2 lg:gap-3">
         {ACTIONS.map((action) => {
           const Icon = action.icon;
           return (

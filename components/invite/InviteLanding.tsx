@@ -181,7 +181,7 @@ export function InviteLanding({
               </Button>
             ) : (
               <Button asChild size="lg" className="mt-5 w-full">
-                <Link href={`/sign-up?invite=${token}`}>Accept invite &amp; create account</Link>
+                <Link href={`/start?invite=${encodeURIComponent(token)}`}>Accept invite &amp; get started</Link>
               </Button>
             )}
 

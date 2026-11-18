@@ -16,7 +16,7 @@ export default async function PodInvitePage() {
   const { pod, pendingInvites } = await getPodData(user.id);
   if (!pod) redirect("/dashboard");
 
-  if (isPodFull(pod.memberCount, user.plan)) {
+  if (isPodFull(pod.memberCount)) {
     return (
       <div>
         <AppHeader

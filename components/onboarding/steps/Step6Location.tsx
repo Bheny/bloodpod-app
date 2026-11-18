@@ -16,7 +16,7 @@ export function Step6Location({
   const [loading, setLoading] = useState(false);
   const [showCityInput, setShowCityInput] = useState(false);
   const [city, setCity] = useState("");
-  const [success, setSuccess] = useState<{ city: string; nearbyDonors: number } | null>(null);
+  const [success, setSuccess] = useState<{ city: string } | null>(null);
 
   async function submitLocation(body: { city: string; latitude?: number; longitude?: number }) {
     try {
@@ -26,9 +26,9 @@ export function Step6Location({
         body: JSON.stringify(body),
       });
       const data = await res.json();
-      return data as { nearbyDonors: number; nearbyHospitals: number };
+      return data as { success: boolean };
     } catch {
-      return { nearbyDonors: 0, nearbyHospitals: 3 };
+      return { success: false };
     }
   }
 
@@ -42,9 +42,9 @@ export function Step6Location({
       async (position) => {
         const { latitude, longitude } = position.coords;
         const resolvedCity = nearestCity(latitude, longitude);
-        const { nearbyDonors } = await submitLocation({ city: resolvedCity, latitude, longitude });
+        await submitLocation({ city: resolvedCity, latitude, longitude });
         setLoading(false);
-        setSuccess({ city: resolvedCity, nearbyDonors });
+        setSuccess({ city: resolvedCity });
         onLocated(resolvedCity);
         setTimeout(onNext, 1000);
       },
@@ -75,24 +75,16 @@ export function Step6Location({
         </span>
 
         <h1 className="mt-5 text-[22px] font-extrabold tracking-[-0.6px] text-ink">
-          See what&apos;s near you.
+          Help the people near you.
         </h1>
         <p className="mx-auto mt-2 max-w-[300px] text-sm text-ink-muted">
-          BloodPod uses your location to show nearby donors, hospitals, and
-          active emergencies in your area.
+          We use your location only to match you with emergencies close to you,
+          so you are not alerted about a hospital across the country.
         </p>
 
-        {success ? (
+        {success && (
           <div className="mx-auto mt-5 max-w-[280px] rounded-xl bg-surface p-3">
-            <p className="text-sm font-bold text-ink">
-              📍 {success.city} — {success.nearbyDonors} donors nearby
-            </p>
-          </div>
-        ) : (
-          <div className="mx-auto mt-5 max-w-[280px] rounded-xl bg-surface p-3 text-left">
-            <p className="text-[10px] text-ink-muted">Near you</p>
-            <p className="text-sm font-bold text-ink">See active donors nearby</p>
-            <p className="text-xs text-ink-muted">3 hospitals partnered</p>
+            <p className="text-sm font-bold text-ink">📍 {success.city}</p>
           </div>
         )}
 

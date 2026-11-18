@@ -1,8 +1,8 @@
 import { redirect, notFound } from "next/navigation";
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { getJoinedPodDetail } from "@/lib/pod-data";
+import { AppHeader } from "@/components/layout/AppHeader";
+import { Card, CardTitle } from "@/components/ui/Card";
 import { BloodTypeCoverage } from "@/components/pod/BloodTypeCoverage";
 import { MemberList } from "@/components/pod/MemberList";
 
@@ -21,40 +21,26 @@ export default async function JoinedPodPage({
 
   return (
     <div>
-      <div className="border-b-[0.5px] border-[#E5E5EA] bg-white px-4 py-4">
-        <div className="flex items-center gap-2.5">
-          <Link
-            href="/pod"
-            aria-label="Back to your pod"
-            className="flex size-8 shrink-0 items-center justify-center rounded-full bg-surface"
-          >
-            <ChevronLeft className="size-4 text-ink-mid" />
-          </Link>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-[13px] font-extrabold tracking-[-0.4px] text-ink">{pod.name}</p>
-            <p className="truncate text-[10px] text-ink-muted">Owned by {pod.ownerName}</p>
+      <AppHeader
+        wide
+        backHref="/pod"
+        title={pod.name}
+        subtitle={`Owned by ${pod.ownerName} · ${pod.memberCount} member${pod.memberCount === 1 ? "" : "s"}`}
+      />
+
+      <div className="flex flex-col gap-3.5 px-3.5 pb-8 pt-4 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-6 lg:px-0 lg:pt-0">
+        <Card className="order-2 overflow-hidden p-0 lg:order-none lg:p-0">
+          <div className="px-4 pt-4 lg:px-6 lg:pt-6">
+            <CardTitle>Members</CardTitle>
           </div>
+          <div className="mt-2 pb-2">
+            <MemberList members={pod.members} />
+          </div>
+        </Card>
+
+        <div className="order-1 lg:order-none lg:sticky lg:top-8">
+          <BloodTypeCoverage covered={pod.bloodTypesCovered} gaps={pod.bloodTypeGaps} />
         </div>
-
-        <div className="mt-3.5 grid grid-cols-2 gap-2">
-          <div className="rounded-xl bg-surface py-2.5 text-center">
-            <p className="text-base font-extrabold text-ink">{pod.memberCount}</p>
-            <p className="text-[9px] text-ink-muted">Members</p>
-          </div>
-          <div className="rounded-xl bg-surface py-2.5 text-center">
-            <p className="text-base font-extrabold text-ink">{pod.bloodTypesCovered.length}</p>
-            <p className="text-[9px] text-ink-muted">Types</p>
-          </div>
-        </div>
-      </div>
-
-      <BloodTypeCoverage covered={pod.bloodTypesCovered} gaps={pod.bloodTypeGaps} />
-
-      <div className="mt-2 bg-white px-4 pt-3">
-        <p className="text-[13px] font-bold text-ink">Members</p>
-      </div>
-      <div className="bg-white pb-2">
-        <MemberList members={pod.members} />
       </div>
     </div>
   );

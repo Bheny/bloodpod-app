@@ -80,13 +80,13 @@ export function Step2BloodType({
     <div className="flex flex-1 flex-col px-6 py-10">
       <div className="flex-1">
         <p className="text-[11px] font-bold uppercase tracking-[2px] text-red">
-          Your blood identity
+          Your blood type
         </p>
         <h1 className="mt-3 text-[22px] font-extrabold tracking-[-0.6px] text-ink">
           What&apos;s your blood type?
         </h1>
         <p className="mt-2 text-sm text-ink-muted">
-          This is the most important thing on your passport.
+          Hospitals match on this, so it is the most important thing we ask.
         </p>
 
         <div className="mt-5 grid grid-cols-2 gap-2">
@@ -166,8 +166,8 @@ export function Step2BloodType({
                 You&apos;re a universal donor.
               </h2>
               <p className="mt-2 text-sm leading-[1.6] text-ink-muted">
-                O− is the rarest and most needed blood type. Every hospital on
-                BloodPod needs you.
+                O− blood can be given to almost anyone in an emergency, so
+                your Pod will be glad to have you.
               </p>
             </m.div>
           </m.div>

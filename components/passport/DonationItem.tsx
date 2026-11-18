@@ -10,19 +10,17 @@ export interface DonationView {
 
 export function DonationItem({ donation, number }: { donation: DonationView; number: number }) {
   return (
-    <div className="flex items-center gap-3 px-3.5 py-3 lg:px-5 lg:py-4">
-      <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-[#F0FDF4] lg:size-10">
-        <Droplet className="size-4 text-[#166534] lg:size-5" />
+    <div className="flex items-center gap-3 px-4 py-3 lg:px-6 lg:py-4">
+      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#F0FDF4]">
+        <Droplet className="size-5 text-[#166534]" />
       </span>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-[10px] font-semibold text-ink lg:text-[13px]">
-          {donation.facility}
-        </p>
-        <p className="truncate text-[9px] text-ink-muted lg:text-[11px]">
-          {formatDate(donation.donatedAt)} · {donation.verified ? "verified" : "pending"}
+        <p className="truncate text-body-sm font-semibold text-ink">{donation.facility}</p>
+        <p className="truncate text-caption text-ink-muted">
+          {formatDate(donation.donatedAt)} · {donation.verified ? "confirmed by hospital" : "self-reported"}
         </p>
       </div>
-      <span className="shrink-0 text-[8px] font-bold text-red lg:text-[10px]">#{number}</span>
+      <span className="shrink-0 text-caption font-bold text-red">#{number}</span>
     </div>
   );
 }

@@ -45,7 +45,9 @@ export async function getPassportData(userId: string) {
       lastDonated,
       nextEligible,
       isEligible,
-      verificationStatus: donationCount > 0 ? "VERIFIED" : "UNVERIFIED",
+      // Lab verification needs a reviewer (not built yet). Logging your own
+      // donation does not make you verified, so everyone is self-reported for now.
+      verificationStatus: "UNVERIFIED" as "VERIFIED" | "UNVERIFIED",
       shareUrl: `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/passport/share`,
       qrCodeData: `bloodpod:${user.id}`,
     },

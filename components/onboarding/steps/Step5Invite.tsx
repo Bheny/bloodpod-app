@@ -15,11 +15,13 @@ function WhatsAppIcon() {
 
 export function Step5Invite({
   podId,
-  podSlug,
+  inviteUrl,
+  inviteCode,
   onNext,
 }: {
   podId: string | null;
-  podSlug: string | null;
+  inviteUrl: string;
+  inviteCode: string;
   onNext: () => void;
 }) {
   const [inviteSent, setInviteSent] = useState(false);
@@ -29,9 +31,8 @@ export function Step5Invite({
   const [sendingEmail, setSendingEmail] = useState(false);
   const [showSkipWarning, setShowSkipWarning] = useState(false);
 
-  const podUrl = `bloodpod.gh/pod/${podSlug ?? ""}`;
   const whatsAppText = encodeURIComponent(
-    `I just built my emergency blood network on BloodPod. If anything ever happened to me, I'd want you in my circle. Join my pod here: ${podUrl}`,
+    `I'm building a circle of people who will answer if someone needs blood, and I'd like you in it. It takes two minutes and is free. Join my Pod here: ${inviteUrl} (code ${inviteCode})`,
   );
 
   function handleWhatsApp() {
@@ -41,7 +42,7 @@ export function Step5Invite({
 
   async function handleCopy() {
     try {
-      await navigator.clipboard.writeText(podUrl);
+      await navigator.clipboard.writeText(inviteUrl);
       setCopied(true);
       setInviteSent(true);
       setTimeout(() => setCopied(false), 2000);
@@ -73,14 +74,14 @@ export function Step5Invite({
       <div className="flex-1">
         <div className="inline-flex items-center gap-2 rounded-full bg-red-light px-3 py-1.5">
           <span className="size-1.5 animate-pulse-dot rounded-full bg-[#AA0000]" />
-          <span className="text-xs font-bold text-[#AA0000]">Pod is empty</span>
+          <span className="text-xs font-bold text-[#AA0000]">Your Pod has 1 member: you</span>
         </div>
 
         <h1 className="mt-4 text-[22px] font-extrabold tracking-[-0.6px] text-ink">
-          Invite your first member.
+          Invite your first person.
         </h1>
         <p className="mt-2 text-sm text-ink-muted">
-          Your pod needs people. Without members, nobody gets the call.
+          A Pod only works with people in it. Most Pods start with someone who already trusts you. Send this to one or two now.
         </p>
 
         <button
@@ -102,7 +103,7 @@ export function Step5Invite({
           ) : (
             <>
               <Link2 className="size-4" />
-              Copy pod link
+              Copy invite link
             </>
           )}
         </button>
@@ -155,7 +156,7 @@ export function Step5Invite({
       ) : (
         <div className="rounded-card border-[0.5px] border-[#E5E5EA] bg-surface p-4 text-center">
           <p className="text-sm text-ink-mid">
-            Your pod will have no members. You can always invite later.
+            Your Pod will only have you in it for now. You can invite people any time from the Pod tab.
           </p>
           <div className="mt-3 flex gap-2">
             <Button variant="ghost" onClick={onNext} className="flex-1">

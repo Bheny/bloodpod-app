@@ -104,6 +104,43 @@ body {
   }
 }
 
+@keyframes bp-sway {
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes bp-grow {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.bp-sway {
+  transform-origin: 50% 90%;
+  animation: bp-sway 4.5s ease-in-out infinite;
+}
+
+.bp-grow {
+  animation: bp-grow 0.5s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bp-sway,
+  .bp-grow {
+    animation: none;
+  }
+}
+
 .animate-pulse-dot {
   animation: pulse-dot 2s ease-in-out infinite;
 }
@@ -126,4 +163,37 @@ body {
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+/* Admin donor map (Leaflet) */
+.bp-map-label {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  font-size: 11px;
+  font-weight: 700;
+  color: #1c1c1e;
+  white-space: nowrap;
+  text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.bp-hospital {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: #1d4ed8;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  border: 2px solid #fff;
+  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.45);
+}
+
+.bp-hospital-on {
+  outline: 3px solid #1c1c1e;
 }

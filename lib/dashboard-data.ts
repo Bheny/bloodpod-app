@@ -3,6 +3,7 @@ import { getPodData } from "@/lib/pod-data";
 import { getPassportData } from "@/lib/passport-data";
 import { getRecentActivity } from "@/lib/activity";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
+import { getOpenEmergencies } from "@/lib/emergencies";
 
 export async function getDashboardData(userId: string) {
   const user = await prisma.user.findUnique({
@@ -11,18 +12,12 @@ export async function getDashboardData(userId: string) {
   });
   if (!user) return null;
 
-  const [{ pod }, passportData, recentActivity, openRequests] = await Promise.all([
+  const [{ pod }, passportData, recentActivity, emergencies, pushCount] = await Promise.all([
     getPodData(userId),
     getPassportData(userId),
     getRecentActivity(userId, 5),
-    user.bloodType
-      ? prisma.bloodRequest.findMany({
-          where: { bloodType: user.bloodType, status: "OPEN", requesterId: { not: userId } },
-          include: { requester: true },
-          orderBy: [{ urgency: "desc" }, { createdAt: "desc" }],
-          take: 5,
-        })
-      : Promise.resolve([]),
+    getOpenEmergencies(userId, user.bloodType),
+    prisma.pushSubscription.count({ where: { userId } }),
   ]);
 
   return {
@@ -31,6 +26,8 @@ export async function getDashboardData(userId: string) {
       bloodType: user.bloodType ? BLOOD_TYPE_LABELS[user.bloodType] : null,
       city: user.city,
       isEligible: user.isEligible,
+      isAvailable: user.isAvailable,
+      hasPush: pushCount > 0,
       nextEligible: user.nextEligible,
       podStrengthScore: user.podStrengthScore,
       onboardingComplete: user.onboardingComplete,
@@ -43,6 +40,7 @@ export async function getDashboardData(userId: string) {
           name: pod.name,
           slug: pod.slug,
           memberCount: pod.memberCount,
+          readyCount: pod.members.filter((m) => m.isEligible).length,
           members: pod.members.slice(0, 5).map((m) => ({
             id: m.id,
             name: m.name,
@@ -68,7 +66,7 @@ export async function getDashboardData(userId: string) {
         }
       : null,
     recentActivity,
-    openRequests,
+    emergencies,
   };
 }
 

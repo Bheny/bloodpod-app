@@ -2,13 +2,15 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/slugify";
 import { isBloodType } from "@/lib/blood-type";
+import { normalizeGhanaPhone } from "@/lib/phone";
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { supabaseId, email, name, bloodType, avatarUrl } = body as {
+  const { supabaseId, email, name, phone, bloodType, avatarUrl } = body as {
     supabaseId?: string;
     email?: string;
     name?: string;
+    phone?: string;
     bloodType?: string;
     avatarUrl?: string;
   };
@@ -35,6 +37,7 @@ export async function POST(request: Request) {
       email,
       name,
       avatarUrl,
+      phone: phone ? (normalizeGhanaPhone(phone) ?? undefined) : undefined,
       bloodType: bloodType && isBloodType(bloodType) ? bloodType : undefined,
       ownedPods: {
         create: {

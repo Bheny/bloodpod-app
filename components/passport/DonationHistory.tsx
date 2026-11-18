@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { Droplet } from "lucide-react";
 import { DonationItem, type DonationView } from "@/components/passport/DonationItem";
+import { Card, CardTitle } from "@/components/ui/Card";
 
 export function DonationHistory({
   donations,
@@ -15,33 +17,44 @@ export function DonationHistory({
   const visible = limit ? donations.slice(0, limit) : donations;
 
   return (
-    <div className="mx-2.5 mt-4 lg:mx-6">
-      <div className="flex items-center justify-between">
-        <p className="text-[13px] font-bold text-ink lg:text-[16px]">Recent donations</p>
-        {showSeeAll && (
-          <Link href="/passport/history" className="text-xs font-bold text-red lg:text-sm">
-            See all
-          </Link>
-        )}
+    <Card className="overflow-hidden p-0 lg:p-0">
+      <div className="px-4 pt-4 lg:px-6 lg:pt-6">
+        <CardTitle
+          aside={
+            showSeeAll && donations.length > 0 ? (
+              <Link href="/passport/history" className="text-caption font-bold text-red">
+                See all
+              </Link>
+            ) : undefined
+          }
+        >
+          Recent donations
+        </CardTitle>
       </div>
 
       {visible.length === 0 ? (
-        <div className="mt-2.5 rounded-2xl bg-white p-6 text-center lg:p-10">
-          <p className="text-sm font-bold text-ink lg:text-base">No donations logged yet.</p>
-          <p className="mt-1 text-xs text-ink-muted lg:text-sm">
-            Log your first donation to activate your verified status.
+        <div className="px-4 py-10 text-center lg:px-6">
+          <span className="mx-auto flex size-11 items-center justify-center rounded-full bg-surface">
+            <Droplet className="size-5 text-ink-faint" />
+          </span>
+          <p className="mt-3 text-body-sm font-bold text-ink lg:text-title">No donations logged yet</p>
+          <p className="mx-auto mt-1 max-w-xs text-caption text-ink-muted lg:text-body-sm">
+            Log a donation and your next eligible date updates by itself.
           </p>
-          <Link href="/passport/log" className="mt-2 inline-block text-sm font-bold text-red lg:text-base">
+          <Link
+            href="/passport/log"
+            className="mt-4 inline-flex rounded-full bg-red px-6 py-3 text-body-sm font-bold text-white"
+          >
             Log a donation
           </Link>
         </div>
       ) : (
-        <div className="mt-2.5 divide-y-[0.5px] divide-surface overflow-hidden rounded-2xl bg-white">
+        <div className="mt-2 divide-y-[0.5px] divide-hairline pb-1">
           {visible.map((donation, i) => (
             <DonationItem key={donation.id} donation={donation} number={totalCount - i} />
           ))}
         </div>
       )}
-    </div>
+    </Card>
   );
 }

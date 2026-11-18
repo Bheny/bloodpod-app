@@ -21,9 +21,12 @@ export function LogoMark({ className }: { className?: string }) {
 export function Logo({
   className,
   markClassName,
+  variant = "dark",
 }: {
   className?: string;
   markClassName?: string;
+  /** "light" is for dark backgrounds. */
+  variant?: "dark" | "light";
 }) {
   return (
     <span className={cn("inline-flex items-center gap-2", className)}>
@@ -34,7 +37,7 @@ export function Logo({
       >
         <LogoMark className={markClassName} />
       </m.span>
-      <span className="text-lg font-extrabold tracking-tight text-ink">
+      <span className={cn("text-lg font-extrabold tracking-tight", variant === "light" ? "text-white" : "text-ink")}>
         Blood<span className="text-red">Pod</span>
       </span>
     </span>

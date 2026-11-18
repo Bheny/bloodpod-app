@@ -9,7 +9,7 @@ const TIERS: { id: PassportTier; name: string; range: string }[] = [
 
 export function PassportTiers({ currentTier }: { currentTier: PassportTier }) {
   return (
-    <div className="mx-2.5 flex gap-1.5 lg:mx-6 lg:gap-2.5">
+    <div className="flex gap-1.5 lg:gap-2.5">
       {TIERS.map((tier) => {
         const isCurrent = tier.id === currentTier;
         const isLegend = tier.id === "LEGEND";

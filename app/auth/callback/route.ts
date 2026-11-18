@@ -25,5 +25,7 @@ export async function GET(request: Request) {
     }
   }
 
-  return NextResponse.redirect(`${origin}/sign-in?error=oauth`);
+  // No code, or it could not be exchanged (expired, or opened in a different browser
+  // from the one that signed up). The email itself may well be confirmed already.
+  return NextResponse.redirect(`${origin}/sign-in?error=link`);
 }

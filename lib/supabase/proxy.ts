@@ -11,7 +11,11 @@ const PROTECTED_PREFIXES = [
   "/profile",
   "/essentials",
   "/medical-history",
+  "/hospital",
+  "/admin",
 ];
+// Open to the public so a hospital can apply before it has an account.
+const PUBLIC_PREFIXES = ["/hospital/apply"];
 const AUTH_ROUTES = ["/sign-in", "/sign-up"];
 
 export async function updateSession(request: NextRequest) {
@@ -40,7 +44,9 @@ export async function updateSession(request: NextRequest) {
   const user = data.user;
   const path = request.nextUrl.pathname;
 
-  const isProtected = PROTECTED_PREFIXES.some((p) => path.startsWith(p));
+  const isProtected =
+    PROTECTED_PREFIXES.some((p) => path.startsWith(p)) &&
+    !PUBLIC_PREFIXES.some((p) => path.startsWith(p));
   const isAuthRoute = AUTH_ROUTES.some((p) => path.startsWith(p));
 
   if (!user && isProtected) {
