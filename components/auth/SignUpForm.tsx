@@ -144,7 +144,7 @@ export function SignUpForm() {
     return (
       <div className="text-center">
         <span className="mx-auto mt-6 flex size-14 items-center justify-center rounded-full bg-red-light">
-          <MailCheck className="size-7 text-red" />
+          <MailCheck className="size-7 text-red-fg" />
         </span>
         <h1 className="mt-5 text-2xl font-bold text-ink">Check your email</h1>
         <p className="mt-2 text-sm leading-relaxed text-ink-muted">
@@ -173,15 +173,15 @@ export function SignUpForm() {
           type="button"
           onClick={resend}
           disabled={resendState === "sending" || resendState === "sent"}
-          className="mt-2 text-sm font-semibold text-red disabled:text-ink-faint"
+          className="mt-2 text-sm font-semibold text-red-fg disabled:text-ink-faint"
         >
           {resendState === "sent" ? "Sent again" : resendState === "sending" ? "Sending..." : "Resend the email"}
         </button>
-        {resendState === "error" && <p className="mt-1 text-xs text-red">Couldn&apos;t resend. Try again in a minute.</p>}
+        {resendState === "error" && <p className="mt-1 text-xs text-red-fg">Couldn&apos;t resend. Try again in a minute.</p>}
 
         <p className="mt-6 text-sm text-ink-mid">
           Already confirmed?{" "}
-          <Link href="/sign-in" className="font-semibold text-red">
+          <Link href="/sign-in" className="font-semibold text-red-fg">
             Sign in
           </Link>
         </p>
@@ -221,9 +221,9 @@ export function SignUpForm() {
       </div>
 
       <div className="my-6 flex items-center gap-3 text-[13px] text-ink-faint">
-        <div className="h-px flex-1 bg-[#E5E5EA]" />
+        <div className="h-px flex-1 bg-hairline" />
         or continue with email
-        <div className="h-px flex-1 bg-[#E5E5EA]" />
+        <div className="h-px flex-1 bg-hairline" />
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
@@ -265,7 +265,7 @@ export function SignUpForm() {
 
         {urlInviteToken ? (
           preview && (
-            <p className="rounded-xl bg-red-light px-3 py-2.5 text-xs font-semibold text-red">
+            <p className="rounded-xl bg-red-light px-3 py-2.5 text-xs font-semibold text-red-fg">
               You&apos;ll join {preview.podName}
               {preview.inviterName ? ` · invited by ${preview.inviterName}` : ""}
             </p>
@@ -275,7 +275,7 @@ export function SignUpForm() {
             <button
               type="button"
               onClick={() => setShowCodeField((v) => !v)}
-              className="text-sm font-semibold text-red"
+              className="text-sm font-semibold text-red-fg"
             >
               Have an invite code?
             </button>
@@ -288,7 +288,7 @@ export function SignUpForm() {
                 />
                 {checking && <p className="mt-1.5 text-xs text-ink-muted">Checking...</p>}
                 {!checking && preview && (
-                  <p className="mt-1.5 text-xs font-semibold text-red">
+                  <p className="mt-1.5 text-xs font-semibold text-red-fg">
                     You&apos;ll join {preview.podName}
                     {preview.inviterName ? ` · invited by ${preview.inviterName}` : ""} →
                   </p>
@@ -303,7 +303,7 @@ export function SignUpForm() {
           </div>
         )}
 
-        {formError && <p className="text-sm text-red">{formError}</p>}
+        {formError && <p className="text-sm text-red-fg">{formError}</p>}
 
         <Button type="submit" loading={isSubmitting} className="mt-1 w-full">
           {isSubmitting ? "Creating your account..." : "Create account"}
@@ -312,20 +312,28 @@ export function SignUpForm() {
 
       <p className="mt-6 text-center text-sm text-ink-mid">
         Already have an account?{" "}
-        <Link href="/sign-in" className="font-semibold text-red">
+        <Link href="/sign-in" className="font-semibold text-red-fg">
           Sign in
         </Link>
       </p>
 
       <p className="mt-3 text-center text-sm text-ink-mid">
         Run a hospital or blood bank?{" "}
-        <Link href="/hospital/apply" className="font-semibold text-red">
+        <Link href="/hospital/apply" className="font-semibold text-red-fg">
           Apply for hospital access
         </Link>
       </p>
 
       <p className="mt-6 text-center text-xs text-ink-faint">
-        By creating an account you agree to our Terms and Privacy Policy.
+        By creating an account you agree to our{" "}
+        <Link href="/terms" className="font-semibold text-ink-muted underline underline-offset-2" target="_blank">
+          Terms
+        </Link>{" "}
+        and{" "}
+        <Link href="/privacy" className="font-semibold text-ink-muted underline underline-offset-2" target="_blank">
+          Privacy Policy
+        </Link>
+        .
       </p>
     </div>
   );

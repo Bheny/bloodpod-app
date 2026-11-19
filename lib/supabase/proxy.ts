@@ -8,6 +8,7 @@ const PROTECTED_PREFIXES = [
   "/passport",
   "/discover",
   "/services",
+  "/upgrade",
   "/profile",
   "/essentials",
   "/medical-history",

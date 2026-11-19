@@ -85,6 +85,7 @@ model User {
   rotaEntries      RotaEntry[]
   subscriptions    Subscription[]
   payments         Payment[]
+  planInterests    PlanInterest[]
   bookings         Booking[]
   notificationLogs NotificationLog[]
 }
@@ -695,4 +696,16 @@ model Booking {
 
   @@index([userId])
   @@index([labId, status])
+}
+
+/// Someone who asked to be told when a paid plan opens. One row per person and plan.
+model PlanInterest {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan      SubscriptionPlan
+  createdAt DateTime         @default(now())
+
+  @@unique([userId, plan])
+  @@index([plan])
 }
