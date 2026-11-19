@@ -39,7 +39,7 @@ export function MemberDetailModal({
               <div className="flex items-center gap-1.5">
                 <p className="truncate text-base font-extrabold text-ink">{member.name}</p>
                 {member.isCurrentUser ? (
-                  <span className="shrink-0 rounded-full bg-red-light px-1.5 py-0.5 text-label font-bold text-red">
+                  <span className="shrink-0 rounded-full bg-red-light px-1.5 py-0.5 text-label font-bold text-red-fg">
                     You
                   </span>
                 ) : (

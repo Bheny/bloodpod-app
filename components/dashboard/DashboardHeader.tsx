@@ -24,33 +24,37 @@ export function DashboardHeader({
 }) {
   const first = name?.split(" ")[0] ?? "there";
 
+  const place = [bloodType, city].filter(Boolean).join(" · ") || "Add your blood type and city in Profile";
+
   return (
-    <header className="flex items-center justify-between gap-4 border-b-[0.5px] border-hairline bg-white px-4 py-3.5 lg:border-0 lg:bg-transparent lg:px-0 lg:pb-6 lg:pt-0">
+    <>
+    <header className="flex items-center justify-between gap-3 border-b-[0.5px] border-hairline bg-card px-4 py-3.5 lg:border-0 lg:bg-transparent lg:px-0 lg:pb-6 lg:pt-0">
       <div className="min-w-0">
-        <h1 className="truncate text-[19px] font-extrabold leading-[1.1] tracking-[-0.7px] text-ink lg:text-[30px] lg:tracking-[-1px]">
+        {/* On desktop the greeting lives here; on mobile it moves into the page below. */}
+        <h1 className="hidden truncate text-[30px] font-extrabold leading-[1.1] tracking-[-1px] text-ink lg:block">
           {greeting()}, {first}.
         </h1>
-        <p className="mt-1 truncate text-caption font-medium text-ink-muted lg:text-body-sm">
-          {[bloodType, city].filter(Boolean).join(" · ") || "Add your blood type and city in Profile"}
-        </p>
+        <p className="truncate text-body-sm font-bold text-ink lg:mt-1 lg:font-medium lg:text-ink-muted">{place}</p>
       </div>
 
       <div className="flex shrink-0 items-center gap-2">
         {isAdmin && (
           <Link
             href="/admin"
-            className="flex items-center gap-1.5 rounded-full bg-ink px-3.5 py-2.5 text-caption font-bold text-white transition-transform active:scale-95 lg:hidden"
+            aria-label="Admin"
+            title="Admin"
+            className="flex size-10 items-center justify-center rounded-full bg-panel text-white transition-transform active:scale-95 lg:hidden"
           >
-            <Shield className="size-3.5" /> Admin
+            <Shield className="size-[18px]" />
           </Link>
         )}
         <Link
           href="/profile/notifications"
           aria-label={hasEmergency ? "Notifications, 1 new emergency" : "Notifications"}
-          className="relative flex size-10 items-center justify-center rounded-full bg-surface transition-colors hover:bg-hairline lg:bg-white lg:shadow-raised"
+          className="relative flex size-10 items-center justify-center rounded-full bg-surface transition-colors hover:bg-hairline lg:bg-card lg:shadow-raised"
         >
           <Bell className="size-5 text-ink-mid" />
-          {hasEmergency && <span className="absolute right-2.5 top-2.5 size-2 rounded-full bg-red ring-2 ring-white" />}
+          {hasEmergency && <span className="absolute right-2.5 top-2.5 size-2 rounded-full bg-red ring-2 ring-card" />}
         </Link>
         <Link
           href="/profile"
@@ -61,5 +65,9 @@ export function DashboardHeader({
         </Link>
       </div>
     </header>
+    <p className="px-4 pt-4 text-[26px] font-extrabold leading-[1.1] tracking-[-0.9px] text-ink lg:hidden">
+      {greeting()}, {first}.
+    </p>
+    </>
   );
 }

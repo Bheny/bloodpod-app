@@ -70,7 +70,7 @@ export function DependableCard({
 
       {showTip && result.tip && (
         <div className="mt-4 flex gap-2.5 rounded-xl bg-red-light p-3">
-          <Lightbulb className="mt-0.5 size-4 shrink-0 text-red" />
+          <Lightbulb className="mt-0.5 size-4 shrink-0 text-red-fg" />
           <p className="text-caption text-ink lg:text-body-sm">{result.tip}</p>
         </div>
       )}

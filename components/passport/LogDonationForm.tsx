@@ -150,7 +150,7 @@ export function LogDonationForm({ defaultBloodType }: { defaultBloodType: BloodT
           />
         </Field>
 
-        {formError && <p className="text-[9px] text-red">{formError}</p>}
+        {formError && <p className="text-[9px] text-red-fg">{formError}</p>}
 
         <Button type="submit" loading={isSubmitting} size="lg" className="w-full">
           {isSubmitting ? "Recording..." : "Record donation"}
@@ -168,7 +168,7 @@ export function LogDonationForm({ defaultBloodType }: { defaultBloodType: BloodT
             initial={{ opacity: 0, scale: 0.92, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.1, ease: [0.34, 1.56, 0.64, 1] }}
-            className="mx-5 rounded-2xl bg-white p-[18px] text-center"
+            className="mx-5 rounded-2xl bg-card p-[18px] text-center"
           >
             <p className="text-2xl">🩸</p>
             <p className="mt-2 text-[13px] font-extrabold tracking-[-0.3px] text-ink">
@@ -179,13 +179,13 @@ export function LogDonationForm({ defaultBloodType }: { defaultBloodType: BloodT
             </p>
 
             {result.streak > 0 && (
-              <span className="mt-2.5 inline-flex items-center gap-1 rounded-xl bg-red-light px-2.5 py-1.5 text-[9px] font-bold text-red">
+              <span className="mt-2.5 inline-flex items-center gap-1 rounded-xl bg-red-light px-2.5 py-1.5 text-[9px] font-bold text-red-fg">
                 🔴 {result.streak}-quarter streak · keep it going
               </span>
             )}
 
             {result.tierUpgraded && (
-              <div className="mt-2.5 rounded-xl bg-ink px-2.5 py-1.5">
+              <div className="mt-2.5 rounded-xl bg-panel px-2.5 py-1.5">
                 <p className="text-[9px] font-bold text-white">
                   You&apos;ve reached {result.newTier} tier
                 </p>
@@ -205,7 +205,7 @@ export function LogDonationForm({ defaultBloodType }: { defaultBloodType: BloodT
             <button
               type="button"
               onClick={logAnother}
-              className="mt-1.5 block w-full text-[10px] font-bold text-red"
+              className="mt-1.5 block w-full text-[10px] font-bold text-red-fg"
             >
               Log another
             </button>

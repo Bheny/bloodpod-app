@@ -101,7 +101,7 @@ export function InviteCard({
           type="button"
           onClick={() => copy("code", inviteCode)}
           aria-label="Copy invite code"
-          className="flex size-9 items-center justify-center rounded-full bg-white text-ink-mid shadow-raised transition-transform active:scale-90"
+          className="flex size-9 items-center justify-center rounded-full bg-card text-ink-mid shadow-raised transition-transform active:scale-90"
         >
           {copied === "code" ? <Check className="size-4 text-[#1FA855]" /> : <Copy className="size-4" />}
         </button>

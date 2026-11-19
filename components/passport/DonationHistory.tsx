@@ -22,7 +22,7 @@ export function DonationHistory({
         <CardTitle
           aside={
             showSeeAll && donations.length > 0 ? (
-              <Link href="/passport/history" className="text-caption font-bold text-red">
+              <Link href="/passport/history" className="text-caption font-bold text-red-fg">
                 See all
               </Link>
             ) : undefined

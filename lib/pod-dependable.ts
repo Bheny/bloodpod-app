@@ -18,6 +18,10 @@ export const DEPENDABLE_WEIGHTS = {
   track: 0.2,
 } as const;
 
+/** Ready people at which the "ready" part is full. Matches the "Pod ready" rule used in the app. */
+const READY_TARGET = 3;
+/** Members at which blood-type coverage counts in full. */
+const COVERAGE_FULL_AT = 3;
 /** Members at which the size part is full. */
 const SIZE_TARGET = 10;
 /** Credit for a donation the person logged but nobody has verified. */
@@ -66,13 +70,16 @@ function labelFor(score: number) {
 function measure(people: DependablePerson[]) {
   const n = people.length;
   const readyCount = people.filter(isReady).length;
-  const ready = n === 0 ? 0 : readyCount / n;
+  // Measured against a target, not as a share of the Pod: one ready person out of one is not a
+  // dependable network, so a tiny Pod can't score full marks here.
+  const ready = Math.min(readyCount / READY_TARGET, 1);
 
-  // A recipient type is covered when someone in the Pod could give to it.
+  // A recipient type is covered when someone in the Pod could give to it. A lone universal donor
+  // technically covers every type, so coverage only counts fully once the Pod has a few people.
   const donorTypes = people.filter((p) => p.bloodType && p.isEligible).map((p) => p.bloodType as BloodType);
   const all = Object.values(BloodType);
   const coveredCount = all.filter((r) => donorTypes.some((d) => canDonateTo(d, r))).length;
-  const coverage = coveredCount / all.length;
+  const coverage = (coveredCount / all.length) * Math.min(n / COVERAGE_FULL_AT, 1);
 
   const size = Math.sqrt(Math.min(n, SIZE_TARGET) / SIZE_TARGET);
 
@@ -173,13 +180,19 @@ export function computeDependable(people: DependablePerson[]): DependableResult 
       id: "ready",
       label: "Ready members",
       value: Math.round(m.ready * 100),
-      detail: `${m.readyCount} of ${m.n} ready to respond`,
+      detail:
+        m.readyCount >= READY_TARGET
+          ? `${m.readyCount} ready to respond`
+          : `${m.readyCount} of ${READY_TARGET} ready people`,
     },
     {
       id: "coverage",
       label: "Blood-type coverage",
       value: Math.round(m.coverage * 100),
-      detail: `${m.coveredCount} of 8 types can be supplied`,
+      detail:
+        m.n < COVERAGE_FULL_AT
+          ? `${m.coveredCount} of 8 types, counts fully from ${COVERAGE_FULL_AT} people`
+          : `${m.coveredCount} of 8 types can be supplied`,
     },
     {
       id: "size",

@@ -15,7 +15,7 @@ export function NextSteps({ hasPush, memberCount }: { hasPush: boolean; memberCo
   const inviteDone = invited >= INVITE_GOAL;
 
   return (
-    <section className="rounded-2xl border-[0.5px] border-hairline bg-white p-4 shadow-raised lg:p-6">
+    <section className="rounded-2xl border-[0.5px] border-hairline bg-card p-4 shadow-raised lg:p-6">
       <p className="text-body-sm font-bold text-ink lg:text-title">Get ready</p>
       <p className="mt-0.5 text-caption text-ink-muted lg:text-body-sm">Two things make your Pod work in an emergency.</p>
 
@@ -66,7 +66,7 @@ export function NextSteps({ hasPush, memberCount }: { hasPush: boolean; memberCo
                   <span className="text-caption text-ink-muted">
                     {invited} of {INVITE_GOAL} joined
                   </span>
-                  <Link href="/pod/invite" className="flex items-center gap-0.5 text-caption font-bold text-red">
+                  <Link href="/pod/invite" className="flex items-center gap-0.5 text-caption font-bold text-red-fg">
                     Invite <ChevronRight className="size-3.5" />
                   </Link>
                 </div>

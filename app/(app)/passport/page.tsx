@@ -66,7 +66,7 @@ export default async function PassportPage() {
 
           <div className="order-5 lg:order-none">
             {/* Tiers and streaks are parked until trust and emergency response are proven. */}
-            <details className="group rounded-2xl border-[0.5px] border-hairline bg-white shadow-raised">
+            <details className="group rounded-2xl border-[0.5px] border-hairline bg-card shadow-raised">
               <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-4 lg:px-6">
                 <span>
                   <span className="block text-body-sm font-bold text-ink lg:text-title">Milestones</span>
@@ -86,8 +86,8 @@ export default async function PassportPage() {
                         <p className="text-caption text-ink-muted">{passport.streak}-quarter streak</p>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <Flame className="size-5 text-red" />
-                        <span className="text-2xl font-extrabold text-red">{passport.streak}</span>
+                        <Flame className="size-5 text-red-fg" />
+                        <span className="text-2xl font-extrabold text-red-fg">{passport.streak}</span>
                       </div>
                     </div>
 
@@ -101,7 +101,7 @@ export default async function PassportPage() {
                             className={cn(
                               "flex size-8 items-center justify-center rounded-full border text-caption",
                               isPast && "border-red bg-red text-white",
-                              isCurrent && "border-dashed border-red-mid text-red",
+                              isCurrent && "border-dashed border-red-mid text-red-fg",
                               !isPast && !isCurrent && "border-hairline bg-surface",
                             )}
                           >
@@ -112,7 +112,7 @@ export default async function PassportPage() {
                     </div>
 
                     {streakAtRisk && (
-                      <p className="mt-3 rounded-xl bg-red-light px-3 py-2 text-caption font-bold text-red">
+                      <p className="mt-3 rounded-xl bg-red-light px-3 py-2 text-caption font-bold text-red-fg">
                         Donate in {daysLeftInQuarter} day{daysLeftInQuarter === 1 ? "" : "s"} to keep your{" "}
                         {passport.streak}-quarter streak
                       </p>
@@ -131,7 +131,7 @@ export default async function PassportPage() {
                 <span
                   className={cn(
                     "flex size-10 shrink-0 items-center justify-center rounded-full",
-                    passport.isEligible ? "bg-[#F0FBF3]" : "bg-surface",
+                    passport.isEligible ? "bg-success-soft" : "bg-surface",
                   )}
                 >
                   {passport.isEligible ? (

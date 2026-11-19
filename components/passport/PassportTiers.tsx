@@ -27,7 +27,7 @@ export function PassportTiers({ currentTier }: { currentTier: PassportTier }) {
             <p
               className={cn(
                 "text-[9px] font-bold lg:text-[11px]",
-                isCurrent && !isLegend && "text-red",
+                isCurrent && !isLegend && "text-red-fg",
                 isCurrent && isLegend && "text-[#FFD700]",
                 !isCurrent && "text-ink-muted",
               )}
@@ -37,7 +37,7 @@ export function PassportTiers({ currentTier }: { currentTier: PassportTier }) {
             <p
               className={cn(
                 "text-sm font-extrabold lg:text-lg",
-                isCurrent && !isLegend && "text-red",
+                isCurrent && !isLegend && "text-red-fg",
                 isCurrent && isLegend && "text-[#FFD700]",
                 !isCurrent && "text-ink-faint",
               )}

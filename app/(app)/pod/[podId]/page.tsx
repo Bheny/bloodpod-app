@@ -57,7 +57,7 @@ export default async function PodDetailPage({ params }: { params: Promise<{ podI
             <Link
               href={`/pod/${pod.id}/settings`}
               aria-label="Pod settings"
-              className="flex size-10 items-center justify-center rounded-full bg-surface transition-colors hover:bg-hairline lg:bg-white lg:shadow-raised"
+              className="flex size-10 items-center justify-center rounded-full bg-surface transition-colors hover:bg-hairline lg:bg-card lg:shadow-raised"
             >
               <Settings className="size-4.5 text-ink-mid" />
             </Link>

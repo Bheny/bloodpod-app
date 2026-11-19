@@ -7,7 +7,9 @@ import { EmergencySlot } from "@/components/dashboard/EmergencySlot";
 import { ReadinessCard } from "@/components/dashboard/ReadinessCard";
 import { NextSteps, hasOpenNextSteps } from "@/components/dashboard/NextSteps";
 import { PassportMini } from "@/components/dashboard/PassportMini";
-import { PodReadyCard } from "@/components/dashboard/PodReadyCard";
+import { PodCarousel } from "@/components/dashboard/PodCarousel";
+import { getPodList } from "@/lib/pod-data";
+import { getPodAllowance } from "@/lib/pod-access";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
 import { SendAlertButton } from "@/components/dashboard/SendAlertButton";
@@ -24,9 +26,11 @@ export default async function DashboardPage() {
   if (user.labId) redirect("/lab");
   if (!user.onboardingComplete) redirect("/onboarding");
 
-  const [data, invitations] = await Promise.all([
+  const [data, invitations, pods, allowance] = await Promise.all([
     getDashboardData(user.id),
     getReceivedInvitations({ id: user.id, email: user.email }),
+    getPodList(user.id),
+    getPodAllowance(user.id),
   ]);
   if (!data) redirect("/sign-in");
 
@@ -102,15 +106,10 @@ export default async function DashboardPage() {
           </div>
 
           <div className="order-5 lg:order-none">
-            {data.pod ? (
-              <PodReadyCard
-                podName={data.pod.name}
-                memberCount={data.pod.memberCount}
-                readyCount={data.pod.readyCount}
-                members={data.pod.members}
-              />
+            {pods.length > 0 ? (
+              <PodCarousel pods={pods} allowance={allowance} firstName={data.user.name?.split(" ")[0] ?? null} />
             ) : (
-              <div className="rounded-2xl bg-white p-6 text-center shadow-raised">
+              <div className="rounded-2xl bg-card p-6 text-center shadow-raised">
                 <LogoMark className="mx-auto size-10 opacity-30" />
                 <p className="mt-3 text-sm font-bold text-ink">You have no Pod yet.</p>
                 <p className="mt-1 text-xs text-ink-muted">Invite people you trust to build your blood network.</p>

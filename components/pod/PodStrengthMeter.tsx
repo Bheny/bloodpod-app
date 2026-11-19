@@ -24,10 +24,10 @@ export function PodStrengthMeter({ score, steps }: PodStrengthMeterProps) {
   const nextStep = steps.find((s) => !s.complete);
 
   return (
-    <div className="rounded-card border-[0.5px] border-hairline bg-white p-4 shadow-raised lg:p-6">
+    <div className="rounded-card border-[0.5px] border-hairline bg-card p-4 shadow-raised lg:p-6">
       <div className="flex items-center justify-between">
         <p className="text-body-sm font-bold text-ink lg:text-body">Pod strength</p>
-        <p className="text-body-sm font-bold text-red lg:text-body">{score}%</p>
+        <p className="text-body-sm font-bold text-red-fg lg:text-body">{score}%</p>
       </div>
 
       <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-surface lg:mt-3 lg:h-2">

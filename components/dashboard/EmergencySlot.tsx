@@ -37,9 +37,9 @@ export function EmergencySlot({
     return (
       <section
         aria-live="polite"
-        className="flex items-center gap-4 rounded-2xl border-[0.5px] border-hairline bg-white p-4 shadow-raised lg:p-6"
+        className="flex items-center gap-4 rounded-2xl border-[0.5px] border-hairline bg-card p-4 shadow-raised lg:p-6"
       >
-        <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#F0FBF3] lg:size-12">
+        <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-success-soft lg:size-12">
           <ShieldCheck className="size-5 text-[#1FA855] lg:size-6" />
         </span>
         <div>
@@ -57,14 +57,14 @@ export function EmergencySlot({
   const critical = top.urgency === "CRITICAL";
 
   return (
-    <section aria-live="assertive" className="overflow-hidden rounded-2xl bg-ink p-4 text-white shadow-raised lg:p-6">
+    <section aria-live="assertive" className="overflow-hidden rounded-2xl bg-panel p-4 text-white shadow-raised lg:p-6">
       <div className="flex items-start gap-3 lg:gap-4">
         <m.span
           animate={{ scale: [1, 1.08, 1] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
           className="flex size-11 shrink-0 items-center justify-center rounded-full bg-red/25 lg:size-14"
         >
-          <Droplet className="size-5 text-red lg:size-7" />
+          <Droplet className="size-5 text-red-fg lg:size-7" />
         </m.span>
 
         <div className="min-w-0 flex-1">

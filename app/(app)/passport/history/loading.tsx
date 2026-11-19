@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 export default function DonationHistoryLoading() {
   return (
     <div>
-      <div className="flex items-center gap-3 border-b-[0.5px] border-[#E5E5EA] bg-white px-4 py-3.5">
+      <div className="flex items-center gap-3 border-b-[0.5px] border-hairline bg-card px-4 py-3.5">
         <Skeleton className="size-[22px] rounded-full" />
         <div>
           <Skeleton className="h-3.5 w-32" />
@@ -11,7 +11,7 @@ export default function DonationHistoryLoading() {
         </div>
       </div>
 
-      <div className="m-3.5 divide-y-[0.5px] divide-surface overflow-hidden rounded-2xl bg-white">
+      <div className="m-3.5 divide-y-[0.5px] divide-surface overflow-hidden rounded-2xl bg-card">
         {[0, 1, 2, 3, 4].map((i) => (
           <div key={i} className="flex items-center gap-3 px-3.5 py-3">
             <Skeleton className="size-8 rounded-xl" />

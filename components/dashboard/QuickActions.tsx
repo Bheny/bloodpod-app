@@ -14,24 +14,24 @@ const ACTIONS: {
     label: "Invite to pod",
     sub: "Grow your circle",
     icon: Link2,
-    iconBg: "#F2F2F2",
-    iconColor: "#48484A",
+    iconBg: "var(--color-fill)",
+    iconColor: "var(--color-ink-mid)",
   },
   {
     href: "/passport/log",
     label: "Log donation",
     sub: "Update your Blood Card",
     icon: Droplet,
-    iconBg: "#F2F2F2",
-    iconColor: "#48484A",
+    iconBg: "var(--color-fill)",
+    iconColor: "var(--color-ink-mid)",
   },
   {
     href: "/discover",
     label: "Find donors",
     sub: "Search nearby",
     icon: Search,
-    iconBg: "#F2F2F2",
-    iconColor: "#48484A",
+    iconBg: "var(--color-fill)",
+    iconColor: "var(--color-ink-mid)",
   },
 ];
 
@@ -46,7 +46,7 @@ export function QuickActions() {
             <Link
               key={action.href}
               href={action.href}
-              className="rounded-2xl bg-white px-3 py-[13px] shadow-raised transition-transform duration-150 active:scale-[0.97] lg:px-4 lg:py-4"
+              className="rounded-2xl bg-card px-3 py-[13px] shadow-raised transition-transform duration-150 active:scale-[0.97] lg:px-4 lg:py-4"
             >
               <span
                 className="flex size-8 items-center justify-center rounded-xl lg:size-10"

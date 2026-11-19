@@ -267,6 +267,22 @@ export async function getPodList(userId: string): Promise<PodListItem[]> {
   });
 }
 
+/** Everyone across all of a person's Pods, counted once however many Pods they share. */
+export async function getNetworkSummary(userId: string): Promise<{ pods: number; people: number; ready: number }> {
+  const pods = await prisma.pod.findMany({
+    where: { OR: [{ ownerId: userId }, { members: { some: { userId } } }] },
+    select: {
+      owner: { select: { id: true, isEligible: true } },
+      members: { select: { user: { select: { id: true, isEligible: true } } } },
+    },
+  });
+  const people = new Map<string, boolean>();
+  for (const pod of pods) {
+    for (const p of [pod.owner, ...pod.members.map((m) => m.user)]) people.set(p.id, p.isEligible);
+  }
+  return { pods: pods.length, people: people.size, ready: [...people.values()].filter(Boolean).length };
+}
+
 export interface PodDetail {
   id: string;
   name: string;

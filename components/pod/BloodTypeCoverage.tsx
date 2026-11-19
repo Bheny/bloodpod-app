@@ -14,7 +14,7 @@ export function BloodTypeCoverage({ covered, gaps }: { covered: string[]; gaps: 
         {covered.map((type) => (
           <span
             key={type}
-            className="rounded-full bg-ink px-3 py-1.5 text-caption font-bold text-white"
+            className="rounded-full bg-panel px-3 py-1.5 text-caption font-bold text-white"
           >
             {type}
           </span>
@@ -22,7 +22,7 @@ export function BloodTypeCoverage({ covered, gaps }: { covered: string[]; gaps: 
         {gaps.map((type) => (
           <span
             key={type}
-            className="rounded-full border border-dashed border-red-mid bg-red-light px-3 py-1.5 text-caption font-bold text-red"
+            className="rounded-full border border-dashed border-red-mid bg-red-light px-3 py-1.5 text-caption font-bold text-red-fg"
           >
             {type}
           </span>

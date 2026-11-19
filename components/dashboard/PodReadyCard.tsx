@@ -31,7 +31,7 @@ export function PodReadyCard({
   const extra = Math.max(memberCount - members.length, 0);
 
   return (
-    <section className="rounded-2xl border-[0.5px] border-hairline bg-white p-4 shadow-raised lg:p-6">
+    <section className="rounded-2xl border-[0.5px] border-hairline bg-card p-4 shadow-raised lg:p-6">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate text-body-sm font-bold text-ink lg:text-title">{podName}</p>
@@ -42,7 +42,7 @@ export function PodReadyCard({
         <span
           className={cn(
             "shrink-0 rounded-full px-3 py-1 text-caption font-bold",
-            ready ? "bg-[#F0FBF3] text-[#166534]" : "bg-surface text-ink-mid",
+            ready ? "bg-success-soft text-success-strong" : "bg-surface text-ink-mid",
           )}
         >
           {ready ? "Pod ready" : "Building"}
@@ -56,7 +56,7 @@ export function PodReadyCard({
             title={`${m.name}${m.isEligible ? "" : " (resting)"}`}
             style={{ backgroundColor: m.bgColor }}
             className={cn(
-              "relative flex size-9 items-center justify-center rounded-full border-2 border-white text-label font-bold text-ink",
+              "relative flex size-9 items-center justify-center rounded-full border-2 border-card text-label font-bold text-ink",
               !m.isEligible && "opacity-50",
             )}
           >
@@ -64,7 +64,7 @@ export function PodReadyCard({
           </span>
         ))}
         {extra > 0 && (
-          <span className="flex size-9 items-center justify-center rounded-full border-2 border-white bg-surface text-label font-bold text-ink-muted">
+          <span className="flex size-9 items-center justify-center rounded-full border-2 border-card bg-surface text-label font-bold text-ink-muted">
             +{extra}
           </span>
         )}

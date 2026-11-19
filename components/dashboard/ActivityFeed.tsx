@@ -15,11 +15,11 @@ import { formatRelativeTime } from "@/lib/formatters";
 // so the one thing that actually needs attention is the only thing that stands out.
 export const ACTIVITY_ICONS: Record<ActivityType, { icon: LucideIcon; bg: string; color: string }> = {
   BLOOD_REQUEST: { icon: Bell, bg: "#FFF0F0", color: "#DD0000" },
-  MEMBER_JOINED: { icon: UserPlus, bg: "#F2F2F2", color: "#48484A" },
-  DONATION_LOGGED: { icon: Droplet, bg: "#F2F2F2", color: "#48484A" },
-  INVITE_ACCEPTED: { icon: Check, bg: "#F2F2F2", color: "#48484A" },
-  HOSPITAL_VERIFIED: { icon: Hospital, bg: "#F2F2F2", color: "#48484A" },
-  BADGE_EARNED: { icon: Award, bg: "#F2F2F2", color: "#48484A" },
+  MEMBER_JOINED: { icon: UserPlus, bg: "var(--color-fill)", color: "var(--color-ink-mid)" },
+  DONATION_LOGGED: { icon: Droplet, bg: "var(--color-fill)", color: "var(--color-ink-mid)" },
+  INVITE_ACCEPTED: { icon: Check, bg: "var(--color-fill)", color: "var(--color-ink-mid)" },
+  HOSPITAL_VERIFIED: { icon: Hospital, bg: "var(--color-fill)", color: "var(--color-ink-mid)" },
+  BADGE_EARNED: { icon: Award, bg: "var(--color-fill)", color: "var(--color-ink-mid)" },
 };
 
 export function ActivityFeed({
@@ -39,17 +39,17 @@ export function ActivityFeed({
       </div>
 
       {activities.length === 0 ? (
-        <div className="mt-2.5 rounded-2xl bg-white p-6 text-center lg:p-10">
+        <div className="mt-2.5 rounded-2xl bg-card p-6 text-center lg:p-10">
           <p className="text-sm font-bold text-ink lg:text-base">No activity yet.</p>
           <p className="mt-1 text-xs text-ink-muted lg:text-sm">
             Invite someone to your pod to get started.
           </p>
-          <Link href="/pod/invite" className="mt-2 inline-block text-sm font-bold text-red lg:text-base">
+          <Link href="/pod/invite" className="mt-2 inline-block text-sm font-bold text-red-fg lg:text-base">
             Invite now
           </Link>
         </div>
       ) : (
-        <div className="mt-2.5 overflow-hidden rounded-2xl bg-white">
+        <div className="mt-2.5 overflow-hidden rounded-2xl bg-card">
           {activities.map((activity, i) => {
             const { icon: Icon, bg, color } = ACTIVITY_ICONS[activity.type];
             return (

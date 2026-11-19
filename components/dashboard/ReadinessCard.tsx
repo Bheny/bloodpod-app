@@ -55,7 +55,7 @@ export function ReadinessCard({
   }[state];
 
   return (
-    <section className="rounded-2xl border-[0.5px] border-hairline bg-white p-4 shadow-raised lg:p-6">
+    <section className="rounded-2xl border-[0.5px] border-hairline bg-card p-4 shadow-raised lg:p-6">
       <div className="flex items-start gap-3">
         <span className="relative mt-1.5 flex size-2.5 shrink-0">
           {state === "ready" && (
@@ -90,13 +90,13 @@ export function ReadinessCard({
 
       <div className="mt-4 flex flex-wrap gap-2 border-t-[0.5px] border-hairline pt-4">
         {hasPush ? (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#F0FBF3] px-3 py-1.5 text-caption font-semibold text-[#166534]">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-3 py-1.5 text-caption font-semibold text-success-strong">
             <BellRing className="size-3.5" /> Alerts on
           </span>
         ) : (
           <Link
             href="/profile"
-            className="inline-flex items-center gap-1.5 rounded-full bg-red-light px-3 py-1.5 text-caption font-semibold text-red"
+            className="inline-flex items-center gap-1.5 rounded-full bg-red-light px-3 py-1.5 text-caption font-semibold text-red-fg"
           >
             <BellOff className="size-3.5" /> Alerts off, turn on
           </Link>
@@ -104,7 +104,7 @@ export function ReadinessCard({
         <span
           className={cn(
             "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-caption font-semibold",
-            verified ? "bg-[#F0FBF3] text-[#166534]" : "bg-surface text-ink-mid",
+            verified ? "bg-success-soft text-success-strong" : "bg-surface text-ink-mid",
           )}
         >
           {verified ? <BadgeCheck className="size-3.5" /> : <CircleDashed className="size-3.5" />}

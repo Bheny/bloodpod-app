@@ -24,11 +24,27 @@ export function PassportMini({
   return (
     <Link
       href="/passport"
-      className="relative block overflow-hidden rounded-2xl bg-ink p-4.25 shadow-raised lg:p-6"
+      className="relative block overflow-hidden rounded-2xl bg-[linear-gradient(145deg,#2B2B33_0%,#17171C_55%,#0E0E12_100%)] p-4.25 transition-transform duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 lg:p-6"
+      style={{
+        // Same bevelled edge and layered shadow as the full Blood Card.
+        boxShadow:
+          "0 1px 0 rgba(255,255,255,0.14) inset, 0 -1px 0 rgba(0,0,0,0.5) inset, 0 2px 4px rgba(10,10,15,0.18), 0 12px 24px -8px rgba(10,10,15,0.38), 0 26px 40px -22px rgba(10,10,15,0.35)",
+      }}
     >
       <span
-        className="pointer-events-none absolute -right-6 -top-6 size-20 rounded-full lg:size-28"
-        style={{ backgroundColor: "rgba(221,0,0,0.1)" }}
+        className="pointer-events-none absolute -right-6 -top-6 size-20 rounded-full blur-lg lg:size-28"
+        style={{ backgroundColor: "rgba(221,0,0,0.16)" }}
+      />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-[0.07]"
+        style={{ backgroundImage: "repeating-linear-gradient(135deg, #fff 0 1px, transparent 1px 6px)" }}
+      />
+      <span aria-hidden className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10" />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{ backgroundImage: "radial-gradient(circle at 25% 0%, rgba(255,255,255,0.12), transparent 55%)" }}
       />
 
       <div className="relative flex items-start justify-between">
@@ -60,7 +76,10 @@ export function PassportMini({
             {name ?? "You"}
           </p>
           <p className="text-label text-white/70">{city ?? "Ghana"}</p>
-          <p className="mt-1 text-[38px] font-extrabold leading-none tracking-[-2px] text-red lg:text-[52px]">
+          <p
+            className="mt-1 text-[38px] font-extrabold leading-none tracking-[-2px] text-red-fg lg:text-[52px]"
+            style={{ textShadow: "0 1px 0 rgba(255,255,255,0.18), 0 5px 12px rgba(0,0,0,0.45)" }}
+          >
             {bloodType ?? "—"}
           </p>
           <p className="mt-1 text-label font-bold uppercase tracking-wide text-white/70">

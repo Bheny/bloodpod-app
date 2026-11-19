@@ -4,12 +4,8 @@ import { Card, CardTitle } from "@/components/ui/Card";
 import { FREE_POD_MEMBER_LIMIT } from "@/lib/pod-limits";
 import type { PodMemberView } from "@/lib/pod-data";
 
-/** Plots shown grow in steps, so the next goal is always within reach. */
-const MILESTONES = [
-  { seats: 5, name: "circle" },
-  { seats: 10, name: "grove" },
-  { seats: FREE_POD_MEMBER_LIMIT, name: "forest" },
-];
+/** Plots shown: 10 to start, which is the low end of "10 to 20 people", then up to the Pod's limit. */
+const FIRST_GOAL = 10;
 
 const BLOOD_ORDER = ["A+", "A−", "B+", "B−", "AB+", "AB−", "O+", "O−"];
 
@@ -20,7 +16,7 @@ function firstName(name: string) {
 function Bloom() {
   return (
     <svg viewBox="0 0 56 64" className="bp-sway size-full" aria-hidden>
-      <ellipse cx="28" cy="57" rx="18" ry="5" fill="#E9DCCB" />
+      <ellipse cx="28" cy="57" rx="18" ry="5" className="fill-soil" />
       <path d="M28 55 C28 44 28 36 28 26" stroke="#3E9B5B" strokeWidth="3" strokeLinecap="round" fill="none" />
       <path d="M28 46 C20 46 15 41 14 35 C21 35 27 39 28 46Z" fill="#4FB26C" />
       <path d="M28 40 C36 40 41 35 42 29 C35 29 29 33 28 40Z" fill="#4FB26C" />
@@ -38,7 +34,7 @@ function Bloom() {
 function Seedling() {
   return (
     <svg viewBox="0 0 56 64" className="bp-sway size-full" aria-hidden>
-      <ellipse cx="28" cy="57" rx="18" ry="5" fill="#E9DCCB" />
+      <ellipse cx="28" cy="57" rx="18" ry="5" className="fill-soil" />
       <path d="M28 55 C28 50 28 46 28 42" stroke="#3E9B5B" strokeWidth="3" strokeLinecap="round" fill="none" />
       <path d="M28 44 C20 44 15 39 14 33 C21 33 27 37 28 44Z" fill="#7CCB92" />
       <path d="M28 42 C35 42 40 37 41 31 C34 31 29 35 28 42Z" fill="#7CCB92" />
@@ -72,9 +68,9 @@ function Plot({
         className="group flex flex-col items-center gap-1 rounded-xl py-1 transition-transform active:scale-95"
       >
         <span className="flex aspect-square w-full max-w-14 items-center justify-center rounded-full border-[1.5px] border-dashed border-red-mid bg-red-light/50 transition-colors group-hover:bg-red-light">
-          <Plus className="size-5 text-red" />
+          <Plus className="size-5 text-red-fg" />
         </span>
-        <span className="text-label font-bold text-red">Invite</span>
+        <span className="text-label font-bold text-red-fg">Invite</span>
       </Link>
     );
   }
@@ -133,8 +129,7 @@ export function PodGarden({
   inviteHref?: string;
 }) {
   const count = members.length;
-  const milestone = MILESTONES.find((m) => count < m.seats) ?? MILESTONES[MILESTONES.length - 1];
-  const seats = Math.max(milestone.seats, count);
+  const seats = Math.max(count < FIRST_GOAL ? FIRST_GOAL : FREE_POD_MEMBER_LIMIT, count);
   const missing = seats - count;
   const readyCount = members.filter((m) => m.isEligible).length;
 
@@ -144,13 +139,21 @@ export function PodGarden({
 
   return (
     <Card>
-      <CardTitle aside={<span className="text-caption font-bold text-ink-muted">{count} of {seats}</span>}>
+      <CardTitle
+        aside={
+          <span className="text-caption font-bold text-ink-muted">
+            {count} of {FREE_POD_MEMBER_LIMIT} max
+          </span>
+        }
+      >
         Your garden
       </CardTitle>
       <p className="mt-1 text-caption text-ink-muted lg:text-body-sm">
-        {missing > 0
-          ? `${missing} more ${missing === 1 ? "person" : "people"} to fill ${inviteHref ? "your" : "this"} ${milestone.name}.`
-          : `${inviteHref ? "Your" : "This"} ${milestone.name} is full.`}
+        {count < FIRST_GOAL
+          ? `Aim for ${FIRST_GOAL} to ${FREE_POD_MEMBER_LIMIT} people you trust.`
+          : missing > 0
+            ? `Room for ${missing} more, up to ${FREE_POD_MEMBER_LIMIT}.`
+            : `${inviteHref ? "Your" : "This"} Pod is full at ${FREE_POD_MEMBER_LIMIT}.`}
         {readyCount > 0 && ` ${readyCount} in bloom, ready to donate.`}
       </p>
 

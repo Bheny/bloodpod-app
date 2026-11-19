@@ -138,7 +138,7 @@ export function PodSettings({
                     type="button"
                     disabled={busy}
                     onClick={() => remove(m)}
-                    className="rounded-full bg-surface px-3.5 py-1.5 text-caption font-bold text-red hover:bg-red-light disabled:opacity-60"
+                    className="rounded-full bg-surface px-3.5 py-1.5 text-caption font-bold text-red-fg hover:bg-red-light disabled:opacity-60"
                   >
                     Remove
                   </button>
@@ -182,14 +182,14 @@ export function PodSettings({
             <button
               type="button"
               onClick={() => setConfirm(isOwner ? "delete" : "leave")}
-              className="mt-3 rounded-full border border-red-mid px-5 py-2.5 text-body-sm font-bold text-red hover:bg-red-light"
+              className="mt-3 rounded-full border border-red-mid px-5 py-2.5 text-body-sm font-bold text-red-fg hover:bg-red-light"
             >
               {isOwner ? "Delete Pod" : "Leave Pod"}
             </button>
           ))}
       </Card>
 
-      {error && <p className="text-caption text-red">{error}</p>}
+      {error && <p className="text-caption text-red-fg">{error}</p>}
     </div>
   );
 }

@@ -38,7 +38,7 @@ export function PodInvitations({ invitations }: { invitations: ReceivedInvitatio
 
   return (
     <Card>
-      <CardTitle aside={<span className="text-caption font-bold text-red">{items.length} new</span>}>
+      <CardTitle aside={<span className="text-caption font-bold text-red-fg">{items.length} new</span>}>
         Pod invitations
       </CardTitle>
       <ul className="mt-3 flex flex-col gap-2.5">
@@ -46,7 +46,7 @@ export function PodInvitations({ invitations }: { invitations: ReceivedInvitatio
           <li key={inv.id} className="rounded-xl bg-surface p-3.5">
             <div className="flex items-start gap-3">
               <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-red-light">
-                <HeartHandshake className="size-4 text-red" />
+                <HeartHandshake className="size-4 text-red-fg" />
               </span>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-body-sm font-bold text-ink">{inv.podName}</p>
@@ -71,7 +71,7 @@ export function PodInvitations({ invitations }: { invitations: ReceivedInvitatio
                   type="button"
                   onClick={() => respond(inv, "decline")}
                   disabled={busy === inv.id}
-                  className="rounded-full bg-white px-5 py-2.5 text-body-sm font-semibold text-ink-mid transition-colors hover:bg-hairline disabled:opacity-60"
+                  className="rounded-full bg-card px-5 py-2.5 text-body-sm font-semibold text-ink-mid transition-colors hover:bg-hairline disabled:opacity-60"
                 >
                   Decline
                 </button>
@@ -80,7 +80,7 @@ export function PodInvitations({ invitations }: { invitations: ReceivedInvitatio
           </li>
         ))}
       </ul>
-      {error && <p className="mt-3 text-caption text-red">{error}</p>}
+      {error && <p className="mt-3 text-caption text-red-fg">{error}</p>}
     </Card>
   );
 }
