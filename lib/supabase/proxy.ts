@@ -7,11 +7,12 @@ const PROTECTED_PREFIXES = [
   "/pod",
   "/passport",
   "/discover",
-  "/feed",
+  "/services",
   "/profile",
   "/essentials",
   "/medical-history",
   "/hospital",
+  "/lab",
   "/admin",
 ];
 // Open to the public so a hospital can apply before it has an account.

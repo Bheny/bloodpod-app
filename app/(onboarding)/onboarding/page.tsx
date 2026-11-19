@@ -9,6 +9,7 @@ export default async function OnboardingPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/sign-in");
   if (user.hospitalId) redirect("/hospital");
+  if (user.labId) redirect("/lab");
   if (user.onboardingComplete) redirect("/dashboard");
 
   // Every account gets a Pod at sign-up, so there is always one to invite into.

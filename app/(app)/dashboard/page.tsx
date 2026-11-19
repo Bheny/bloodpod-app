@@ -21,6 +21,7 @@ export default async function DashboardPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/sign-in");
   if (user.hospitalId) redirect("/hospital");
+  if (user.labId) redirect("/lab");
   if (!user.onboardingComplete) redirect("/onboarding");
 
   const [data, invitations] = await Promise.all([

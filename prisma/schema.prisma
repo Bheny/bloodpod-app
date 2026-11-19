@@ -41,6 +41,10 @@ model User {
   hospital   Hospital? @relation(fields: [hospitalId], references: [id])
   jobTitle   String?
 
+  // Lab staff accounts (the /lab portal)
+  labId String?
+  lab   Lab?   @relation("LabStaff", fields: [labId], references: [id], onDelete: SetNull)
+
   // Pod strength tracking
   podStrengthScore Int @default(0) // 0–100
 
@@ -638,19 +642,31 @@ model Lab {
   organisationId String?
   name           String
   town           String
-  // Tests offered with price per test, in pesewas: [{ "name": "Genotype", "pricePesewas": 5000 }]
+  address        String?
+  phone          String?
+  // Map position, so the Services page can sort by distance. Listed labs always have one.
+  latitude       Float?
+  longitude      Float?
+  // Hidden from the Services page when false.
+  active         Boolean  @default(true)
+  // Tests offered, ids from lib/services.ts: [{ "id": "genotype", "pricePesewas": 5000 }]. Price is optional.
   tests          Json
   // The lab pays this commission to BloodPod. The user pays the lab directly.
-  commissionRate Decimal  @db.Decimal(5, 4)
+  commissionRate Decimal  @default(0) @db.Decimal(5, 4)
   createdAt      DateTime @default(now())
 
   bookings Booking[]
+  staff    User[]    @relation("LabStaff")
 }
 
 enum BookingStatus {
   REQUESTED
   CONFIRMED
   CANCELLED
+  // The lab suggested another time and is waiting for the person to accept.
+  RESCHEDULED
+  DECLINED
+  COMPLETED
 }
 
 model Booking {
@@ -665,5 +681,18 @@ model Booking {
   status    BookingStatus @default(REQUESTED)
   createdAt DateTime      @default(now())
 
+  // Every test in the request (ids from lib/service-tests.ts). testName is the readable version.
+  testIds       String[]  @default([])
+  preferredDate DateTime?
+  note          String?
+  // When the lab agreed to see them, or proposed to.
+  scheduledFor  DateTime?
+  labNote       String?
+  respondedAt   DateTime?
+  completedAt   DateTime?
+  // The person agreed to share their name and phone with the lab.
+  consentAt     DateTime?
+
   @@index([userId])
+  @@index([labId, status])
 }

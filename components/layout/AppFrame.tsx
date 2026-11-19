@@ -5,10 +5,11 @@ import { cn } from "@/lib/utils";
 
 // Top-level screens are real multi-column layouts on desktop and use the full
 // width. Forms and detail pages keep a narrower bordered card.
-const WIDE_ROUTES = ["/dashboard", "/pod", "/passport", "/profile", "/discover", "/feed"];
+const WIDE_ROUTES = ["/dashboard", "/pod", "/passport", "/profile", "/discover", "/services"];
 
 function isWide(pathname: string) {
-  return WIDE_ROUTES.includes(pathname) || pathname.startsWith("/pod/joined/");
+  // /pod/<id> is a Pod's detail page. Its invite and settings pages stay in the narrow card.
+  return WIDE_ROUTES.includes(pathname) || /^\/pod\/(?!invite$|settings$)[^/]+$/.test(pathname);
 }
 
 export function AppFrame({ children }: { children: React.ReactNode }) {

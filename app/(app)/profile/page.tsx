@@ -49,6 +49,7 @@ export default async function ProfilePage() {
   const user = await getCurrentUser();
   if (!user) redirect("/sign-in");
   if (user.hospitalId) redirect("/hospital");
+  if (user.labId) redirect("/lab");
   if (!user.onboardingComplete) redirect("/onboarding");
 
   const passportData = await getPassportData(user.id);

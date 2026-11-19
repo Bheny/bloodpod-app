@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   Activity,
   Building2,
+  FlaskConical,
   LayoutDashboard,
   Network,
   Siren,
@@ -21,6 +22,7 @@ const NAV: { href: string; label: string; icon: LucideIcon; badge?: "hospitals" 
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/network", label: "Network", icon: Network },
   { href: "/admin/hospitals", label: "Hospitals", icon: Building2, badge: "hospitals" },
+  { href: "/admin/services", label: "Services", icon: FlaskConical },
   { href: "/admin/emergencies", label: "Emergencies", icon: Siren, badge: "emergencies" },
   { href: "/admin/finance", label: "Finance", icon: Wallet },
 ];
