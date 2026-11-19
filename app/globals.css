@@ -1,7 +1,20 @@
 @import "tailwindcss";
 
+/*
+ * Colours are named by ROLE, so a theme only has to change the values:
+ *   surface  the page behind everything     card     a card or sheet sitting on it
+ *   fill     a quiet tinted area            panel    an always-dark block (Blood Card, summary strips)
+ *   ink*     text, strongest to faintest    hairline thin borders and dividers
+ *   red      the brand colour for buttons   red-fg   brand red used as text (brighter in dark mode)
+ *   white    literal white, for text on red or on a panel; never a card background
+ * Light is the default. Dark applies when the person chooses it, or follows their device
+ * (see the two dark blocks below, which must stay identical).
+ */
 :root {
+  color-scheme: light;
+
   --color-red: #dd0000;
+  --color-red-fg: #dd0000;
   --color-red-light: #fff0f0;
   --color-red-mid: #ffbdbd;
   --color-red-dark: #aa0000;
@@ -12,15 +25,135 @@
   --color-ink-faint: #c7c7cc;
 
   --color-surface: #faf8f6;
+  --color-card: #ffffff;
+  --color-fill: #f2f2f2;
+  --color-panel: #1c1c1e;
   --color-white: #ffffff;
   --color-hairline: #e5e5ea;
+
+  --color-success-soft: #f0fbf3;
+  --color-success-strong: #166534;
+  --color-warn-soft: #fff7e6;
+  --color-warn-strong: #92400e;
+  --color-info-soft: #eff6ff;
+  --color-info-strong: #1d4ed8;
+  --color-soil: #e9dccb;
+
+  --shadow-raised-value: 0 2px 6px rgba(0, 0, 0, 0.03), 0 10px 24px rgba(0, 0, 0, 0.05);
+  --shadow-floating-value: 0 12px 40px rgba(0, 0, 0, 0.14);
 
   --background: var(--color-surface);
   --foreground: var(--color-ink);
 }
 
+/* Dark, following the device, unless the person picked Light. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --color-red: #e5262b;
+    --color-red-fg: #ff5a5a;
+    --color-red-light: #2b1517;
+    --color-red-mid: #5a2427;
+    --color-red-dark: #ff8e8e;
+
+    --color-ink: #f2f2f4;
+    --color-ink-mid: #bdbdc3;
+    --color-ink-muted: #8e8e96;
+    --color-ink-faint: #55555c;
+
+    --color-surface: #0e0e10;
+    --color-card: #1b1b1e;
+    --color-fill: #26262a;
+    --color-panel: #1c1c1e;
+    --color-hairline: #2c2c31;
+
+    --color-success-soft: #112619;
+    --color-success-strong: #86efac;
+    --color-warn-soft: #2a2112;
+    --color-warn-strong: #fcd34d;
+    --color-info-soft: #101d33;
+    --color-info-strong: #93c5fd;
+    --color-soil: #2a2620;
+
+    /* Shadows vanish on dark, so depth comes from a hairline edge plus a deep shadow. */
+    --shadow-raised-value: 0 0 0 0.5px rgba(255, 255, 255, 0.06), 0 8px 24px rgba(0, 0, 0, 0.45);
+    --shadow-floating-value: 0 0 0 0.5px rgba(255, 255, 255, 0.08), 0 16px 48px rgba(0, 0, 0, 0.6);
+  }
+}
+
+/* Dark, because the person chose it. Keep identical to the block above. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-red: #e5262b;
+  --color-red-fg: #ff5a5a;
+  --color-red-light: #2b1517;
+  --color-red-mid: #5a2427;
+  --color-red-dark: #ff8e8e;
+
+  --color-ink: #f2f2f4;
+  --color-ink-mid: #bdbdc3;
+  --color-ink-muted: #8e8e96;
+  --color-ink-faint: #55555c;
+
+  --color-surface: #0e0e10;
+  --color-card: #1b1b1e;
+  --color-fill: #26262a;
+  --color-panel: #1c1c1e;
+  --color-hairline: #2c2c31;
+
+  --color-success-soft: #112619;
+  --color-success-strong: #86efac;
+  --color-warn-soft: #2a2112;
+  --color-warn-strong: #fcd34d;
+  --color-info-soft: #101d33;
+  --color-info-strong: #93c5fd;
+  --color-soil: #2a2620;
+
+  --shadow-raised-value: 0 0 0 0.5px rgba(255, 255, 255, 0.06), 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-floating-value: 0 0 0 0.5px rgba(255, 255, 255, 0.08), 0 16px 48px rgba(0, 0, 0, 0.6);
+}
+
+/* Marketing pages stay light for now, whatever the theme. */
+.force-light {
+  color-scheme: light;
+
+  --color-red: #dd0000;
+  --color-red-fg: #dd0000;
+  --color-red-light: #fff0f0;
+  --color-red-mid: #ffbdbd;
+  --color-red-dark: #aa0000;
+
+  --color-ink: #1c1c1e;
+  --color-ink-mid: #48484a;
+  --color-ink-muted: #8e8e93;
+  --color-ink-faint: #c7c7cc;
+
+  --color-surface: #faf8f6;
+  --color-card: #ffffff;
+  --color-fill: #f2f2f2;
+  --color-panel: #1c1c1e;
+  --color-hairline: #e5e5ea;
+
+  --color-success-soft: #f0fbf3;
+  --color-success-strong: #166534;
+  --color-warn-soft: #fff7e6;
+  --color-warn-strong: #92400e;
+  --color-info-soft: #eff6ff;
+  --color-info-strong: #1d4ed8;
+  --color-soil: #e9dccb;
+
+  --shadow-raised-value: 0 2px 6px rgba(0, 0, 0, 0.03), 0 10px 24px rgba(0, 0, 0, 0.05);
+  --shadow-floating-value: 0 12px 40px rgba(0, 0, 0, 0.14);
+
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
+
 @theme inline {
   --color-red: var(--color-red);
+  --color-red-fg: var(--color-red-fg);
   --color-red-light: var(--color-red-light);
   --color-red-mid: var(--color-red-mid);
   --color-red-dark: var(--color-red-dark);
@@ -31,8 +164,19 @@
   --color-ink-faint: var(--color-ink-faint);
 
   --color-surface: var(--color-surface);
+  --color-card: var(--color-card);
+  --color-fill: var(--color-fill);
+  --color-panel: var(--color-panel);
   --color-white: var(--color-white);
   --color-hairline: var(--color-hairline);
+
+  --color-success-soft: var(--color-success-soft);
+  --color-success-strong: var(--color-success-strong);
+  --color-warn-soft: var(--color-warn-soft);
+  --color-warn-strong: var(--color-warn-strong);
+  --color-info-soft: var(--color-info-soft);
+  --color-info-strong: var(--color-info-strong);
+  --color-soil: var(--color-soil);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -55,8 +199,18 @@
 
   /* Elevation - 3 levels. flat = hairline border only, no shadow token needed.
      Diffused and low-opacity (Apple Wallet/Health-style soft shadows), not hard-edged. */
-  --shadow-raised: 0 2px 6px rgba(0, 0, 0, 0.03), 0 10px 24px rgba(0, 0, 0, 0.05);
-  --shadow-floating: 0 12px 40px rgba(0, 0, 0, 0.14);
+  --shadow-raised: var(--shadow-raised-value);
+  --shadow-floating: var(--shadow-floating-value);
+}
+
+/* Map tiles are light pictures, so dim and invert them in dark mode. Pins sit in another pane and keep their colours. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .leaflet-tile-pane {
+    filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9) saturate(0.7);
+  }
+}
+:root[data-theme="dark"] .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9) saturate(0.7);
 }
 
 body {
@@ -87,10 +241,10 @@ body {
 
 @keyframes marquee {
   from {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
@@ -151,6 +305,8 @@ body {
 
 .animate-marquee {
   animation: marquee 30s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .animate-pulse-scale {

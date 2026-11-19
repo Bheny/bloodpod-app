@@ -19,8 +19,15 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#dd0000",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#dd0000" },
+    { media: "(prefers-color-scheme: dark)", color: "#0e0e10" },
+  ],
 };
+
+// Runs before the first paint, so a saved Light or Dark choice never flashes the wrong theme.
+// With no saved choice (or "system") it does nothing and the device setting applies.
+const THEME_SCRIPT = `try{var t=localStorage.getItem("bp_theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}`;
 
 export default function RootLayout({
   children,
@@ -28,7 +35,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
+    <html lang="en" className={`${inter.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="min-h-full flex flex-col bg-surface text-ink">
         <ServiceWorkerRegister />
         <LazyMotion features={domAnimation}>{children}</LazyMotion>
