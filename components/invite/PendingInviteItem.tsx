@@ -48,7 +48,7 @@ export function PendingInviteItem({
             type="button"
             onClick={() => onResend(invite.id)}
             disabled={resendState !== "idle"}
-            className="text-[10px] font-bold text-red disabled:opacity-60"
+            className="text-[10px] font-bold text-red-fg disabled:opacity-60"
           >
             {resendState === "sending" ? "Sending…" : resendState === "sent" ? "Sent ✓" : "Resend"}
           </button>

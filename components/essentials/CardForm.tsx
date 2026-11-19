@@ -148,7 +148,7 @@ export function CardForm({ supabaseId, initialCard }: { supabaseId: string; init
         <Textarea id="notes" placeholder="Optional" {...register("notes")} />
       </Field>
 
-      {formError && <p className="text-sm text-red">{formError}</p>}
+      {formError && <p className="text-sm text-red-fg">{formError}</p>}
 
       <Button type="submit" loading={isSubmitting} size="lg" className="mt-1 w-full">
         {initialCard ? "Save changes" : "Save card"}
@@ -159,7 +159,7 @@ export function CardForm({ supabaseId, initialCard }: { supabaseId: string; init
           type="button"
           onClick={handleDelete}
           disabled={deleting}
-          className="text-sm font-semibold text-red disabled:opacity-60"
+          className="text-sm font-semibold text-red-fg disabled:opacity-60"
         >
           {deleting ? "Deleting..." : "Delete this card"}
         </button>

@@ -32,7 +32,7 @@ export default async function ServicesPage({ searchParams }: { searchParams: Pro
         actions={
           <Link
             href="/services/bookings"
-            className="rounded-full bg-surface px-4 py-2.5 text-body-sm font-bold text-ink-mid transition-colors hover:bg-hairline lg:bg-white lg:shadow-raised"
+            className="rounded-full bg-surface px-4 py-2.5 text-body-sm font-bold text-ink-mid transition-colors hover:bg-hairline lg:bg-card lg:shadow-raised"
           >
             My bookings
           </Link>

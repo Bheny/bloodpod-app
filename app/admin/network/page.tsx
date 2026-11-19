@@ -47,7 +47,7 @@ export default async function AdminNetworkPage() {
 
       {gaps.length > 0 && n.totalPeople > 0 && (
         <div className="mt-4 flex items-start gap-3 rounded-2xl border border-red-mid bg-red-light/50 p-4">
-          <AlertTriangle className="mt-0.5 size-5 shrink-0 text-red" />
+          <AlertTriangle className="mt-0.5 size-5 shrink-0 text-red-fg" />
           <p className="text-body-sm text-ink">
             <span className="font-bold">Blood type gaps:</span> nobody who can donate right now has{" "}
             {gaps.map((g) => g.label).join(", ")}. Recruit for these first.

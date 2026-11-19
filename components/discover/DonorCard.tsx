@@ -19,7 +19,7 @@ export function DonorCard({ donor, active, onClick }: { donor: DiscoverDonor; ac
       onClick={onClick}
       title={donor.isCompatibleMatch ? "Compatible with your blood type" : undefined}
       className={cn(
-        "flex w-full items-center gap-3 rounded-2xl border-[0.5px] border-hairline bg-white p-3.5 text-left shadow-raised transition-colors duration-150 hover:border-red lg:p-4",
+        "flex w-full items-center gap-3 rounded-2xl border-[0.5px] border-hairline bg-card p-3.5 text-left shadow-raised transition-colors duration-150 hover:border-red lg:p-4",
         (donor.isCompatibleMatch || active) && "ring-2 ring-red/20",
         active && "border-red",
       )}
@@ -33,7 +33,7 @@ export function DonorCard({ donor, active, onClick }: { donor: DiscoverDonor; ac
         </p>
       </div>
       {donor.isCompatibleMatch && (
-        <span className="shrink-0 rounded-full bg-red-light px-2 py-0.5 text-label font-bold text-red">Matches you</span>
+        <span className="shrink-0 rounded-full bg-red-light px-2 py-0.5 text-label font-bold text-red-fg">Matches you</span>
       )}
     </button>
   );

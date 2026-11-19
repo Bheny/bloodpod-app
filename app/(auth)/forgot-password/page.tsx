@@ -7,7 +7,7 @@ export default function ForgotPasswordPage() {
       <p className="mt-2 text-sm text-ink-muted">
         Password reset is coming soon. Contact hello@bloodpod.gh for help in the meantime.
       </p>
-      <Link href="/sign-in" className="mt-8 inline-block text-sm font-semibold text-red">
+      <Link href="/sign-in" className="mt-8 inline-block text-sm font-semibold text-red-fg">
         ← Back to sign in
       </Link>
     </div>

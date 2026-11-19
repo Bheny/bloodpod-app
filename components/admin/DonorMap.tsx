@@ -244,7 +244,7 @@ export function DonorMap({ data }: { data: MapData }) {
 
   if (data.total === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-hairline bg-white px-6 py-16 text-center">
+      <div className="rounded-2xl border border-dashed border-hairline bg-card px-6 py-16 text-center">
         <p className="text-body-sm font-bold text-ink">No donors to map yet</p>
         <p className="mx-auto mt-1 max-w-sm text-caption text-ink-muted">Donors appear here by town as they sign up and share their city.</p>
       </div>
@@ -255,7 +255,7 @@ export function DonorMap({ data }: { data: MapData }) {
     <div>
       {/* Controls */}
       <div className="mb-3 flex flex-wrap items-center gap-x-5 gap-y-3">
-        <div className="flex items-center gap-1 rounded-full bg-white p-1 shadow-raised" role="group" aria-label="Colour the map by">
+        <div className="flex items-center gap-1 rounded-full bg-card p-1 shadow-raised" role="group" aria-label="Colour the map by">
           {(
             [
               ["readiness", "Readiness"],
@@ -267,7 +267,7 @@ export function DonorMap({ data }: { data: MapData }) {
               key={id}
               type="button"
               onClick={() => setMode(id)}
-              className={cn("rounded-full px-3 py-1.5 text-caption font-bold transition-colors", mode === id ? "bg-ink text-white" : "text-ink-mid hover:text-ink")}
+              className={cn("rounded-full px-3 py-1.5 text-caption font-bold transition-colors", mode === id ? "bg-panel text-white" : "text-ink-mid hover:text-ink")}
             >
               {label}
             </button>
@@ -279,7 +279,7 @@ export function DonorMap({ data }: { data: MapData }) {
             value={blood}
             onChange={(e) => setBlood(e.target.value)}
             aria-label="Blood type to map"
-            className="rounded-xl border border-hairline bg-white px-3 py-2 text-caption font-bold text-ink focus:border-red focus:outline-none"
+            className="rounded-xl border border-hairline bg-card px-3 py-2 text-caption font-bold text-ink focus:border-red focus:outline-none"
           >
             {ALL_TYPES.map((t) => (
               <option key={t}>{t}</option>
@@ -292,7 +292,7 @@ export function DonorMap({ data }: { data: MapData }) {
           <select
             value={radius}
             onChange={(e) => setRadius(Number(e.target.value))}
-            className="rounded-xl border border-hairline bg-white px-2.5 py-1.5 text-caption font-bold text-ink focus:border-red focus:outline-none"
+            className="rounded-xl border border-hairline bg-card px-2.5 py-1.5 text-caption font-bold text-ink focus:border-red focus:outline-none"
           >
             {RADII.map((r) => (
               <option key={r} value={r}>
@@ -314,20 +314,20 @@ export function DonorMap({ data }: { data: MapData }) {
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
         {/* Map */}
-        <div className="relative isolate overflow-hidden rounded-2xl border-[0.5px] border-hairline bg-white shadow-raised">
+        <div className="relative isolate overflow-hidden rounded-2xl border-[0.5px] border-hairline bg-card shadow-raised">
           <div ref={containerRef} className="h-[62vh] min-h-[440px] w-full lg:h-[660px]" role="application" aria-label="Map of donors across Ghana" />
 
           <div className="pointer-events-none absolute left-3 top-3 z-[500] flex flex-col gap-2">
             <button
               type="button"
               onClick={fitAll}
-              className="pointer-events-auto rounded-full bg-white px-3.5 py-2 text-caption font-bold text-ink shadow-raised transition-colors hover:bg-surface"
+              className="pointer-events-auto rounded-full bg-card px-3.5 py-2 text-caption font-bold text-ink shadow-raised transition-colors hover:bg-surface"
             >
               Show all
             </button>
           </div>
 
-          <div className="pointer-events-none absolute bottom-6 left-3 z-[500] rounded-xl bg-white/95 px-3 py-2 text-caption text-ink-mid shadow-raised">
+          <div className="pointer-events-none absolute bottom-6 left-3 z-[500] rounded-xl bg-card/95 px-3 py-2 text-caption text-ink-mid shadow-raised">
             {mode === "readiness" && (
               <ul className="space-y-1">
                 <Dot color={GREEN} label="Most donors can donate now" />
@@ -349,14 +349,14 @@ export function DonorMap({ data }: { data: MapData }) {
 
         {/* Side panel */}
         <aside className="flex flex-col gap-4">
-          <div className="relative rounded-2xl border-[0.5px] border-hairline bg-white p-3 shadow-raised">
+          <div className="relative rounded-2xl border-[0.5px] border-hairline bg-card p-3 shadow-raised">
             <Search className="pointer-events-none absolute left-6 top-1/2 size-4 -translate-y-1/2 text-ink-faint" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Find a town"
               aria-label="Find a town"
-              className="w-full rounded-xl border border-hairline bg-white py-2.5 pl-10 pr-3 text-body-sm text-ink placeholder:text-ink-faint focus:border-red focus:outline-none"
+              className="w-full rounded-xl border border-hairline bg-card py-2.5 pl-10 pr-3 text-body-sm text-ink placeholder:text-ink-faint focus:border-red focus:outline-none"
             />
             {matches.length > 0 && (
               <ul className="mt-2 space-y-0.5">
@@ -379,7 +379,7 @@ export function DonorMap({ data }: { data: MapData }) {
             )}
           </div>
 
-          <div className="rounded-2xl border-[0.5px] border-hairline bg-white p-4 shadow-raised">
+          <div className="rounded-2xl border-[0.5px] border-hairline bg-card p-4 shadow-raised">
             {selectedPlace ? (
               <PlacePanel
                 place={selectedPlace}
@@ -410,7 +410,7 @@ export function DonorMap({ data }: { data: MapData }) {
 
                 {totals.gaps.length > 0 && totals.donors > 0 && (
                   <p className="mt-4 flex items-start gap-2 rounded-xl bg-red-light px-3 py-2.5 text-caption text-ink">
-                    <AlertTriangle className="mt-0.5 size-4 shrink-0 text-red" />
+                    <AlertTriangle className="mt-0.5 size-4 shrink-0 text-red-fg" />
                     <span>
                       <span className="font-bold">Nobody can donate</span> {totals.gaps.join(", ")} anywhere on the map right now.
                     </span>
@@ -443,11 +443,11 @@ export function DonorMap({ data }: { data: MapData }) {
           </div>
 
           {(data.unplaced > 0 || unplacedHospitals > 0 || data.truncated) && (
-            <div className="space-y-1.5 rounded-2xl border border-dashed border-hairline bg-white/60 px-4 py-3 text-caption text-ink-muted">
+            <div className="space-y-1.5 rounded-2xl border border-dashed border-hairline bg-card/60 px-4 py-3 text-caption text-ink-muted">
               {data.unplaced > 0 && (
                 <p>
                   <span className="font-bold text-ink">{data.unplaced}</span> donor{data.unplaced === 1 ? "" : "s"} could not be placed: no city, or a town the map does not know.{" "}
-                  <Link href="/admin/users" className="font-semibold text-red hover:underline">
+                  <Link href="/admin/users" className="font-semibold text-red-fg hover:underline">
                     See users
                   </Link>
                 </p>
@@ -588,9 +588,9 @@ function HospitalPanel({
             {ALL_TYPES.map((t) => {
               const n = reach.blood[t] ?? 0;
               return (
-                <li key={t} className={cn("rounded-lg px-1 py-2 text-center", n > 0 ? "bg-[#F0FBF3]" : "bg-red-light")}>
+                <li key={t} className={cn("rounded-lg px-1 py-2 text-center", n > 0 ? "bg-success-soft" : "bg-red-light")}>
                   <p className="text-caption font-extrabold text-ink">{t}</p>
-                  <p className={cn("text-body-sm font-bold tabular-nums", n > 0 ? "text-[#166534]" : "text-red")}>{n}</p>
+                  <p className={cn("text-body-sm font-bold tabular-nums", n > 0 ? "text-success-strong" : "text-red-fg")}>{n}</p>
                 </li>
               );
             })}
@@ -598,7 +598,7 @@ function HospitalPanel({
 
           {reach.missing.length > 0 && (
             <p className="mt-3 flex items-start gap-2 rounded-xl bg-red-light px-3 py-2.5 text-caption text-ink">
-              <AlertTriangle className="mt-0.5 size-4 shrink-0 text-red" />
+              <AlertTriangle className="mt-0.5 size-4 shrink-0 text-red-fg" />
               <span>
                 <span className="font-bold">Gaps:</span> no one ready for {reach.missing.join(", ")} within {radius} km. Recruit for these.
               </span>

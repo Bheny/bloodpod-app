@@ -4,6 +4,7 @@ import { ChevronRight, Pencil, Bell, Wallet, HeartPulse, IdCard, MapPin, Shield,
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { getPassportData } from "@/lib/passport-data";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
+import { ThemeSwitch } from "@/components/profile/ThemeSwitch";
 import { getInitials } from "@/lib/formatters";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { Card } from "@/components/ui/Card";
@@ -31,7 +32,7 @@ function LinkRow({
   return (
     <Link
       href={href}
-      className="flex items-center gap-3 rounded-2xl border-[0.5px] border-hairline bg-white px-4 py-3.5 shadow-raised transition-colors hover:bg-surface"
+      className="flex items-center gap-3 rounded-2xl border-[0.5px] border-hairline bg-card px-4 py-3.5 shadow-raised transition-colors hover:bg-surface"
     >
       <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-surface">
         <Icon className="size-5 text-ink-mid" />
@@ -81,7 +82,7 @@ export default async function ProfilePage() {
             <p className="text-caption text-ink-muted lg:text-body-sm">{user.email}</p>
 
             <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
-              <span className="rounded-full bg-red-light px-3 py-1 text-caption font-bold text-red">
+              <span className="rounded-full bg-red-light px-3 py-1 text-caption font-bold text-red-fg">
                 {user.bloodType ? BLOOD_TYPE_LABELS[user.bloodType] : "No blood type"}
               </span>
               <span className="flex items-center gap-1 rounded-full bg-surface px-3 py-1 text-caption font-semibold text-ink-mid">
@@ -99,7 +100,7 @@ export default async function ProfilePage() {
 
           <Link
             href="/passport"
-            className="flex items-center gap-3 rounded-2xl bg-ink px-4 py-4 shadow-raised transition-transform active:scale-[0.98]"
+            className="flex items-center gap-3 rounded-2xl bg-panel px-4 py-4 shadow-raised transition-transform active:scale-[0.98]"
           >
             <span className="min-w-0 flex-1">
               <span className="block text-label font-bold uppercase tracking-wide text-white/70">Blood Card</span>
@@ -137,6 +138,11 @@ export default async function ProfilePage() {
               <LinkRow href="/admin" icon={Shield} label="Admin dashboard" hint="Users, network, hospitals and finance" />
             </section>
           )}
+
+          <section className="flex flex-col gap-2.5">
+            <SectionLabel>Appearance</SectionLabel>
+            <ThemeSwitch />
+          </section>
 
           <section className="flex flex-col gap-2.5">
             <SectionLabel>Pods</SectionLabel>

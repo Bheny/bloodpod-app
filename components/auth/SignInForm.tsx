@@ -73,9 +73,9 @@ export function SignInForm({ notice }: { notice?: string }) {
       </div>
 
       <div className="my-6 flex items-center gap-3 text-[13px] text-ink-faint">
-        <div className="h-px flex-1 bg-[#E5E5EA]" />
+        <div className="h-px flex-1 bg-hairline" />
         or continue with email
-        <div className="h-px flex-1 bg-[#E5E5EA]" />
+        <div className="h-px flex-1 bg-hairline" />
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
@@ -94,7 +94,7 @@ export function SignInForm({ notice }: { notice?: string }) {
             <label htmlFor="password" className="text-[13px] font-semibold text-ink-mid">
               Password
             </label>
-            <Link href="/forgot-password" className="text-[13px] font-semibold text-red">
+            <Link href="/forgot-password" className="text-[13px] font-semibold text-red-fg">
               Forgot password?
             </Link>
           </div>
@@ -105,11 +105,11 @@ export function SignInForm({ notice }: { notice?: string }) {
             {...register("password")}
           />
           {errors.password?.message && (
-            <p className="text-xs text-red">{errors.password.message}</p>
+            <p className="text-xs text-red-fg">{errors.password.message}</p>
           )}
         </div>
 
-        {formError && <p className="text-sm text-red">{formError}</p>}
+        {formError && <p className="text-sm text-red-fg">{formError}</p>}
 
         <Button type="submit" loading={isSubmitting} disabled={isLocked} className="mt-1 w-full">
           {isSubmitting ? "Signing in..." : "Sign in"}
@@ -118,7 +118,7 @@ export function SignInForm({ notice }: { notice?: string }) {
 
       <p className="mt-6 text-center text-sm text-ink-mid">
         Don&apos;t have an account?{" "}
-        <Link href="/sign-up" className="font-semibold text-red">
+        <Link href="/sign-up" className="font-semibold text-red-fg">
           Build your pod
         </Link>
       </p>

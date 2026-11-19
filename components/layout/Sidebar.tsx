@@ -31,7 +31,7 @@ export function Sidebar({ user, isAdmin = false }: { user: SidebarUser | null; i
   }
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r-[0.5px] border-[#E5E5EA] bg-white lg:flex">
+    <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r-[0.5px] border-hairline bg-card lg:flex">
       <div className="px-6 py-6">
         <Logo />
       </div>
@@ -54,10 +54,10 @@ export function Sidebar({ user, isAdmin = false }: { user: SidebarUser | null; i
               aria-current={active ? "page" : undefined}
               className={cn(
                 "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors duration-150",
-                active ? "bg-red-light text-red" : "text-ink-mid hover:bg-surface",
+                active ? "bg-red-light text-red-fg" : "text-ink-mid hover:bg-surface",
               )}
             >
-              <Icon className={cn("size-5", active ? "text-red" : "text-ink-faint")} />
+              <Icon className={cn("size-5", active ? "text-red-fg" : "text-ink-faint")} />
               {tab.label}
             </Link>
           );

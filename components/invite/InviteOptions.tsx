@@ -120,8 +120,8 @@ export function InviteOptions({
         <p className="text-[13px] font-extrabold text-ink">{podName}</p>
         <p className="mb-1.5 text-[10px] text-ink-faint">Anyone with this link or code can join</p>
 
-        <div className="rounded-xl border border-[#E5E5EA] bg-white px-2.5 py-2">
-          <p className="truncate text-[11px] font-medium text-red">{inviteUrl}</p>
+        <div className="rounded-xl border border-hairline bg-card px-2.5 py-2">
+          <p className="truncate text-[11px] font-medium text-red-fg">{inviteUrl}</p>
         </div>
 
         <button
@@ -138,7 +138,7 @@ export function InviteOptions({
         <p className="text-[13px] font-extrabold text-ink">Your pod code</p>
         <p className="mb-1.5 text-[10px] text-ink-faint">Easier to share out loud or by text</p>
 
-        <div className="rounded-xl border border-[#E5E5EA] bg-white px-2.5 py-2.5 text-center">
+        <div className="rounded-xl border border-hairline bg-card px-2.5 py-2.5 text-center">
           <p className="font-mono text-lg font-extrabold tracking-[4px] text-ink">{inviteCode}</p>
         </div>
 
@@ -155,7 +155,7 @@ export function InviteOptions({
             type="button"
             onClick={handleRegenerate}
             disabled={regenerating}
-            className="flex items-center gap-1.5 rounded-full bg-white px-3 text-[11px] font-bold text-ink-mid disabled:opacity-60"
+            className="flex items-center gap-1.5 rounded-full bg-card px-3 text-[11px] font-bold text-ink-mid disabled:opacity-60"
           >
             <RefreshCw className={`size-3.5 ${regenerating ? "animate-spin" : ""}`} />
             Regenerate
@@ -169,7 +169,7 @@ export function InviteOptions({
         <button
           type="button"
           onClick={handleWhatsApp}
-          className="flex items-center gap-2.5 rounded-xl bg-white px-2.5 py-2.5 text-left"
+          className="flex items-center gap-2.5 rounded-xl bg-card px-2.5 py-2.5 text-left"
         >
           <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#E8F5E9] text-[#25D366]">
             <WhatsAppIcon />
@@ -183,9 +183,9 @@ export function InviteOptions({
         <button
           type="button"
           onClick={() => setShowEmailInput((v) => !v)}
-          className="flex items-center gap-2.5 rounded-xl bg-white px-2.5 py-2.5 text-left"
+          className="flex items-center gap-2.5 rounded-xl bg-card px-2.5 py-2.5 text-left"
         >
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-red-light text-red">
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-red-light text-red-fg">
             <Mail className="size-4" />
           </span>
           <span>
@@ -195,7 +195,7 @@ export function InviteOptions({
         </button>
 
         {showEmailInput && (
-          <div className="rounded-xl bg-white px-2.5 py-2.5">
+          <div className="rounded-xl bg-card px-2.5 py-2.5">
             {emailSentTo ? (
               <p className="text-xs font-semibold text-[#1FA855]">
                 Invite sent to {emailSentTo} ✓
@@ -214,14 +214,14 @@ export function InviteOptions({
                 </Button>
               </div>
             )}
-            {emailError && <p className="mt-1.5 text-xs text-red">{emailError}</p>}
+            {emailError && <p className="mt-1.5 text-xs text-red-fg">{emailError}</p>}
           </div>
         )}
 
         <button
           type="button"
           onClick={handleMore}
-          className="flex items-center gap-2.5 rounded-xl bg-white px-2.5 py-2.5 text-left"
+          className="flex items-center gap-2.5 rounded-xl bg-card px-2.5 py-2.5 text-left"
         >
           <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-surface text-ink">
             <Share2 className="size-4" />

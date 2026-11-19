@@ -81,10 +81,10 @@ export function CelebrationOverlay({
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.95 }}
           transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
-          className="relative w-full max-w-[320px] rounded-2xl bg-white p-6 text-center shadow-floating"
+          className="relative w-full max-w-[320px] rounded-2xl bg-card p-6 text-center shadow-floating"
         >
           <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-red-light">
-            <Icon className="size-7 text-red" />
+            <Icon className="size-7 text-red-fg" />
           </span>
           <h2 className="mt-4 text-[20px] font-extrabold tracking-[-0.5px] text-ink">{title}</h2>
           <p className="mt-1.5 text-sm text-ink-muted">{subtitle}</p>

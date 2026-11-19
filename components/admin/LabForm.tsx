@@ -22,7 +22,7 @@ export interface LabFormValue {
 const EMPTY: Omit<LabFormValue, "id"> = { name: "", town: "", address: "", phone: "", latitude: "", longitude: "", tests: {} };
 
 const field =
-  "w-full rounded-xl border border-[#E5E5EA] bg-white px-3.5 py-2.5 text-body-sm text-ink placeholder:text-ink-faint focus:border-red focus:outline-none";
+  "w-full rounded-xl border border-hairline bg-card px-3.5 py-2.5 text-body-sm text-ink placeholder:text-ink-faint focus:border-red focus:outline-none";
 
 /** Add a lab, or edit one when `lab` is given. */
 export function LabForm({ lab, onDone }: { lab?: LabFormValue; onDone?: () => void }) {
@@ -121,14 +121,14 @@ export function LabForm({ lab, onDone }: { lab?: LabFormValue; onDone?: () => vo
           {SERVICE_TESTS.map((t) => {
             const on = t.id in v.tests;
             return (
-              <div key={t.id} className={cn("flex items-center gap-2 rounded-xl border px-3 py-2", on ? "border-red bg-red-light" : "border-[#E5E5EA]")}>
+              <div key={t.id} className={cn("flex items-center gap-2 rounded-xl border px-3 py-2", on ? "border-red bg-red-light" : "border-hairline")}>
                 <label className="flex flex-1 items-center gap-2 text-body-sm text-ink">
                   <input type="checkbox" checked={on} onChange={() => toggleTest(t.id)} className="accent-red" />
                   {t.label}
                 </label>
                 {on && (
                   <input
-                    className="w-20 rounded-lg border border-[#E5E5EA] bg-white px-2 py-1 text-caption"
+                    className="w-20 rounded-lg border border-hairline bg-card px-2 py-1 text-caption"
                     placeholder="Price"
                     value={v.tests[t.id] ?? ""}
                     onChange={(e) => set({ tests: { ...v.tests, [t.id]: e.target.value } })}
@@ -142,7 +142,7 @@ export function LabForm({ lab, onDone }: { lab?: LabFormValue; onDone?: () => vo
         </div>
       </fieldset>
 
-      {error && <p className="text-caption text-red">{error}</p>}
+      {error && <p className="text-caption text-red-fg">{error}</p>}
       <div className="flex gap-2">
         <button
           type="submit"

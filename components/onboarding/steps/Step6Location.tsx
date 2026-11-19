@@ -71,7 +71,7 @@ export function Step6Location({
     <div className="flex flex-1 flex-col items-center px-6 py-10 text-center">
       <div className="flex-1">
         <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-red-light">
-          <MapPin className="size-7 text-red" />
+          <MapPin className="size-7 text-red-fg" />
         </span>
 
         <h1 className="mt-5 text-[22px] font-extrabold tracking-[-0.6px] text-ink">
@@ -114,7 +114,7 @@ export function Step6Location({
             <button
               type="button"
               onClick={() => setShowCityInput(true)}
-              className="mt-3 text-sm font-semibold text-red"
+              className="mt-3 text-sm font-semibold text-red-fg"
             >
               Enter my city instead
             </button>

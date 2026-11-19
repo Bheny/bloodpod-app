@@ -36,7 +36,7 @@ export function Delta({ value, goodWhenUp = true }: { value: number | null; good
   const good = up === goodWhenUp;
   const Icon = up ? ArrowUpRight : ArrowDownRight;
   return (
-    <span className={cn("inline-flex items-center gap-0.5 text-caption font-bold", good ? "text-[#1FA855]" : "text-red")}>
+    <span className={cn("inline-flex items-center gap-0.5 text-caption font-bold", good ? "text-[#1FA855]" : "text-red-fg")}>
       <Icon className="size-3.5" />
       {Math.abs(value)}%
     </span>
@@ -70,7 +70,7 @@ export function StatCard({
       <p
         className={cn(
           "mt-1.5 text-[28px] font-extrabold leading-none tracking-[-1px]",
-          tone === "good" ? "text-[#1FA855]" : tone === "warn" ? "text-red" : "text-ink",
+          tone === "good" ? "text-[#1FA855]" : tone === "warn" ? "text-red-fg" : "text-ink",
         )}
       >
         {value}
@@ -121,10 +121,10 @@ export function Panel({
 
 const BADGE_TONES = {
   gray: "bg-surface text-ink-mid",
-  green: "bg-[#F0FBF3] text-[#166534]",
-  red: "bg-red-light text-red",
-  amber: "bg-[#FFF7E6] text-[#9A6700]",
-  blue: "bg-[#EFF6FF] text-[#1D4ED8]",
+  green: "bg-success-soft text-success-strong",
+  red: "bg-red-light text-red-fg",
+  amber: "bg-warn-soft text-warn-strong",
+  blue: "bg-info-soft text-info-strong",
 } as const;
 
 export function Badge({ tone = "gray", children }: { tone?: keyof typeof BADGE_TONES; children: React.ReactNode }) {
@@ -220,7 +220,7 @@ export function FilterTabs({
           href={it.href}
           className={cn(
             "flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-caption font-bold transition-colors",
-            it.id === active ? "bg-ink text-white" : "bg-white text-ink-mid shadow-raised hover:text-ink",
+            it.id === active ? "bg-panel text-white" : "bg-card text-ink-mid shadow-raised hover:text-ink",
           )}
         >
           {it.label}

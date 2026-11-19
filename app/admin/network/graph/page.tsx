@@ -25,7 +25,7 @@ export default async function AdminNetworkGraphPage() {
       <NetworkGraph data={data} />
 
       {data.stats.invites === 0 && data.stats.people > 0 && (
-        <p className="mt-4 rounded-2xl border border-dashed border-hairline bg-white/60 px-4 py-3 text-caption text-ink-muted">
+        <p className="mt-4 rounded-2xl border border-dashed border-hairline bg-card/60 px-4 py-3 text-caption text-ink-muted">
           Invite chains start appearing as new people join through an invite. Joins from before tracking began show
           their Pod links but not who brought them in.
         </p>

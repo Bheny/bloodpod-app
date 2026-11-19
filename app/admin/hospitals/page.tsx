@@ -62,14 +62,14 @@ export default async function AdminHospitalsPage({ searchParams }: { searchParam
                           {contact.name ?? "No name"}
                           {contact.jobTitle ? <span className="font-normal text-ink-muted">, {contact.jobTitle}</span> : null}
                         </p>
-                        <a href={`mailto:${contact.email}`} className="flex items-center gap-2 text-ink-mid hover:text-red">
+                        <a href={`mailto:${contact.email}`} className="flex items-center gap-2 text-ink-mid hover:text-red-fg">
                           <Mail className="size-4 text-ink-faint" /> {contact.email}
                         </a>
                       </>
                     ) : (
                       <p className="text-ink-muted">No linked account</p>
                     )}
-                    <a href={`tel:${h.phone}`} className="flex items-center gap-2 text-ink-mid hover:text-red">
+                    <a href={`tel:${h.phone}`} className="flex items-center gap-2 text-ink-mid hover:text-red-fg">
                       <Phone className="size-4 text-ink-faint" /> {h.phone}
                     </a>
                   </div>
@@ -77,7 +77,7 @@ export default async function AdminHospitalsPage({ searchParams }: { searchParam
                   <div className="space-y-1.5 text-body-sm">
                     <p className="text-caption font-bold uppercase tracking-wide text-ink-muted">Their note</p>
                     <p className="text-ink-mid">{h.note || "None"}</p>
-                    {mrr > 0 && <p className="font-semibold text-[#166534]">Pays {ghs(mrr, { decimals: false })} a month</p>}
+                    {mrr > 0 && <p className="font-semibold text-success-strong">Pays {ghs(mrr, { decimals: false })} a month</p>}
                   </div>
                 </div>
 

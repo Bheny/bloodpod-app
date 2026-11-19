@@ -18,7 +18,7 @@ export function HospitalHeader({ userName }: { userName: string | null }) {
   }
 
   return (
-    <header className="border-b-[0.5px] border-[#E5E5EA] bg-white">
+    <header className="border-b-[0.5px] border-hairline bg-card">
       <div className="mx-auto flex h-16 max-w-[1100px] items-center justify-between px-6">
         <Link href="/hospital" className="flex items-center gap-3">
           <Logo />

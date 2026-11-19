@@ -11,7 +11,7 @@ export function LogoMark({ className }: { className?: string }) {
       aria-hidden="true"
       fill="none"
     >
-      <ellipse cx="12" cy="16" rx="10" ry="11" fill="#1C1C1E" />
+      <ellipse cx="12" cy="16" rx="10" ry="11" className="fill-ink" />
       <ellipse cx="20" cy="16" rx="10" ry="11" fill="#DD0000" />
       <ellipse cx="16" cy="16" rx="4.5" ry="5.5" fill="#FFFFFF" />
     </svg>
@@ -38,7 +38,7 @@ export function Logo({
         <LogoMark className={markClassName} />
       </m.span>
       <span className={cn("text-lg font-extrabold tracking-tight", variant === "light" ? "text-white" : "text-ink")}>
-        Blood<span className="text-red">Pod</span>
+        Blood<span className="text-red-fg">Pod</span>
       </span>
     </span>
   );

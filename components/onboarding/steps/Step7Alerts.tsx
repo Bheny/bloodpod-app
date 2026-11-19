@@ -42,7 +42,7 @@ export function Step7Alerts() {
           animate={{ scale: 1, opacity: 1 }}
           className="flex size-14 items-center justify-center rounded-full bg-red-light"
         >
-          <BellRing className="size-7 text-red" />
+          <BellRing className="size-7 text-red-fg" />
         </m.span>
         <h1 className="mt-5 text-[22px] font-extrabold tracking-[-0.6px] text-ink">Last step: switch on alerts.</h1>
         <p className="mt-2 text-sm text-ink-muted">

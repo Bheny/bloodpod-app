@@ -52,7 +52,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
         actions={
           <a
             href={`/api/admin/users/export?${exportParams.toString()}`}
-            className="flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-body-sm font-bold text-ink shadow-raised transition-colors hover:bg-surface"
+            className="flex items-center gap-2 rounded-full bg-card px-4 py-2.5 text-body-sm font-bold text-ink shadow-raised transition-colors hover:bg-surface"
           >
             <Download className="size-4" /> Export CSV
           </a>
@@ -67,14 +67,14 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
             defaultValue={sp.q ?? ""}
             placeholder="Search name, email, phone or city"
             aria-label="Search users"
-            className="w-full rounded-xl border border-hairline bg-white py-3 pl-11 pr-4 text-body-sm text-ink placeholder:text-ink-faint focus:border-red focus:outline-none focus:ring-3 focus:ring-red/8"
+            className="w-full rounded-xl border border-hairline bg-card py-3 pl-11 pr-4 text-body-sm text-ink placeholder:text-ink-faint focus:border-red focus:outline-none focus:ring-3 focus:ring-red/8"
           />
         </div>
         <select
           name="blood"
           defaultValue={sp.blood ?? ""}
           aria-label="Blood type"
-          className="rounded-xl border border-hairline bg-white px-4 py-3 text-body-sm text-ink focus:border-red focus:outline-none"
+          className="rounded-xl border border-hairline bg-card px-4 py-3 text-body-sm text-ink focus:border-red focus:outline-none"
         >
           <option value="">All blood types</option>
           {Object.entries(BLOOD_TYPE_LABELS).map(([value, label]) => (
@@ -84,7 +84,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
           ))}
         </select>
         {status !== "all" && <input type="hidden" name="status" value={status} />}
-        <button type="submit" className="rounded-xl bg-ink px-6 py-3 text-body-sm font-bold text-white">
+        <button type="submit" className="rounded-xl bg-panel px-6 py-3 text-body-sm font-bold text-white">
           Search
         </button>
       </form>
@@ -154,7 +154,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
       {pages > 1 && (
         <nav aria-label="Pagination" className="mt-4 flex items-center justify-between text-body-sm">
           {page > 1 ? (
-            <Link href={href(sp, { page: String(page - 1) })} className="rounded-full bg-white px-4 py-2 font-bold text-ink shadow-raised">
+            <Link href={href(sp, { page: String(page - 1) })} className="rounded-full bg-card px-4 py-2 font-bold text-ink shadow-raised">
               Previous
             </Link>
           ) : (
@@ -164,7 +164,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
             Page {page} of {pages} ({USER_PAGE_SIZE} per page)
           </span>
           {page < pages ? (
-            <Link href={href(sp, { page: String(page + 1) })} className="rounded-full bg-white px-4 py-2 font-bold text-ink shadow-raised">
+            <Link href={href(sp, { page: String(page + 1) })} className="rounded-full bg-card px-4 py-2 font-bold text-ink shadow-raised">
               Next
             </Link>
           ) : (

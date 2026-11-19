@@ -79,7 +79,7 @@ export function HospitalApplyForm() {
         {[1, 2].map((n) => (
           <span
             key={n}
-            className={cn("h-1.5 flex-1 rounded-full transition-colors", n <= step ? "bg-red" : "bg-[#E5E5EA]")}
+            className={cn("h-1.5 flex-1 rounded-full transition-colors", n <= step ? "bg-red" : "bg-hairline")}
           />
         ))}
       </div>
@@ -96,7 +96,7 @@ export function HospitalApplyForm() {
               className="flex flex-col gap-5"
             >
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[2px] text-red">Step 1 of 2</p>
+                <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">Step 1 of 2</p>
                 <h2 className="mt-2 text-xl font-extrabold tracking-[-0.5px] text-ink">Who is applying?</h2>
                 <p className="mt-1 text-sm text-ink-muted">You will be the main contact for your facility.</p>
               </div>
@@ -119,7 +119,7 @@ export function HospitalApplyForm() {
                 />
               </Field>
 
-              {formError && <p className="text-sm text-red">{formError}</p>}
+              {formError && <p className="text-sm text-red-fg">{formError}</p>}
 
               <Button type="button" onClick={next} size="lg" className="w-full">
                 Continue
@@ -135,7 +135,7 @@ export function HospitalApplyForm() {
               className="flex flex-col gap-5"
             >
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[2px] text-red">Step 2 of 2</p>
+                <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">Step 2 of 2</p>
                 <h2 className="mt-2 text-xl font-extrabold tracking-[-0.5px] text-ink">Tell us about your facility</h2>
                 <p className="mt-1 text-sm text-ink-muted">We use this to verify you and to find donors near you.</p>
               </div>
@@ -155,10 +155,10 @@ export function HospitalApplyForm() {
                         onClick={() => setValue("kind", o.value, { shouldValidate: true })}
                         className={cn(
                           "rounded-xl border-[1.5px] p-3 text-left transition-colors",
-                          on ? "border-red bg-red-light" : "border-[#E5E5EA] bg-white hover:border-red-mid",
+                          on ? "border-red bg-red-light" : "border-hairline bg-card hover:border-red-mid",
                         )}
                       >
-                        <Icon className={cn("size-5", on ? "text-red" : "text-ink-muted")} />
+                        <Icon className={cn("size-5", on ? "text-red-fg" : "text-ink-muted")} />
                         <span className="mt-2 block text-sm font-bold text-ink">{o.label}</span>
                         <span className="block text-[11px] leading-snug text-ink-muted">{o.hint}</span>
                       </button>
@@ -186,12 +186,12 @@ export function HospitalApplyForm() {
                   id="note"
                   rows={3}
                   placeholder="For example, how often you run short of blood, or which types are hardest to find."
-                  className="w-full resize-none rounded-xl border border-[#E5E5EA] bg-white px-4 py-3 text-base text-ink placeholder:text-ink-faint focus:border-red focus:outline-none focus:ring-3 focus:ring-red/8"
+                  className="w-full resize-none rounded-xl border border-hairline bg-card px-4 py-3 text-base text-ink placeholder:text-ink-faint focus:border-red focus:outline-none focus:ring-3 focus:ring-red/8"
                   {...register("note")}
                 />
               </Field>
 
-              {formError && <p className="text-sm text-red">{formError}</p>}
+              {formError && <p className="text-sm text-red-fg">{formError}</p>}
 
               <div className="flex gap-3">
                 <Button type="button" variant="ghost" onClick={() => setStep(1)} className="px-6">
@@ -211,7 +211,7 @@ export function HospitalApplyForm() {
 
       <p className="mt-6 text-center text-sm text-ink-mid">
         Already applied?{" "}
-        <Link href="/sign-in" className="font-semibold text-red">
+        <Link href="/sign-in" className="font-semibold text-red-fg">
           Sign in
         </Link>
       </p>

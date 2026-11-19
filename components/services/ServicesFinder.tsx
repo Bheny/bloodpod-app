@@ -59,7 +59,7 @@ export function ServicesFinder({
 
   return (
     <div className="flex flex-col gap-4 px-3.5 pb-8 pt-4 lg:px-0 lg:pt-0">
-      <section className="rounded-2xl border-[0.5px] border-hairline bg-white p-4 shadow-raised lg:p-6">
+      <section className="rounded-2xl border-[0.5px] border-hairline bg-card p-4 shadow-raised lg:p-6">
         <h2 className="text-body-sm font-bold text-ink lg:text-title">What do you need checked?</h2>
         <p className="mt-0.5 text-caption text-ink-muted lg:text-body-sm">Pick one or more. We list the nearest labs that offer them.</p>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -73,7 +73,7 @@ export function ServicesFinder({
                 aria-pressed={on}
                 className={cn(
                   "flex items-start gap-3 rounded-xl border p-3 text-left transition-colors",
-                  on ? "border-red bg-red-light" : "border-hairline bg-white hover:border-red/40",
+                  on ? "border-red bg-red-light" : "border-hairline bg-card hover:border-red/40",
                 )}
               >
                 <span
@@ -119,7 +119,7 @@ export function ServicesFinder({
                   onClick={() => setView(id)}
                   className={cn(
                     "flex items-center gap-1.5 rounded-full px-3 py-1.5 text-label font-bold transition-colors lg:text-body-sm",
-                    view === id ? "bg-white text-ink shadow-raised" : "text-ink-muted",
+                    view === id ? "bg-card text-ink shadow-raised" : "text-ink-muted",
                   )}
                 >
                   <Icon className="size-3.5" /> {label}
@@ -130,7 +130,7 @@ export function ServicesFinder({
         </div>
 
         {!origin && results.length > 0 && (
-          <p className="mt-2 rounded-xl bg-[#FFF7E6] p-3 text-caption text-[#9A6700]">
+          <p className="mt-2 rounded-xl bg-warn-soft p-3 text-caption text-warn-strong">
             Add your city or location in your profile and we&apos;ll sort these by distance from you.
           </p>
         )}
@@ -142,7 +142,7 @@ export function ServicesFinder({
         )}
 
         {results.length === 0 ? (
-          <div className="mt-3 rounded-2xl bg-white px-6 py-10 text-center shadow-raised">
+          <div className="mt-3 rounded-2xl bg-card px-6 py-10 text-center shadow-raised">
             <FlaskConical className="mx-auto size-9 text-ink-faint" />
             <p className="mt-3 text-body-sm font-bold text-ink">
               {picked.length ? "No lab offers that yet" : "No labs listed yet"}
@@ -158,12 +158,12 @@ export function ServicesFinder({
                 <article
                   onClick={() => setActive(lab.id)}
                   className={cn(
-                    "rounded-2xl border-[0.5px] bg-white p-4 shadow-raised lg:p-5",
+                    "rounded-2xl border-[0.5px] bg-card p-4 shadow-raised lg:p-5",
                     active === lab.id ? "border-red" : "border-hairline",
                   )}
                 >
                   <div className="flex items-start gap-3">
-                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-ink text-label font-bold text-white">
+                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-panel text-label font-bold text-white">
                       {i + 1}
                     </span>
                     <div className="min-w-0 flex-1">

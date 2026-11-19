@@ -21,11 +21,11 @@ export interface MyBooking {
 }
 
 export const TONE = {
-  amber: "bg-[#FFF7E6] text-[#9A6700]",
-  green: "bg-[#F0FBF3] text-[#166534]",
+  amber: "bg-warn-soft text-warn-strong",
+  green: "bg-success-soft text-success-strong",
   gray: "bg-surface text-ink-mid",
-  red: "bg-red-light text-red",
-  blue: "bg-[#EFF6FF] text-[#1D4ED8]",
+  red: "bg-red-light text-red-fg",
+  blue: "bg-info-soft text-info-strong",
 } as const;
 
 export function MyBookings({ bookings }: { bookings: MyBooking[] }) {
@@ -53,7 +53,7 @@ export function MyBookings({ bookings }: { bookings: MyBooking[] }) {
 
   if (bookings.length === 0) {
     return (
-      <div className="mx-3.5 mt-4 rounded-2xl bg-white px-6 py-10 text-center shadow-raised lg:mx-0 lg:max-w-2xl">
+      <div className="mx-3.5 mt-4 rounded-2xl bg-card px-6 py-10 text-center shadow-raised lg:mx-0 lg:max-w-2xl">
         <FlaskConical className="mx-auto size-9 text-ink-faint" />
         <p className="mt-3 text-body-sm font-bold text-ink">No requests yet</p>
         <p className="mt-1 text-caption text-ink-muted">Find a lab on the Services page and request a test.</p>
@@ -66,12 +66,12 @@ export function MyBookings({ bookings }: { bookings: MyBooking[] }) {
 
   return (
     <div className="flex flex-col gap-3 px-3.5 pb-8 pt-4 lg:max-w-2xl lg:px-0 lg:pt-0">
-      {error && <p className="text-caption text-red">{error}</p>}
+      {error && <p className="text-caption text-red-fg">{error}</p>}
       {bookings.map((b) => {
         const st = BOOKING_STATUS[b.status];
         const open = b.status === "REQUESTED" || b.status === "RESCHEDULED" || b.status === "CONFIRMED";
         return (
-          <article key={b.id} className="rounded-2xl border-[0.5px] border-hairline bg-white p-4 shadow-raised lg:p-5">
+          <article key={b.id} className="rounded-2xl border-[0.5px] border-hairline bg-card p-4 shadow-raised lg:p-5">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="text-body-sm font-bold text-ink lg:text-title">{b.labName}</p>

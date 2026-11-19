@@ -85,7 +85,7 @@ export function Step3Details({
   return (
     <div className="flex flex-1 flex-col px-6 py-10">
       <div className="flex-1">
-        <p className="text-[11px] font-bold uppercase tracking-[2px] text-red">About you</p>
+        <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">About you</p>
         <h1 className="mt-3 text-[22px] font-extrabold tracking-[-0.6px] text-ink">{title}</h1>
         <p className="mt-2 text-sm text-ink-muted">{lead}</p>
 
@@ -143,7 +143,7 @@ export function Step3Details({
             <div
               className={
                 eligibility.kind === "ready"
-                  ? "flex gap-3 rounded-card bg-[#F0FBF3] p-4"
+                  ? "flex gap-3 rounded-card bg-success-soft p-4"
                   : "flex gap-3 rounded-card bg-surface p-4"
               }
               aria-live="polite"
@@ -169,7 +169,7 @@ export function Step3Details({
             </div>
           )}
 
-          {error && <p className="text-sm text-red">{error}</p>}
+          {error && <p className="text-sm text-red-fg">{error}</p>}
         </div>
       </div>
 

@@ -56,7 +56,7 @@ export function InstallPrompt() {
   }
 
   return (
-    <div className="rounded-2xl border border-ink-faint bg-white p-4 text-sm">
+    <div className="rounded-2xl border border-ink-faint bg-card p-4 text-sm">
       <p className="font-semibold text-ink">Install BloodPod</p>
       <p className="mt-1 text-ink-mid">
         {isIOS

@@ -100,7 +100,7 @@ export function DiscoverList({ initial, myCity }: { initial: DiscoverResult; myC
                 onClick={() => setView(id)}
                 className={cn(
                   "flex items-center gap-1.5 rounded-full px-3 py-1.5 text-label font-bold transition-colors lg:text-body-sm",
-                  view === id ? "bg-white text-ink shadow-raised" : "text-ink-muted",
+                  view === id ? "bg-card text-ink shadow-raised" : "text-ink-muted",
                 )}
               >
                 <Icon className="size-3.5" /> {label}
@@ -124,7 +124,7 @@ export function DiscoverList({ initial, myCity }: { initial: DiscoverResult; myC
           <button
             type="button"
             onClick={() => setCell(null)}
-            className="mt-3 rounded-full bg-red-light px-3 py-1.5 text-label font-bold text-red"
+            className="mt-3 rounded-full bg-red-light px-3 py-1.5 text-label font-bold text-red-fg"
           >
             Showing {shown.length} in this area · Show all
           </button>
@@ -137,7 +137,7 @@ export function DiscoverList({ initial, myCity }: { initial: DiscoverResult; myC
             ))}
           </div>
         ) : shown.length === 0 ? (
-          <div className="mt-4 rounded-2xl bg-white px-6 py-10 text-center lg:py-14">
+          <div className="mt-4 rounded-2xl bg-card px-6 py-10 text-center lg:py-14">
             <Search className="mx-auto size-9 text-ink-faint" />
             <p className="mt-3 text-body-sm font-bold text-ink">No donors match that search</p>
             <p className="mt-1 text-caption text-ink-muted">

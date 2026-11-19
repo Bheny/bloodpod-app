@@ -22,7 +22,7 @@ export function CardItem({ card }: { card: IdCard }) {
       className="flex items-center gap-3 px-3.5 py-3 transition-colors duration-150 hover:bg-surface"
     >
       <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-red-light">
-        <CreditCard className="size-4 text-red" />
+        <CreditCard className="size-4 text-red-fg" />
       </span>
       <div className="min-w-0 flex-1">
         <p className="truncate text-[12px] font-bold text-ink">{label}</p>

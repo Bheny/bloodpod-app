@@ -79,7 +79,7 @@ export function Step2BloodType({
   return (
     <div className="flex flex-1 flex-col px-6 py-10">
       <div className="flex-1">
-        <p className="text-[11px] font-bold uppercase tracking-[2px] text-red">
+        <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">
           Your blood type
         </p>
         <h1 className="mt-3 text-[22px] font-extrabold tracking-[-0.6px] text-ink">
@@ -100,8 +100,8 @@ export function Step2BloodType({
                 className={cn(
                   "rounded-xl border-[1.5px] py-3 text-center text-base font-bold transition-colors duration-150",
                   selected
-                    ? "border-red bg-red-light text-red"
-                    : "border-[#E5E5EA] bg-white text-ink hover:border-red-mid",
+                    ? "border-red bg-red-light text-red-fg"
+                    : "border-hairline bg-card text-ink hover:border-red-mid",
                 )}
               >
                 {opt.label}
@@ -159,7 +159,7 @@ export function Step2BloodType({
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 80, opacity: 0 }}
               transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-              className="mb-0 w-full max-w-[440px] rounded-t-3xl bg-white p-8 text-center shadow-[0_-8px_40px_rgba(0,0,0,0.1)]"
+              className="mb-0 w-full max-w-[440px] rounded-t-3xl bg-card p-8 text-center shadow-[0_-8px_40px_rgba(0,0,0,0.1)]"
             >
               <p className="text-2xl">🩸</p>
               <h2 className="mt-3 text-xl font-extrabold tracking-[-0.5px] text-ink">

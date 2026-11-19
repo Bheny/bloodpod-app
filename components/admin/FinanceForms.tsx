@@ -24,7 +24,7 @@ async function call(url: string, method: string, body?: unknown): Promise<string
 }
 
 const field =
-  "w-full rounded-xl border border-hairline bg-white px-3.5 py-2.5 text-body-sm text-ink placeholder:text-ink-faint focus:border-red focus:outline-none focus:ring-3 focus:ring-red/8";
+  "w-full rounded-xl border border-hairline bg-card px-3.5 py-2.5 text-body-sm text-ink placeholder:text-ink-faint focus:border-red focus:outline-none focus:ring-3 focus:ring-red/8";
 const label = "mb-1 block text-caption font-semibold text-ink-mid";
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -86,7 +86,7 @@ export function AddEntryForm({ hospitals }: { hospitals: Hospital[] }) {
                 onClick={() => setType(t)}
                 className={cn(
                   "rounded-full px-4 py-2 text-caption font-bold",
-                  type === t ? "bg-ink text-white" : "bg-white text-ink-mid",
+                  type === t ? "bg-panel text-white" : "bg-card text-ink-mid",
                 )}
               >
                 {t === "INCOME" ? "Money in" : "Money out"}
@@ -100,7 +100,7 @@ export function AddEntryForm({ hospitals }: { hospitals: Hospital[] }) {
                 onClick={() => setStatus(s)}
                 className={cn(
                   "rounded-full px-4 py-2 text-caption font-bold",
-                  status === s ? "bg-red text-white" : "bg-white text-ink-mid",
+                  status === s ? "bg-red text-white" : "bg-card text-ink-mid",
                 )}
               >
                 {s === "PAID" ? (type === "INCOME" ? "Received" : "Paid") : type === "INCOME" ? "Invoiced, not paid yet" : "Owed, not paid yet"}
@@ -148,9 +148,9 @@ export function AddEntryForm({ hospitals }: { hospitals: Hospital[] }) {
             <input id="fe-desc" name="description" placeholder="What was it for?" className={field} />
           </div>
 
-          {error && <p className="sm:col-span-2 text-caption font-semibold text-red">{error}</p>}
+          {error && <p className="sm:col-span-2 text-caption font-semibold text-red-fg">{error}</p>}
           <div className="sm:col-span-2">
-            <button disabled={busy} className="rounded-full bg-ink px-6 py-2.5 text-body-sm font-bold text-white disabled:opacity-50">
+            <button disabled={busy} className="rounded-full bg-panel px-6 py-2.5 text-body-sm font-bold text-white disabled:opacity-50">
               {busy ? "Saving..." : "Save"}
             </button>
           </div>
@@ -211,9 +211,9 @@ export function AddContractForm({ hospitals }: { hospitals: Hospital[] }) {
             <label className={label} htmlFor="fc-notes">Note (optional)</label>
             <input id="fc-notes" name="notes" placeholder="Free 90-day pilot, then this" className={field} />
           </div>
-          {error && <p className="sm:col-span-2 text-caption font-semibold text-red">{error}</p>}
+          {error && <p className="sm:col-span-2 text-caption font-semibold text-red-fg">{error}</p>}
           <div className="sm:col-span-2">
-            <button disabled={busy} className="rounded-full bg-ink px-6 py-2.5 text-body-sm font-bold text-white disabled:opacity-50">
+            <button disabled={busy} className="rounded-full bg-panel px-6 py-2.5 text-body-sm font-bold text-white disabled:opacity-50">
               {busy ? "Saving..." : "Save contract"}
             </button>
           </div>
@@ -249,10 +249,10 @@ export function OpeningBalanceForm({ current }: { current: string }) {
         <label className={label} htmlFor="ob-amount">Cash you started with (GH₵)</label>
         <input id="ob-amount" name="amount" defaultValue={current} inputMode="decimal" placeholder="0" className={field} />
       </div>
-      <button disabled={busy} className="rounded-full bg-ink px-5 py-2.5 text-body-sm font-bold text-white disabled:opacity-50">
+      <button disabled={busy} className="rounded-full bg-panel px-5 py-2.5 text-body-sm font-bold text-white disabled:opacity-50">
         {busy ? "Saving..." : "Save"}
       </button>
-      {error && <p className="w-full text-caption font-semibold text-red">{error}</p>}
+      {error && <p className="w-full text-caption font-semibold text-red-fg">{error}</p>}
       {saved && <p className="w-full text-caption font-semibold text-[#1FA855]">Saved.</p>}
     </form>
   );
@@ -288,7 +288,7 @@ export function EntryActions({ id, status, type }: { id: string; status: "PAID" 
         onClick={() => {
           if (confirm("Delete this entry? This cannot be undone.")) run(() => call(`/api/admin/finance/entries/${id}`, "DELETE"));
         }}
-        className="text-caption font-semibold text-ink-muted hover:text-red disabled:opacity-50"
+        className="text-caption font-semibold text-ink-muted hover:text-red-fg disabled:opacity-50"
       >
         Delete
       </button>
@@ -322,7 +322,7 @@ export function ContractActions({ id, status }: { id: string; status: "ACTIVE" |
         </button>
       )}
       {status !== "ENDED" && (
-        <button type="button" disabled={busy} onClick={() => set("ENDED")} className="text-ink-muted hover:text-red disabled:opacity-50">
+        <button type="button" disabled={busy} onClick={() => set("ENDED")} className="text-ink-muted hover:text-red-fg disabled:opacity-50">
           End
         </button>
       )}

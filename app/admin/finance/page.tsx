@@ -136,7 +136,7 @@ export default async function AdminFinancePage() {
                     )}
                   </span>
                   {e.status === "PENDING" && <Badge tone="amber">{e.type === "INCOME" ? "Unpaid" : "Owed"}</Badge>}
-                  <span className={e.type === "INCOME" ? "w-28 shrink-0 text-right text-body-sm font-extrabold tabular-nums text-[#166534]" : "w-28 shrink-0 text-right text-body-sm font-extrabold tabular-nums text-ink"}>
+                  <span className={e.type === "INCOME" ? "w-28 shrink-0 text-right text-body-sm font-extrabold tabular-nums text-success-strong" : "w-28 shrink-0 text-right text-body-sm font-extrabold tabular-nums text-ink"}>
                     {e.type === "INCOME" ? "+" : "-"}
                     {ghs(e.amountPesewas)}
                   </span>

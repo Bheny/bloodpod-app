@@ -124,7 +124,7 @@ export function DocumentForm({
         <Textarea id="notes" placeholder="Optional" {...register("notes")} />
       </Field>
 
-      {formError && <p className="text-sm text-red">{formError}</p>}
+      {formError && <p className="text-sm text-red-fg">{formError}</p>}
 
       <Button type="submit" loading={isSubmitting} size="lg" className="mt-1 w-full">
         {initialDocument ? "Save changes" : "Save document"}
@@ -135,7 +135,7 @@ export function DocumentForm({
           type="button"
           onClick={handleDelete}
           disabled={deleting}
-          className="text-sm font-semibold text-red disabled:opacity-60"
+          className="text-sm font-semibold text-red-fg disabled:opacity-60"
         >
           {deleting ? "Deleting..." : "Delete this document"}
         </button>

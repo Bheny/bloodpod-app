@@ -15,9 +15,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         aria-invalid={!!error}
         aria-describedby={error ? `${id}-error` : undefined}
         className={cn(
-          "w-full rounded-xl border bg-white px-4 py-3.5 text-base text-ink placeholder:text-ink-faint transition-colors duration-150",
+          "w-full rounded-xl border bg-card px-4 py-3.5 text-base text-ink placeholder:text-ink-faint transition-colors duration-150",
           "focus:outline-none focus:border-red focus:ring-3 focus:ring-red/8",
-          error ? "border-red bg-[#FFF8F8]" : "border-[#E5E5EA]",
+          error ? "border-red bg-red-light/50" : "border-hairline",
           className,
         )}
         {...props}
@@ -64,7 +64,7 @@ export function Field({ label, id, error, children }: FieldProps) {
       </label>
       {children}
       {error && (
-        <p id={`${id}-error`} className="text-xs text-red">
+        <p id={`${id}-error`} className="text-xs text-red-fg">
           {error}
         </p>
       )}

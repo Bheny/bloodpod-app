@@ -15,7 +15,7 @@ export function PartnerCard({ partner }: { partner: Partner }) {
   return (
     <Link
       href={`/discover/partner/${partner.id}`}
-      className="flex w-[150px] shrink-0 snap-start flex-col gap-1.5 rounded-2xl border-[0.5px] border-hairline bg-white p-3 shadow-raised lg:w-[190px] lg:p-4"
+      className="flex w-[150px] shrink-0 snap-start flex-col gap-1.5 rounded-2xl border-[0.5px] border-hairline bg-card p-3 shadow-raised lg:w-[190px] lg:p-4"
     >
       <span
         className="flex size-9 items-center justify-center rounded-xl lg:size-11"
@@ -30,7 +30,7 @@ export function PartnerCard({ partner }: { partner: Partner }) {
       <p className="text-label text-ink-muted">{partner.city}</p>
 
       <div className="mt-0.5 flex items-center gap-1">
-        {partner.verified && <ShieldCheck className="size-3 text-[#166534] lg:size-3.5" />}
+        {partner.verified && <ShieldCheck className="size-3 text-success-strong lg:size-3.5" />}
         <span className="text-label font-semibold text-ink-faint">{style.label}</span>
       </div>
     </Link>

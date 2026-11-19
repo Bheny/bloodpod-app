@@ -35,7 +35,7 @@ export function Step5Consent({ onNext }: { onNext: () => void }) {
   return (
     <div className="flex flex-1 flex-col px-6 py-10">
       <div className="flex-1">
-        <p className="text-[11px] font-bold uppercase tracking-[2px] text-red">Your choice</p>
+        <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">Your choice</p>
         <h1 className="mt-3 text-[22px] font-extrabold tracking-[-0.6px] text-ink">
           Here&apos;s exactly what you&apos;re agreeing to.
         </h1>
@@ -45,7 +45,7 @@ export function Step5Consent({ onNext }: { onNext: () => void }) {
           {POINTS.map((p) => (
             <li key={p} className="flex gap-3 text-sm leading-relaxed text-ink-mid">
               <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-red-light">
-                <Check className="size-3 text-red" />
+                <Check className="size-3 text-red-fg" />
               </span>
               {p}
             </li>
@@ -59,13 +59,13 @@ export function Step5Consent({ onNext }: { onNext: () => void }) {
           onClick={() => setAgreed((v) => !v)}
           className={cn(
             "mt-7 flex w-full items-start gap-3 rounded-card border-[1.5px] p-4 text-left transition-colors",
-            agreed ? "border-red bg-red-light" : "border-[#E5E5EA] bg-white hover:border-red-mid",
+            agreed ? "border-red bg-red-light" : "border-hairline bg-card hover:border-red-mid",
           )}
         >
           <span
             className={cn(
               "mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md border-[1.5px]",
-              agreed ? "border-red bg-red" : "border-ink-faint bg-white",
+              agreed ? "border-red bg-red" : "border-ink-faint bg-card",
             )}
           >
             {agreed && <Check className="size-3.5 text-white" />}
@@ -75,7 +75,7 @@ export function Step5Consent({ onNext }: { onNext: () => void }) {
           </span>
         </button>
         <p className="mt-2 text-xs text-ink-muted">You can turn this off any time in your profile.</p>
-        {error && <p className="mt-2 text-sm text-red">{error}</p>}
+        {error && <p className="mt-2 text-sm text-red-fg">{error}</p>}
       </div>
 
       <Button onClick={submit} disabled={!agreed} loading={saving} size="lg" className="mt-8 w-full">

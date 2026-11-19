@@ -4,7 +4,7 @@ import { Logo } from "@/components/ui/Logo";
 export default function InviteLoading() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface px-4 py-12">
-      <div className="w-full max-w-[400px] rounded-3xl border-[0.5px] border-[#E5E5EA] bg-white p-6">
+      <div className="w-full max-w-[400px] rounded-3xl border-[0.5px] border-hairline bg-card p-6">
         <div className="flex justify-center opacity-40">
           <Logo />
         </div>
@@ -22,7 +22,7 @@ export default function InviteLoading() {
 
         <div className="mt-4 flex -space-x-2">
           {[0, 1, 2, 3].map((i) => (
-            <Skeleton key={i} className="size-7 rounded-full border-2 border-white" />
+            <Skeleton key={i} className="size-7 rounded-full border-2 border-card" />
           ))}
         </div>
 

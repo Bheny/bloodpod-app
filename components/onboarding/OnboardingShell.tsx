@@ -88,7 +88,7 @@ export function OnboardingShell(props: OnboardingShellProps) {
               style={{
                 width: dot === dotPosition ? 18 : 6,
                 backgroundColor:
-                  dot < dotPosition ? "rgba(221,0,0,0.4)" : dot === dotPosition ? "#DD0000" : "#E5E5EA",
+                  dot < dotPosition ? "rgba(221,0,0,0.4)" : dot === dotPosition ? "#DD0000" : "var(--color-hairline)",
               }}
             />
           ))}

@@ -12,8 +12,8 @@ const buttonVariants = cva(
         primary:
           "bg-red text-white shadow-[0_0_0_0_rgba(221,0,0,0.4)] hover:bg-red-dark hover:shadow-[0_8px_24px_-4px_rgba(221,0,0,0.45)]",
         secondary:
-          "bg-transparent border-[1.5px] border-red-mid text-red hover:bg-red-light font-bold",
-        ghost: "bg-surface text-ink hover:bg-[#E5E5EA] font-semibold",
+          "bg-transparent border-[1.5px] border-red-mid text-red-fg hover:bg-red-light font-bold",
+        ghost: "bg-surface text-ink hover:bg-hairline font-semibold",
       },
       size: {
         default: "px-6 py-3 text-base",

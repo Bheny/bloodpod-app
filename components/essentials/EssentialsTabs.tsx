@@ -13,7 +13,7 @@ export function EssentialsTabs({ cards, documents }: { cards: IdCard[]; document
 
   return (
     <div>
-      <div className="flex gap-2 bg-white px-4 pb-3">
+      <div className="flex gap-2 bg-card px-4 pb-3">
         <button
           type="button"
           onClick={() => setTab("cards")}
@@ -43,7 +43,7 @@ export function EssentialsTabs({ cards, documents }: { cards: IdCard[]; document
           cards.length === 0 ? (
             <EmptyState label="No ID cards saved yet." />
           ) : (
-            <div className="divide-y-[0.5px] divide-surface overflow-hidden rounded-2xl border-[0.5px] border-[#E5E5EA] bg-white">
+            <div className="divide-y-[0.5px] divide-surface overflow-hidden rounded-2xl border-[0.5px] border-hairline bg-card">
               {cards.map((card) => (
                 <CardItem key={card.id} card={card} />
               ))}
@@ -52,7 +52,7 @@ export function EssentialsTabs({ cards, documents }: { cards: IdCard[]; document
         ) : documents.length === 0 ? (
           <EmptyState label="No documents saved yet." />
         ) : (
-          <div className="divide-y-[0.5px] divide-surface overflow-hidden rounded-2xl border-[0.5px] border-[#E5E5EA] bg-white">
+          <div className="divide-y-[0.5px] divide-surface overflow-hidden rounded-2xl border-[0.5px] border-hairline bg-card">
             {documents.map((document) => (
               <DocumentItem key={document.id} document={document} />
             ))}
@@ -73,7 +73,7 @@ export function EssentialsTabs({ cards, documents }: { cards: IdCard[]; document
 
 function EmptyState({ label }: { label: string }) {
   return (
-    <div className="rounded-2xl bg-white px-6 py-10 text-center">
+    <div className="rounded-2xl bg-card px-6 py-10 text-center">
       <p className="text-sm font-bold text-ink">{label}</p>
       <p className="mt-1 text-xs text-ink-muted">
         Add one below for easy access and sharing when you need it.

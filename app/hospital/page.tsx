@@ -30,11 +30,11 @@ export default async function HospitalHomePage() {
 
       <main className="mx-auto max-w-[1100px] px-6 py-10">
         <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-          <section className="rounded-modal border-[0.5px] border-[#E5E5EA] bg-white p-8">
+          <section className="rounded-modal border-[0.5px] border-hairline bg-card p-8">
             <span
               className={cn(
                 "inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold",
-                approved ? "bg-[#F0FBF3] text-[#1FA855]" : rejected ? "bg-surface text-ink-mid" : "bg-red-light text-red",
+                approved ? "bg-success-soft text-[#1FA855]" : rejected ? "bg-surface text-ink-mid" : "bg-red-light text-red-fg",
               )}
             >
               {approved ? <Check className="size-3.5" /> : <Clock className="size-3.5" />}
@@ -75,7 +75,7 @@ export default async function HospitalHomePage() {
           </section>
 
           <aside className="space-y-4">
-            <div className="rounded-modal border-[0.5px] border-[#E5E5EA] bg-white p-6">
+            <div className="rounded-modal border-[0.5px] border-hairline bg-card p-6">
               <p className="text-[11px] font-bold uppercase tracking-[2px] text-ink-muted">Your application</p>
               <p className="mt-3 text-base font-extrabold text-ink">{hospital.name}</p>
               <p className="text-sm text-ink-muted">
@@ -92,7 +92,7 @@ export default async function HospitalHomePage() {
               </div>
             </div>
 
-            <div className="rounded-modal bg-ink p-6 text-white">
+            <div className="rounded-modal bg-panel p-6 text-white">
               <p className="text-sm font-bold">Want to get ready?</p>
               <p className="mt-2 text-sm leading-relaxed text-white/60">
                 Think about who in your blood bank would send the alert, and which blood types are hardest for you to

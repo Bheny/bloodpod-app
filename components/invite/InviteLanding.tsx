@@ -65,7 +65,7 @@ export function InviteLanding({
         />
       )}
 
-      <div className="w-full max-w-[400px] rounded-3xl border-[0.5px] border-hairline bg-white p-6 shadow-raised">
+      <div className="w-full max-w-[400px] rounded-3xl border-[0.5px] border-hairline bg-card p-6 shadow-raised">
         <div className="flex justify-center opacity-50">
           <Logo className="scale-90" />
         </div>
@@ -132,7 +132,7 @@ export function InviteLanding({
 
             <div className="mt-4 flex items-start gap-3 rounded-2xl bg-surface p-3.5">
               <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-red-light">
-                <HeartHandshake className="size-4 text-red" />
+                <HeartHandshake className="size-4 text-red-fg" />
               </span>
               <p className="text-caption leading-snug text-ink-mid">
                 A <span className="font-bold text-ink">Pod</span> is a small circle of trusted
@@ -148,7 +148,7 @@ export function InviteLanding({
                     <span
                       key={i}
                       style={{ backgroundColor: m.bgColor }}
-                      className="flex size-7 items-center justify-center rounded-full border-2 border-white text-label font-bold text-ink"
+                      className="flex size-7 items-center justify-center rounded-full border-2 border-card text-label font-bold text-ink"
                     >
                       {m.initials}
                     </span>
@@ -170,7 +170,7 @@ export function InviteLanding({
                   {preview.bloodTypesCovered.map((bt) => (
                     <span
                       key={bt}
-                      className="rounded-full bg-red-light px-2.5 py-1 text-label font-bold text-red"
+                      className="rounded-full bg-red-light px-2.5 py-1 text-label font-bold text-red-fg"
                     >
                       {bt}
                     </span>
@@ -179,7 +179,7 @@ export function InviteLanding({
               </div>
             )}
 
-            {error && <p className="mt-3 text-sm text-red">{error}</p>}
+            {error && <p className="mt-3 text-sm text-red-fg">{error}</p>}
 
             {isAuthenticated ? (
               <Button onClick={handleAccept} loading={accepting} size="lg" className="mt-5 w-full">

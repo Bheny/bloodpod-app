@@ -110,7 +110,7 @@ export function LabRow({ lab }: { lab: LabRowData }) {
             if (window.confirm(`Remove ${form.name}?`)) call("DELETE");
           }}
           aria-label="Remove lab"
-          className="flex size-9 items-center justify-center rounded-full bg-surface text-ink-mid hover:bg-red-light hover:text-red"
+          className="flex size-9 items-center justify-center rounded-full bg-surface text-ink-mid hover:bg-red-light hover:text-red-fg"
         >
           <Trash2 className="size-4" />
         </button>
@@ -124,7 +124,7 @@ export function LabRow({ lab }: { lab: LabRowData }) {
         {lab.staff.map((s) => (
           <li key={s.id} className="flex items-center gap-1.5 rounded-full bg-surface px-3 py-1 text-caption text-ink-mid">
             {s.name ? `${s.name} · ${s.email}` : s.email}
-            <button type="button" disabled={busy} onClick={() => staffCall("DELETE", { userId: s.id })} aria-label={`Remove ${s.email}`} className="font-bold text-ink-faint hover:text-red">
+            <button type="button" disabled={busy} onClick={() => staffCall("DELETE", { userId: s.id })} aria-label={`Remove ${s.email}`} className="font-bold text-ink-faint hover:text-red-fg">
               ×
             </button>
           </li>
@@ -143,13 +143,13 @@ export function LabRow({ lab }: { lab: LabRowData }) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Staff email (they must have signed up)"
-          className="min-w-0 flex-1 rounded-xl border border-[#E5E5EA] bg-white px-3 py-2 text-caption text-ink focus:border-red focus:outline-none"
+          className="min-w-0 flex-1 rounded-xl border border-hairline bg-card px-3 py-2 text-caption text-ink focus:border-red focus:outline-none"
         />
-        <button type="submit" disabled={busy} className="rounded-full bg-ink px-4 py-2 text-caption font-bold text-white disabled:opacity-50">
+        <button type="submit" disabled={busy} className="rounded-full bg-panel px-4 py-2 text-caption font-bold text-white disabled:opacity-50">
           Add
         </button>
       </form>
-      {staffError && <p className="mt-1.5 text-caption text-red">{staffError}</p>}
+      {staffError && <p className="mt-1.5 text-caption text-red-fg">{staffError}</p>}
     </div>
     </div>
   );

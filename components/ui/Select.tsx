@@ -16,9 +16,9 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           aria-invalid={!!error}
           aria-describedby={error ? `${id}-error` : undefined}
           className={cn(
-            "w-full appearance-none rounded-xl border bg-white px-4 py-3.5 text-base text-ink transition-colors duration-150",
+            "w-full appearance-none rounded-xl border bg-card px-4 py-3.5 text-base text-ink transition-colors duration-150",
             "focus:outline-none focus:border-red focus:ring-3 focus:ring-red/8",
-            error ? "border-red bg-[#FFF8F8]" : "border-[#E5E5EA]",
+            error ? "border-red bg-red-light/50" : "border-hairline",
             className,
           )}
           {...props}

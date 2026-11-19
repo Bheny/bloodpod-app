@@ -48,7 +48,7 @@ export function Step3PodName({
   return (
     <div className="flex flex-1 flex-col px-6 py-10">
       <div className="flex-1">
-        <p className="text-[11px] font-bold uppercase tracking-[2px] text-red">Your Pod</p>
+        <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">Your Pod</p>
         <h1 className="mt-3 text-[22px] font-extrabold tracking-[-0.6px] text-ink">Who will you build it with?</h1>
         <p className="mt-2 text-sm text-ink-muted">
           A Pod is 10 to 20 people you trust. Pick a group to start, or type your own name.
@@ -62,7 +62,7 @@ export function Step3PodName({
                 key={k}
                 type="button"
                 onClick={() => setName(suggestion)}
-                className="rounded-full border border-[#E5E5EA] bg-white px-3.5 py-1.5 text-sm font-semibold text-ink-mid transition-colors hover:border-red-mid"
+                className="rounded-full border border-hairline bg-card px-3.5 py-1.5 text-sm font-semibold text-ink-mid transition-colors hover:border-red-mid"
               >
                 {k}
               </button>
@@ -86,7 +86,7 @@ export function Step3PodName({
           )}
         </div>
 
-        <div className="mt-4 flex items-center gap-3 rounded-card border-[0.5px] border-[#E5E5EA] bg-white p-3">
+        <div className="mt-4 flex items-center gap-3 rounded-card border-[0.5px] border-hairline bg-card p-3">
           <LogoMark className="size-8 shrink-0" />
           <div>
             <p className="text-sm font-bold text-ink">{name.trim() || "Your Pod"}</p>

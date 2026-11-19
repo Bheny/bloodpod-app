@@ -58,10 +58,10 @@ export function Step1Welcome({ name, onNext }: { name: string | null; onNext: ()
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.35 + i * 0.12 }}
-              className="flex gap-3 rounded-card border-[0.5px] border-[#E5E5EA] bg-white p-4"
+              className="flex gap-3 rounded-card border-[0.5px] border-hairline bg-card p-4"
             >
               <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-red-light">
-                <b.icon className="size-[18px] text-red" />
+                <b.icon className="size-[18px] text-red-fg" />
               </span>
               <span>
                 <span className="block text-sm font-bold text-ink">{b.title}</span>

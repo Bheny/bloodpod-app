@@ -59,7 +59,7 @@ export function LineChart({
             </linearGradient>
           </defs>
           {[0.25, 0.5, 0.75].map((g) => (
-            <line key={g} x1="0" x2={W} y1={H * g} y2={H * g} stroke="#E5E5EA" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+            <line key={g} x1="0" x2={W} y1={H * g} y2={H * g} stroke="var(--color-hairline)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
           ))}
           <path d={area} fill={`url(#${gradientId})`} />
           <path d={line} fill="none" stroke={color} strokeWidth="2.5" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
@@ -71,11 +71,11 @@ export function LineChart({
         {active !== null && (
           <>
             <span
-              className="pointer-events-none absolute size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white"
+              className="pointer-events-none absolute size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-card"
               style={{ left: `${(x(active) / W) * 100}%`, top: `${(y(data[active].value) / H) * 100}%`, backgroundColor: color }}
             />
             <div
-              className="pointer-events-none absolute -top-1 z-10 -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-lg bg-ink px-2.5 py-1.5 text-caption text-white shadow-raised"
+              className="pointer-events-none absolute -top-1 z-10 -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-lg bg-panel px-2.5 py-1.5 text-caption text-white shadow-raised"
               style={{ left: `${Math.min(88, Math.max(12, (x(active) / W) * 100))}%` }}
             >
               <span className="font-bold">{format(data[active].value)}</span>

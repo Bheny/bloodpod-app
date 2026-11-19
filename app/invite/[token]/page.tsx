@@ -18,7 +18,7 @@ export default async function InvitePage({
         <p className="-mt-2 text-sm text-ink-muted">
           Ask whoever sent it for a fresh link, or start your own circle.
         </p>
-        <Link href="/sign-up" className="text-sm font-semibold text-red">
+        <Link href="/sign-up" className="text-sm font-semibold text-red-fg">
           Create your own pod
         </Link>
       </div>

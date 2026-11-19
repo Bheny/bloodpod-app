@@ -110,7 +110,7 @@ function BookingForm({ lab, defaultTests, onClose }: { lab: ServiceResult; defau
           min={todayIso()}
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          className="mt-1 w-full rounded-xl border border-[#E5E5EA] bg-white px-3.5 py-2.5 text-base text-ink focus:border-red focus:outline-none"
+          className="mt-1 w-full rounded-xl border border-hairline bg-card px-3.5 py-2.5 text-base text-ink focus:border-red focus:outline-none"
         />
       </label>
 
@@ -121,7 +121,7 @@ function BookingForm({ lab, defaultTests, onClose }: { lab: ServiceResult; defau
           maxLength={300}
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          className="mt-1 w-full rounded-xl border border-[#E5E5EA] bg-white px-3.5 py-2.5 text-base text-ink focus:border-red focus:outline-none"
+          className="mt-1 w-full rounded-xl border border-hairline bg-card px-3.5 py-2.5 text-base text-ink focus:border-red focus:outline-none"
         />
       </label>
 
@@ -130,7 +130,7 @@ function BookingForm({ lab, defaultTests, onClose }: { lab: ServiceResult; defau
         I agree to share my name and phone number with {lab.name} so they can reach me about this request.
       </label>
 
-      {error && <p className="text-caption text-red">{error}</p>}
+      {error && <p className="text-caption text-red-fg">{error}</p>}
 
       <button
         type="submit"

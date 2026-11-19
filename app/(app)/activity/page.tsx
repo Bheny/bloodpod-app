@@ -30,7 +30,7 @@ export default async function ActivityPage() {
           </p>
         </div>
       ) : (
-        <div className="m-3.5 divide-y-[0.5px] divide-surface overflow-hidden rounded-2xl bg-white">
+        <div className="m-3.5 divide-y-[0.5px] divide-surface overflow-hidden rounded-2xl bg-card">
           {items.map((activity) => {
             const { icon: Icon, bg, color } = ACTIVITY_ICONS[activity.type];
             return (

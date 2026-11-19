@@ -116,7 +116,7 @@ export function MedicalHistoryForm({ defaultValues }: { defaultValues: MedicalHi
         <Input id="emergencyContactPhone" type="tel" {...register("emergencyContactPhone")} />
       </Field>
 
-      {formError && <p className="text-sm text-red">{formError}</p>}
+      {formError && <p className="text-sm text-red-fg">{formError}</p>}
       {saved && <p className="text-sm font-semibold text-[#1FA855]">Saved ✓</p>}
 
       <Button type="submit" loading={isSubmitting} size="lg" className="mt-1 w-full">

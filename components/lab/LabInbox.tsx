@@ -30,7 +30,7 @@ const TABS: { id: Tab; label: string; match: BookingStatus[] }[] = [
 ];
 
 const inputCls =
-  "rounded-xl border border-[#E5E5EA] bg-white px-3 py-2 text-body-sm text-ink focus:border-red focus:outline-none";
+  "rounded-xl border border-hairline bg-card px-3 py-2 text-body-sm text-ink focus:border-red focus:outline-none";
 
 export function LabInbox({ bookings }: { bookings: InboxBooking[] }) {
   const router = useRouter();
@@ -79,7 +79,7 @@ export function LabInbox({ bookings }: { bookings: InboxBooking[] }) {
             onClick={() => setTab(t.id)}
             className={cn(
               "rounded-full px-4 py-2 text-body-sm font-bold transition-colors",
-              tab === t.id ? "bg-ink text-white" : "bg-white text-ink-mid",
+              tab === t.id ? "bg-panel text-white" : "bg-card text-ink-mid",
             )}
           >
             {t.label}
@@ -88,10 +88,10 @@ export function LabInbox({ bookings }: { bookings: InboxBooking[] }) {
         ))}
       </div>
 
-      {error && <p className="mt-3 text-caption text-red">{error}</p>}
+      {error && <p className="mt-3 text-caption text-red-fg">{error}</p>}
 
       {shown.length === 0 ? (
-        <div className="mt-4 rounded-2xl bg-white px-6 py-12 text-center shadow-raised">
+        <div className="mt-4 rounded-2xl bg-card px-6 py-12 text-center shadow-raised">
           <Inbox className="mx-auto size-9 text-ink-faint" />
           <p className="mt-3 text-body-sm font-bold text-ink">Nothing here</p>
           <p className="mt-1 text-caption text-ink-muted">
@@ -105,12 +105,12 @@ export function LabInbox({ bookings }: { bookings: InboxBooking[] }) {
             const open = form?.id === b.id ? form.kind : null;
             const working = busy === b.id;
             return (
-              <li key={b.id} className="rounded-2xl border-[0.5px] border-hairline bg-white p-4 shadow-raised lg:p-5">
+              <li key={b.id} className="rounded-2xl border-[0.5px] border-hairline bg-card p-4 shadow-raised lg:p-5">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="text-body-sm font-bold text-ink lg:text-title">{b.personName ?? "Unnamed person"}</p>
                     {b.personPhone ? (
-                      <a href={`tel:${b.personPhone.replace(/[^\d+]/g, "")}`} className="mt-0.5 flex items-center gap-1.5 text-caption font-bold text-red">
+                      <a href={`tel:${b.personPhone.replace(/[^\d+]/g, "")}`} className="mt-0.5 flex items-center gap-1.5 text-caption font-bold text-red-fg">
                         <Phone className="size-3.5" /> {b.personPhone}
                       </a>
                     ) : (
@@ -187,7 +187,7 @@ export function LabInbox({ bookings }: { bookings: InboxBooking[] }) {
                       >
                         {open === "propose" ? "Send new day" : b.status === "CONFIRMED" ? "Cancel visit" : "Decline request"}
                       </button>
-                      <button type="button" onClick={() => setForm(null)} className={cn(btn, "bg-white text-ink-mid")}>
+                      <button type="button" onClick={() => setForm(null)} className={cn(btn, "bg-card text-ink-mid")}>
                         Back
                       </button>
                     </div>

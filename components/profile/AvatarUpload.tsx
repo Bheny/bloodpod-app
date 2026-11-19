@@ -68,7 +68,7 @@ export function AvatarUpload({
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
           aria-label="Change photo"
-          className="absolute -bottom-1 -right-1 flex size-7 items-center justify-center rounded-full border-2 border-white bg-ink text-white disabled:opacity-60"
+          className="absolute -bottom-1 -right-1 flex size-7 items-center justify-center rounded-full border-2 border-card bg-panel text-white disabled:opacity-60"
         >
           <Camera className="size-3.5" />
         </button>
@@ -82,7 +82,7 @@ export function AvatarUpload({
         />
       </div>
       {uploading && <p className="text-label text-ink-muted">Uploading…</p>}
-      {error && <p className="text-label text-red">{error}</p>}
+      {error && <p className="text-label text-red-fg">{error}</p>}
     </div>
   );
 }

@@ -71,7 +71,7 @@ export function FileUploadSlot({
           onChange={handleChange}
         />
       </div>
-      {error && <p className="mt-1 text-xs text-red">{error}</p>}
+      {error && <p className="mt-1 text-xs text-red-fg">{error}</p>}
     </div>
   );
 }

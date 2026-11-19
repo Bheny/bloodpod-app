@@ -42,10 +42,10 @@ export function AdminShell({
   return (
     <div className="min-h-screen bg-surface">
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r-[0.5px] border-hairline bg-white lg:flex">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r-[0.5px] border-hairline bg-card lg:flex">
         <div className="flex items-center gap-2 px-6 py-6">
           <Logo />
-          <span className="rounded-full bg-ink px-2 py-0.5 text-label font-bold uppercase tracking-wide text-white">Admin</span>
+          <span className="rounded-full bg-panel px-2 py-0.5 text-label font-bold uppercase tracking-wide text-white">Admin</span>
         </div>
 
         <div className="px-3 pb-3">
@@ -63,10 +63,10 @@ export function AdminShell({
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors",
-                  active ? "bg-red-light text-red" : "text-ink-mid hover:bg-surface",
+                  active ? "bg-red-light text-red-fg" : "text-ink-mid hover:bg-surface",
                 )}
               >
-                <item.icon className={cn("size-5", active ? "text-red" : "text-ink-faint")} />
+                <item.icon className={cn("size-5", active ? "text-red-fg" : "text-ink-faint")} />
                 <span className="flex-1">{item.label}</span>
                 {count > 0 && (
                   <span className="rounded-full bg-red px-2 py-0.5 text-label font-bold text-white">{count}</span>
@@ -87,11 +87,11 @@ export function AdminShell({
       </aside>
 
       {/* Mobile top bar */}
-      <header className="sticky top-0 z-30 border-b-[0.5px] border-hairline bg-white lg:hidden">
+      <header className="sticky top-0 z-30 border-b-[0.5px] border-hairline bg-card lg:hidden">
         <div className="flex items-center justify-between px-4 py-3">
           <span className="flex items-center gap-2">
             <Logo />
-            <span className="rounded-full bg-ink px-2 py-0.5 text-label font-bold uppercase tracking-wide text-white">Admin</span>
+            <span className="rounded-full bg-panel px-2 py-0.5 text-label font-bold uppercase tracking-wide text-white">Admin</span>
           </span>
           <AdminSwitch active="admin" className="w-44" />
         </div>

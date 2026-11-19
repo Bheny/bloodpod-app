@@ -26,7 +26,7 @@ export function DiscoverFilters({
   myCity: string | null;
 }) {
   return (
-    <div className="bg-white px-4 py-3 lg:px-6 lg:py-4">
+    <div className="bg-card px-4 py-3 lg:px-6 lg:py-4">
       <p className="text-label font-bold uppercase tracking-wide text-ink-muted">Blood type</p>
       <div className="mt-1.5 flex flex-wrap gap-1.5 lg:gap-2">
         <button
@@ -34,7 +34,7 @@ export function DiscoverFilters({
           onClick={() => onBloodTypeChange("")}
           className={cn(
             "shrink-0 rounded-full px-3 py-1.5 text-label font-bold transition-colors lg:px-4 lg:py-2 lg:text-body-sm",
-            bloodType === "" ? "bg-ink text-white" : "bg-surface text-ink-muted",
+            bloodType === "" ? "bg-panel text-white" : "bg-surface text-ink-muted",
           )}
         >
           All types
@@ -71,7 +71,7 @@ export function DiscoverFilters({
             onClick={() => onCityChange(myCity)}
             className={cn(
               "shrink-0 rounded-full px-3 py-2.5 text-label font-bold transition-colors lg:px-4 lg:py-3 lg:text-body-sm",
-              city === myCity ? "bg-red text-white" : "bg-red-light text-red",
+              city === myCity ? "bg-red text-white" : "bg-red-light text-red-fg",
             )}
           >
             Near me

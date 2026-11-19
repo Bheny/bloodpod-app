@@ -39,7 +39,7 @@ export default async function AdminOverviewPage({
           Needs your attention
         </h2>
         {o.attention.length === 0 ? (
-          <div className="flex items-center gap-3 rounded-2xl border-[0.5px] border-hairline bg-white p-4 shadow-raised">
+          <div className="flex items-center gap-3 rounded-2xl border-[0.5px] border-hairline bg-card p-4 shadow-raised">
             <CheckCircle2 className="size-5 text-[#1FA855]" />
             <p className="text-body-sm font-semibold text-ink">Nothing needs you right now.</p>
           </div>
@@ -49,7 +49,7 @@ export default async function AdminOverviewPage({
               <li key={a.id}>
                 <Link
                   href={a.href}
-                  className="flex h-full items-start gap-3 rounded-2xl border-[0.5px] border-hairline bg-white p-4 shadow-raised transition-colors hover:border-red-mid"
+                  className="flex h-full items-start gap-3 rounded-2xl border-[0.5px] border-hairline bg-card p-4 shadow-raised transition-colors hover:border-red-mid"
                 >
                   <span className={cn("mt-1.5 size-2.5 shrink-0 rounded-full", TONE[a.tone])} />
                   <span>
@@ -128,7 +128,7 @@ export default async function AdminOverviewPage({
         </Panel>
 
         <div className="flex flex-col gap-4 lg:gap-6">
-          <Panel title="Hospital pipeline" actions={<Link href="/admin/hospitals" className="text-caption font-bold text-red">Open</Link>}>
+          <Panel title="Hospital pipeline" actions={<Link href="/admin/hospitals" className="text-caption font-bold text-red-fg">Open</Link>}>
             <div className="grid grid-cols-3 gap-2 text-center">
               {(
                 [
@@ -147,7 +147,7 @@ export default async function AdminOverviewPage({
             </div>
           </Panel>
 
-          <Panel title="Latest sign-ups" actions={<Link href="/admin/users" className="text-caption font-bold text-red">See all</Link>}>
+          <Panel title="Latest sign-ups" actions={<Link href="/admin/users" className="text-caption font-bold text-red-fg">See all</Link>}>
             {recent.length === 0 ? (
               <EmptyState title="Nobody yet" />
             ) : (
@@ -155,7 +155,7 @@ export default async function AdminOverviewPage({
                 {recent.map((u) => (
                   <li key={u.id}>
                     <Link href={`/admin/users/${u.id}`} className="flex items-center gap-3 py-2.5">
-                      <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-red-light text-caption font-bold text-red">
+                      <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-red-light text-caption font-bold text-red-fg">
                         {u.bloodType ? BLOOD_TYPE_LABELS[u.bloodType] : "?"}
                       </span>
                       <span className="min-w-0 flex-1">

@@ -47,7 +47,7 @@ export function HospitalReview({ id, status }: { id: string; status: Status }) {
         >
           <RotateCcw className="size-3.5" /> Move back to pending
         </button>
-        {error && <p className="mt-2 text-caption text-red">{error}</p>}
+        {error && <p className="mt-2 text-caption text-red-fg">{error}</p>}
       </div>
     );
   }
@@ -84,14 +84,14 @@ export function HospitalReview({ id, status }: { id: string; status: Status }) {
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="For example: could not reach the number given"
-            className="mt-1.5 w-full resize-none rounded-lg border border-hairline bg-white px-3 py-2 text-body-sm text-ink focus:border-red focus:outline-none"
+            className="mt-1.5 w-full resize-none rounded-lg border border-hairline bg-card px-3 py-2 text-body-sm text-ink focus:border-red focus:outline-none"
           />
           <div className="mt-2 flex gap-2">
             <button
               type="button"
               disabled={busy || !note.trim()}
               onClick={() => submit("REJECTED", note.trim())}
-              className="rounded-full bg-ink px-4 py-2 text-caption font-bold text-white disabled:opacity-40"
+              className="rounded-full bg-panel px-4 py-2 text-caption font-bold text-white disabled:opacity-40"
             >
               {busy ? "Saving..." : "Confirm reject"}
             </button>
@@ -101,7 +101,7 @@ export function HospitalReview({ id, status }: { id: string; status: Status }) {
           </div>
         </div>
       )}
-      {error && <p className="mt-2 text-caption text-red">{error}</p>}
+      {error && <p className="mt-2 text-caption text-red-fg">{error}</p>}
     </div>
   );
 }

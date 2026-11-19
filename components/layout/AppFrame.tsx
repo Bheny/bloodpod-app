@@ -20,7 +20,7 @@ export function AppFrame({ children }: { children: React.ReactNode }) {
       <div className={cn("lg:mx-auto lg:px-8 lg:py-8", wide ? "lg:max-w-[1180px]" : "lg:max-w-220")}>
         <div
           className={cn(
-            !wide && "lg:overflow-hidden lg:rounded-card lg:border-[0.5px] lg:border-[#E5E5EA] lg:shadow-sm",
+            !wide && "lg:overflow-hidden lg:rounded-card lg:border-[0.5px] lg:border-hairline lg:shadow-sm",
           )}
         >
           {children}

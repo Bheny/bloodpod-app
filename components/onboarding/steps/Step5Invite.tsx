@@ -96,7 +96,7 @@ export function Step5Invite({
         <button
           type="button"
           onClick={handleCopy}
-          className="mt-2 flex w-full items-center justify-center gap-2 rounded-full bg-surface py-3 text-sm font-semibold text-ink transition-colors duration-150 hover:bg-[#E5E5EA]"
+          className="mt-2 flex w-full items-center justify-center gap-2 rounded-full bg-surface py-3 text-sm font-semibold text-ink transition-colors duration-150 hover:bg-hairline"
         >
           {copied ? (
             <span className="text-[#1FA855]">Copied ✓</span>
@@ -109,9 +109,9 @@ export function Step5Invite({
         </button>
 
         <div className="my-5 flex items-center gap-3 text-[13px] text-ink-faint">
-          <div className="h-px flex-1 bg-[#E5E5EA]" />
+          <div className="h-px flex-1 bg-hairline" />
           or invite by email
-          <div className="h-px flex-1 bg-[#E5E5EA]" />
+          <div className="h-px flex-1 bg-hairline" />
         </div>
 
         <div className="flex gap-2">
@@ -154,7 +154,7 @@ export function Step5Invite({
           )}
         </>
       ) : (
-        <div className="rounded-card border-[0.5px] border-[#E5E5EA] bg-surface p-4 text-center">
+        <div className="rounded-card border-[0.5px] border-hairline bg-surface p-4 text-center">
           <p className="text-sm text-ink-mid">
             Your Pod will only have you in it for now. You can invite people any time from the Pod tab.
           </p>

@@ -22,7 +22,7 @@ export function AppHeader({
   return (
     <header
       className={cn(
-        "flex items-center gap-3 border-b-[0.5px] border-hairline bg-white px-4 py-3.5",
+        "flex items-center gap-3 border-b-[0.5px] border-hairline bg-card px-4 py-3.5",
         wide ? "lg:border-0 lg:bg-transparent lg:px-0 lg:pb-6 lg:pt-0" : "lg:px-6 lg:py-5",
       )}
     >

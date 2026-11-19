@@ -19,7 +19,7 @@ export default async function DiscoverPage() {
     <div>
       <AppHeader wide title="Discover" subtitle="Find donors near you by blood type and area" />
       <VisibilityToggle initiallyPublic={user.isPublic} />
-      <div className="mt-3 overflow-hidden rounded-2xl lg:bg-white lg:shadow-raised">
+      <div className="mt-3 overflow-hidden rounded-2xl lg:bg-card lg:shadow-raised">
         <DiscoverList initial={initial} myCity={user.city} />
       </div>
     </div>

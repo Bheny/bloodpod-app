@@ -58,12 +58,12 @@ export function GoogleButton({ label, beforeRedirect }: { label: string; beforeR
         type="button"
         onClick={handleClick}
         disabled={loading}
-        className="flex w-full items-center justify-center gap-3 rounded-full border-[1.5px] border-[#E5E5EA] bg-white py-3 font-semibold text-ink transition-colors duration-150 hover:border-ink-faint hover:bg-[#F9F9F9] disabled:opacity-60"
+        className="flex w-full items-center justify-center gap-3 rounded-full border-[1.5px] border-hairline bg-card py-3 font-semibold text-ink transition-colors duration-150 hover:border-ink-faint hover:bg-[#F9F9F9] disabled:opacity-60"
       >
         <GoogleIcon />
         {loading ? "Redirecting…" : label}
       </button>
-      {error && <p className="mt-2 text-center text-xs text-red">{error}</p>}
+      {error && <p className="mt-2 text-center text-xs text-red-fg">{error}</p>}
     </div>
   );
 }

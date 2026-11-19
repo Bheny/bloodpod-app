@@ -41,7 +41,7 @@ export function PendingInvites({ initialInvites }: { initialInvites: PendingInvi
       {invites.length === 0 ? (
         <p className="mt-3 text-center text-xs text-ink-muted">No pending invites yet.</p>
       ) : (
-        <div className="mt-2 divide-y-[0.5px] divide-surface rounded-2xl bg-white">
+        <div className="mt-2 divide-y-[0.5px] divide-surface rounded-2xl bg-card">
           {invites.map((invite) => (
             <PendingInviteItem
               key={invite.id}

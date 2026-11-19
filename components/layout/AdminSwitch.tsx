@@ -11,14 +11,14 @@ export function AdminSwitch({ active, className }: { active: "platform" | "admin
       <Link
         href="/dashboard"
         aria-current={active === "platform" ? "page" : undefined}
-        className={cn(item, active === "platform" ? "bg-white text-ink shadow-raised" : "text-ink-muted hover:text-ink")}
+        className={cn(item, active === "platform" ? "bg-card text-ink shadow-raised" : "text-ink-muted hover:text-ink")}
       >
         <LayoutDashboard className="size-3.5" /> Platform
       </Link>
       <Link
         href="/admin"
         aria-current={active === "admin" ? "page" : undefined}
-        className={cn(item, active === "admin" ? "bg-ink text-white shadow-raised" : "text-ink-muted hover:text-ink")}
+        className={cn(item, active === "admin" ? "bg-panel text-white shadow-raised" : "text-ink-muted hover:text-ink")}
       >
         <Shield className="size-3.5" /> Admin
       </Link>

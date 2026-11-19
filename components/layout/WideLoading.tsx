@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 export function WideLoading() {
   return (
     <div>
-      <div className="border-b-[0.5px] border-hairline bg-white px-4 py-3.5 lg:border-0 lg:bg-transparent lg:px-0 lg:pb-6 lg:pt-0">
+      <div className="border-b-[0.5px] border-hairline bg-card px-4 py-3.5 lg:border-0 lg:bg-transparent lg:px-0 lg:pb-6 lg:pt-0">
         <Skeleton className="h-6 w-44 lg:h-8 lg:w-64" />
         <Skeleton className="mt-2 h-3 w-56" />
       </div>

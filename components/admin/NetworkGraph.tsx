@@ -620,7 +620,7 @@ export function NetworkGraph({ data }: { data: GraphData }) {
 
   if (data.nodes.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-hairline bg-white px-6 py-16 text-center">
+      <div className="rounded-2xl border border-dashed border-hairline bg-card px-6 py-16 text-center">
         <p className="text-body-sm font-bold text-ink">No network yet</p>
         <p className="mx-auto mt-1 max-w-sm text-caption text-ink-muted">
           People and Pods appear here as donors sign up and invite each other.
@@ -640,7 +640,7 @@ export function NetworkGraph({ data }: { data: GraphData }) {
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Find a person, Pod or city"
             aria-label="Search the network"
-            className="w-full rounded-xl border border-hairline bg-white py-2.5 pl-10 pr-9 text-body-sm text-ink placeholder:text-ink-faint focus:border-red focus:outline-none focus:ring-3 focus:ring-red/8"
+            className="w-full rounded-xl border border-hairline bg-card py-2.5 pl-10 pr-9 text-body-sm text-ink placeholder:text-ink-faint focus:border-red focus:outline-none focus:ring-3 focus:ring-red/8"
           />
           {search && (
             <button type="button" aria-label="Clear search" onClick={() => setSearch("")} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-ink-faint hover:text-ink">
@@ -652,7 +652,7 @@ export function NetworkGraph({ data }: { data: GraphData }) {
           value={blood}
           onChange={(e) => setBlood(e.target.value)}
           aria-label="Blood type"
-          className="rounded-xl border border-hairline bg-white px-3.5 py-2.5 text-body-sm text-ink focus:border-red focus:outline-none"
+          className="rounded-xl border border-hairline bg-card px-3.5 py-2.5 text-body-sm text-ink focus:border-red focus:outline-none"
         >
           <option value="">All blood types</option>
           {Object.keys(BLOOD_COLORS).map((b) => (
@@ -663,7 +663,7 @@ export function NetworkGraph({ data }: { data: GraphData }) {
           value={status}
           onChange={(e) => setStatus(e.target.value as StatusFilter)}
           aria-label="Status"
-          className="rounded-xl border border-hairline bg-white px-3.5 py-2.5 text-body-sm text-ink focus:border-red focus:outline-none"
+          className="rounded-xl border border-hairline bg-card px-3.5 py-2.5 text-body-sm text-ink focus:border-red focus:outline-none"
         >
           <option value="all">Everyone</option>
           <option value="eligible">Can donate now</option>
@@ -674,13 +674,13 @@ export function NetworkGraph({ data }: { data: GraphData }) {
       </div>
 
       <div className="mb-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-caption">
-        <div className="flex items-center gap-1 rounded-full bg-white p-1 shadow-raised" role="group" aria-label="Colour people by">
+        <div className="flex items-center gap-1 rounded-full bg-card p-1 shadow-raised" role="group" aria-label="Colour people by">
           {(["blood", "status"] as const).map((c) => (
             <button
               key={c}
               type="button"
               onClick={() => setColorBy(c)}
-              className={cn("rounded-full px-3 py-1.5 font-bold transition-colors", colorBy === c ? "bg-ink text-white" : "text-ink-mid hover:text-ink")}
+              className={cn("rounded-full px-3 py-1.5 font-bold transition-colors", colorBy === c ? "bg-panel text-white" : "text-ink-mid hover:text-ink")}
             >
               {c === "blood" ? "Blood type" : "Readiness"}
             </button>
@@ -710,7 +710,7 @@ export function NetworkGraph({ data }: { data: GraphData }) {
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
         {/* The graph */}
-        <div className="relative overflow-hidden rounded-2xl border-[0.5px] border-hairline bg-white shadow-raised">
+        <div className="relative overflow-hidden rounded-2xl border-[0.5px] border-hairline bg-card shadow-raised">
           <div ref={wrapRef} className="h-[62vh] min-h-[440px] w-full lg:h-[640px]">
             <canvas
               ref={canvasRef}
@@ -728,7 +728,7 @@ export function NetworkGraph({ data }: { data: GraphData }) {
 
           {hover && hoverNode && (
             <div
-              className="pointer-events-none absolute z-10 max-w-[220px] -translate-x-1/2 -translate-y-full rounded-lg bg-ink px-3 py-2 text-caption text-white shadow-raised"
+              className="pointer-events-none absolute z-10 max-w-[220px] -translate-x-1/2 -translate-y-full rounded-lg bg-panel px-3 py-2 text-caption text-white shadow-raised"
               style={{ left: Math.min(Math.max(hover.x, 90), width - 90), top: Math.max(hover.y - 14, 8) }}
             >
               <p className="font-bold">{hideNames ? (hoverNode.kind === "user" ? (hoverNode.blood ?? "Donor") : hoverNode.kind === "pod" ? "Pod" : "Hospital") : hoverNode.label}</p>
@@ -758,7 +758,7 @@ export function NetworkGraph({ data }: { data: GraphData }) {
                 aria-label={label}
                 title={label}
                 onClick={() => actions.current[action]()}
-                className="flex size-9 items-center justify-center rounded-lg bg-white text-ink-mid shadow-raised transition-colors hover:text-ink"
+                className="flex size-9 items-center justify-center rounded-lg bg-card text-ink-mid shadow-raised transition-colors hover:text-ink"
               >
                 <Icon className="size-4" />
               </button>
@@ -769,7 +769,7 @@ export function NetworkGraph({ data }: { data: GraphData }) {
             Drag to move · scroll to zoom · click to follow connections · double-click to open
           </p>
           {data.truncated && (
-            <p className="absolute bottom-3 right-4 rounded-full bg-[#FFF7E6] px-3 py-1 text-caption font-semibold text-[#9A6700]">
+            <p className="absolute bottom-3 right-4 rounded-full bg-warn-soft px-3 py-1 text-caption font-semibold text-warn-strong">
               Showing the latest {data.stats.people.toLocaleString()} people
             </p>
           )}
@@ -777,7 +777,7 @@ export function NetworkGraph({ data }: { data: GraphData }) {
 
         {/* Side panel */}
         <aside className="flex flex-col gap-4">
-          <div className="rounded-2xl border-[0.5px] border-hairline bg-white p-4 shadow-raised">
+          <div className="rounded-2xl border-[0.5px] border-hairline bg-card p-4 shadow-raised">
             <p className="text-caption font-bold uppercase tracking-wide text-ink-muted">Key</p>
             <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-caption text-ink-mid">
               {legend.map((l) => (
@@ -788,7 +788,7 @@ export function NetworkGraph({ data }: { data: GraphData }) {
             </ul>
             <ul className="mt-3 space-y-1.5 border-t-[0.5px] border-hairline pt-3 text-caption text-ink-mid">
               <li className="flex items-center gap-2">
-                <span className="flex size-5 items-center justify-center rounded-full bg-ink text-[10px] font-bold text-white">4</span> A Pod, sized by its people
+                <span className="flex size-5 items-center justify-center rounded-full bg-panel text-[10px] font-bold text-white">4</span> A Pod, sized by its people
               </li>
               <li className="flex items-center gap-2">
                 <span className="h-0.5 w-5 bg-red" /> Invited by (arrow points at who joined)
@@ -799,7 +799,7 @@ export function NetworkGraph({ data }: { data: GraphData }) {
             </ul>
           </div>
 
-          <div className="rounded-2xl border-[0.5px] border-hairline bg-white p-4 shadow-raised">
+          <div className="rounded-2xl border-[0.5px] border-hairline bg-card p-4 shadow-raised">
             {!selected || !connections ? (
               <div>
                 <p className="text-body-sm font-bold text-ink">Follow the connections</p>
@@ -825,7 +825,7 @@ export function NetworkGraph({ data }: { data: GraphData }) {
                   ))}
                 </dl>
                 {data.stats.isolated > 0 && (
-                  <button type="button" onClick={() => setStatus("isolated")} className="mt-3 text-caption font-bold text-red hover:underline">
+                  <button type="button" onClick={() => setStatus("isolated")} className="mt-3 text-caption font-bold text-red-fg hover:underline">
                     Show people who are alone
                   </button>
                 )}
@@ -877,7 +877,7 @@ export function NetworkGraph({ data }: { data: GraphData }) {
                 </div>
 
                 {selected.href && selected.kind === "user" && (
-                  <Link href={selected.href} className="mt-4 block rounded-full bg-ink py-2.5 text-center text-body-sm font-bold text-white">
+                  <Link href={selected.href} className="mt-4 block rounded-full bg-panel py-2.5 text-center text-body-sm font-bold text-white">
                     Open profile
                   </Link>
                 )}

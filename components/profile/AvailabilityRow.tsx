@@ -27,7 +27,7 @@ export function AvailabilityRow({ initiallyAvailable }: { initiallyAvailable: bo
   }
 
   return (
-    <div className="flex items-center gap-2.5 rounded-2xl border-[0.5px] border-hairline bg-white px-3.5 py-3 shadow-raised lg:px-5 lg:py-4">
+    <div className="flex items-center gap-2.5 rounded-2xl border-[0.5px] border-hairline bg-card px-3.5 py-3 shadow-raised lg:px-5 lg:py-4">
       <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-surface lg:size-10">
         <HeartHandshake className="size-4 text-ink-mid lg:size-5" />
       </span>

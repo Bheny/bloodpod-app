@@ -39,7 +39,7 @@ export default async function AdminUserPage({ params }: { params: Promise<{ id: 
       <div className="grid gap-4 lg:grid-cols-[360px_minmax(0,1fr)] lg:gap-6">
         <div className="flex flex-col gap-4 lg:gap-6">
           <Card className="text-center">
-            <span className="mx-auto flex size-20 items-center justify-center rounded-full bg-red-light text-2xl font-extrabold text-red">
+            <span className="mx-auto flex size-20 items-center justify-center rounded-full bg-red-light text-2xl font-extrabold text-red-fg">
               {u.bloodType ? BLOOD_TYPE_LABELS[u.bloodType] : "?"}
             </span>
             <h1 className="mt-3 text-title-lg font-extrabold tracking-[-0.5px] text-ink">{u.name ?? "No name"}</h1>
@@ -52,11 +52,11 @@ export default async function AdminUserPage({ params }: { params: Promise<{ id: 
             </div>
 
             <div className="mt-5 space-y-2 border-t-[0.5px] border-hairline pt-4 text-left text-body-sm">
-              <a href={`mailto:${u.email}`} className="flex items-center gap-2 text-ink-mid hover:text-red">
+              <a href={`mailto:${u.email}`} className="flex items-center gap-2 text-ink-mid hover:text-red-fg">
                 <Mail className="size-4 text-ink-faint" /> {u.email}
               </a>
               {u.phone ? (
-                <a href={`tel:${u.phone}`} className="flex items-center gap-2 text-ink-mid hover:text-red">
+                <a href={`tel:${u.phone}`} className="flex items-center gap-2 text-ink-mid hover:text-red-fg">
                   <Phone className="size-4 text-ink-faint" /> {u.phone}
                 </a>
               ) : (

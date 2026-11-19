@@ -23,7 +23,7 @@ export default async function AdminEmergenciesPage() {
         <StatCard label="All time" value={e.total} />
       </div>
 
-      <div className="mt-4 rounded-2xl border border-dashed border-hairline bg-white/60 px-4 py-3 text-caption text-ink-muted">
+      <div className="mt-4 rounded-2xl border border-dashed border-hairline bg-card/60 px-4 py-3 text-caption text-ink-muted">
         Response times, who said Yes and show-up rate are not tracked yet. They appear here once the Yes and No
         alert system is built, and are what the Foresight pilot will be judged on.
       </div>
@@ -36,7 +36,7 @@ export default async function AdminEmergenciesPage() {
             <ul className="divide-y-[0.5px] divide-hairline">
               {e.rows.map((r) => (
                 <li key={r.id} className="flex items-center gap-3 py-3">
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-red-light text-caption font-extrabold text-red">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-red-light text-caption font-extrabold text-red-fg">
                     {BLOOD_TYPE_LABELS[r.bloodType]}
                   </span>
                   <span className="min-w-0 flex-1">

@@ -14,7 +14,7 @@ export function BloodTypeBadge({
   return (
     <span
       className={cn(
-        "flex shrink-0 items-center justify-center rounded-full bg-ink font-extrabold text-white",
+        "flex shrink-0 items-center justify-center rounded-full bg-panel font-extrabold text-white",
         size === "sm" ? "size-6 text-label" : "size-9 text-xs",
         className,
       )}

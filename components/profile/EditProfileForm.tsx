@@ -74,7 +74,7 @@ export function EditProfileForm({
         </Select>
       </Field>
 
-      {formError && <p className="text-sm text-red">{formError}</p>}
+      {formError && <p className="text-sm text-red-fg">{formError}</p>}
 
       <Button type="submit" loading={isSubmitting} size="lg" className="mt-1 w-full">
         Save changes
