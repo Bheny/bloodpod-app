@@ -3,7 +3,7 @@ import { FREE_POD_MEMBER_LIMIT } from "@/lib/pod-limits";
 
 export function PodFullNotice() {
   return (
-    <div className="mx-3.5 mt-3.5 flex flex-col items-center gap-2 rounded-2xl border-[0.5px] border-hairline bg-card p-6 text-center shadow-raised lg:mx-6">
+    <div className="mx-3.5 mt-3.5 flex flex-col items-center gap-2 rounded-3xl border-[0.5px] border-hairline bg-card lg:rounded-2xl p-6 text-center shadow-raised lg:mx-6">
       <span className="flex size-11 items-center justify-center rounded-full bg-surface">
         <Lock className="size-5 text-ink-mid" />
       </span>

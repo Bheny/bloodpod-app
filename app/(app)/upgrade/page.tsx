@@ -39,7 +39,7 @@ export default async function UpgradePage() {
       <AppHeader title="Care plan" subtitle="Planning help for families who need blood again and again" />
 
       <div className="flex flex-col gap-3.5 px-3.5 pb-8 pt-4 lg:max-w-xl lg:px-0 lg:pt-0">
-        <section className="rounded-2xl border-[0.5px] border-hairline bg-card p-5 shadow-raised lg:p-6">
+        <section className="rounded-3xl border-[0.5px] border-hairline bg-card lg:rounded-2xl p-5 shadow-raised lg:p-6">
           <h2 className="text-title font-extrabold tracking-[-0.4px] text-ink">What is the Care plan?</h2>
           <p className="mt-2 text-body-sm leading-relaxed text-ink-mid">
             Some families need blood again and again. A child with sickle cell, for example, may need a transfusion
@@ -77,7 +77,7 @@ export default async function UpgradePage() {
           </p>
         </section>
 
-        <section className="rounded-2xl border-[0.5px] border-hairline bg-card p-5 shadow-raised lg:p-6">
+        <section className="rounded-3xl border-[0.5px] border-hairline bg-card lg:rounded-2xl p-5 shadow-raised lg:p-6">
           <p className="text-[32px] font-extrabold leading-none tracking-[-1px] text-ink">
             {price}
             <span className="ml-1 text-body-sm font-semibold tracking-normal text-ink-muted">/ month</span>

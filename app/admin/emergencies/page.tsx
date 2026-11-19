@@ -2,7 +2,7 @@ import { requireAdmin } from "@/lib/admin/auth";
 import { getEmergencies } from "@/lib/admin/metrics";
 import { longDate } from "@/lib/admin/format";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
-import { Badge, EmptyState, HBars, PageTitle, Panel, StatCard } from "@/components/admin/ui";
+import { Badge, EmptyState, HBars, PageTitle, Panel, StatCard, StatGrid } from "@/components/admin/ui";
 import { Card } from "@/components/ui/Card";
 
 const STATUS_TONE = { OPEN: "red", MATCHED: "blue", FULFILLED: "green", CANCELLED: "gray" } as const;
@@ -16,19 +16,19 @@ export default async function AdminEmergenciesPage() {
     <div>
       <PageTitle title="Emergencies" subtitle="Blood requests raised in the app." />
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
+      <StatGrid cols={4}>
         <StatCard label="Open now" value={e.status.OPEN} tone={e.status.OPEN > 0 ? "warn" : "default"} />
         <StatCard label="Matched" value={e.status.MATCHED} />
         <StatCard label="Fulfilled" value={e.status.FULFILLED} tone={e.status.FULFILLED > 0 ? "good" : "default"} />
         <StatCard label="All time" value={e.total} />
-      </div>
+      </StatGrid>
 
       <div className="mt-4 rounded-2xl border border-dashed border-hairline bg-card/60 px-4 py-3 text-caption text-ink-muted">
         Response times, who said Yes and show-up rate are not tracked yet. They appear here once the Yes and No
         alert system is built, and are what the Foresight pilot will be judged on.
       </div>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-[1.6fr_1fr] lg:gap-6">
+      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-[1.6fr_1fr] lg:gap-6">
         <Panel title="Latest requests" subtitle="Most recent 50.">
           {e.rows.length === 0 ? (
             <EmptyState title="No requests yet" />

@@ -32,7 +32,7 @@ function LinkRow({
   return (
     <Link
       href={href}
-      className="flex items-center gap-3 rounded-2xl border-[0.5px] border-hairline bg-card px-4 py-3.5 shadow-raised transition-colors hover:bg-surface"
+      className="flex items-center gap-3 rounded-3xl border-[0.5px] border-hairline bg-card lg:rounded-2xl px-4 py-3.5 shadow-raised transition-colors hover:bg-surface"
     >
       <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-surface">
         <Icon className="size-5 text-ink-mid" />
@@ -100,7 +100,7 @@ export default async function ProfilePage() {
 
           <Link
             href="/passport"
-            className="flex items-center gap-3 rounded-2xl bg-panel px-4 py-4 shadow-raised transition-transform active:scale-[0.98]"
+            className="flex items-center gap-3 rounded-3xl bg-panel px-4 py-4 shadow-raised lg:rounded-2xl transition-transform active:scale-[0.98]"
           >
             <span className="min-w-0 flex-1">
               <span className="block text-label font-bold uppercase tracking-wide text-white/70">Blood Card</span>

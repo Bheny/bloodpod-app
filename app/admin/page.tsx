@@ -4,7 +4,7 @@ import { requireAdmin } from "@/lib/admin/auth";
 import { getOverview, getPodSummary, getRecentSignups, getSignupSeries } from "@/lib/admin/metrics";
 import { delta, ghs, pct, shortDate } from "@/lib/admin/format";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
-import { Badge, Delta, EmptyState, FilterTabs, Funnel, PageTitle, Panel, StatCard } from "@/components/admin/ui";
+import { Badge, Delta, EmptyState, FilterTabs, Funnel, PageTitle, Panel, StatCard, StatGrid } from "@/components/admin/ui";
 import { BarChart, Donut, LineChart } from "@/components/admin/charts";
 import { cn } from "@/lib/utils";
 
@@ -44,7 +44,7 @@ export default async function AdminOverviewPage({
             <p className="text-body-sm font-semibold text-ink">Nothing needs you right now.</p>
           </div>
         ) : (
-          <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
             {o.attention.map((a) => (
               <li key={a.id}>
                 <Link
@@ -64,7 +64,7 @@ export default async function AdminOverviewPage({
       </section>
 
       {/* Headline numbers */}
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-4 xl:grid-cols-6">
+      <StatGrid cols={6}>
         <StatCard label="Donors" value={o.donors} hint="signed up in total" href="/admin/users" spark={series.cumulative.map((p) => p.value)} />
         <StatCard
           label="New this week"
@@ -99,10 +99,10 @@ export default async function AdminOverviewPage({
           hint={`${o.activeContracts} active contract${o.activeContracts === 1 ? "" : "s"}`}
           href="/admin/finance"
         />
-      </div>
+      </StatGrid>
 
       {/* Growth */}
-      <div className="mt-6 grid gap-4 lg:grid-cols-2 lg:gap-6">
+      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
         <Panel
           title="Total donors"
           subtitle={`Last ${range} days`}
@@ -123,7 +123,7 @@ export default async function AdminOverviewPage({
         </Panel>
       </div>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-[1.2fr_1fr] lg:gap-6">
+      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-[1.2fr_1fr] lg:gap-6">
         <Panel title="From sign-up to ready" subtitle="How far new donors get. The biggest drop is where to focus.">
           {o.donors === 0 ? <EmptyState title="No donors yet" body="The funnel fills in as people sign up." /> : <Funnel steps={o.funnel} />}
         </Panel>

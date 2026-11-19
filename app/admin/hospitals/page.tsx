@@ -53,7 +53,7 @@ export default async function AdminHospitalsPage({ searchParams }: { searchParam
                   <p className="text-caption text-ink-muted">Applied {longDate(h.createdAt)}</p>
                 </div>
 
-                <div className="mt-4 grid gap-4 border-t-[0.5px] border-hairline pt-4 md:grid-cols-2">
+                <div className="mt-4 grid grid-cols-1 gap-4 border-t-[0.5px] border-hairline pt-4 md:grid-cols-2">
                   <div className="space-y-1.5 text-body-sm">
                     <p className="text-caption font-bold uppercase tracking-wide text-ink-muted">Contact</p>
                     {contact ? (

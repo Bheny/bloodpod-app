@@ -1,7 +1,7 @@
 import { requireAdmin } from "@/lib/admin/auth";
 import { getFinance } from "@/lib/admin/finance";
 import { ghs, longDate } from "@/lib/admin/format";
-import { Badge, EmptyState, HBars, PageTitle, Panel, StatCard } from "@/components/admin/ui";
+import { Badge, EmptyState, HBars, PageTitle, Panel, StatCard, StatGrid } from "@/components/admin/ui";
 import { compact, PairedBars } from "@/components/admin/charts";
 import { AddContractForm, AddEntryForm, ContractActions, EntryActions, OpeningBalanceForm } from "@/components/admin/FinanceForms";
 
@@ -35,7 +35,7 @@ export default async function AdminFinancePage() {
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-4 xl:grid-cols-6">
+      <StatGrid cols={6}>
         <StatCard label="Cash in hand" value={ghs(f.cash, { decimals: false })} tone={f.cash < 0 ? "warn" : "default"} />
         <StatCard label="Monthly revenue" value={ghs(f.mrr, { decimals: false })} hint={`${ghs(f.arr, { decimals: false })} a year`} />
         <StatCard label="Received this month" value={ghs(f.collectedThisMonth, { decimals: false })} tone={f.collectedThisMonth > 0 ? "good" : "default"} />
@@ -52,9 +52,9 @@ export default async function AdminFinancePage() {
           tone={f.runwayMonths !== null && f.runwayMonths < 3 ? "warn" : "default"}
           hint={f.netBurn > 0 ? `${ghs(f.netBurn, { decimals: false })} net burn a month` : "income covers spending"}
         />
-      </div>
+      </StatGrid>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-[1.4fr_1fr] lg:gap-6">
+      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-[1.4fr_1fr] lg:gap-6">
         <Panel title="Money in and out" subtitle="Last 6 months, received and paid only.">
           <PairedBars
             data={f.months.map((m) => ({ label: m.label, a: m.income, b: m.expense }))}
@@ -83,7 +83,7 @@ export default async function AdminFinancePage() {
         </div>
       </div>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-2 lg:gap-6">
+      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
         <Panel title="Contracts" subtitle="Active contracts add up to your monthly revenue.">
           <div className="mb-4">
             <AddContractForm hospitals={f.hospitals} />

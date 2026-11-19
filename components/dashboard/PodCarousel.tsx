@@ -54,7 +54,7 @@ export function PodCarousel({
             <li
               key={pod.id}
               className={cn(
-                "snap-start rounded-2xl border-[0.5px] border-hairline bg-card p-4 shadow-raised lg:p-6",
+                "snap-start rounded-3xl border-[0.5px] border-hairline bg-card lg:rounded-2xl p-4 shadow-raised lg:p-6",
                 slideCount > 1 ? "w-[88%] shrink-0 lg:w-full" : "w-full",
               )}
             >

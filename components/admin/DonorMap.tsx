@@ -312,7 +312,7 @@ export function DonorMap({ data }: { data: MapData }) {
         </label>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
         {/* Map */}
         <div className="relative isolate overflow-hidden rounded-2xl border-[0.5px] border-hairline bg-card shadow-raised">
           <div ref={containerRef} className="h-[62vh] min-h-[440px] w-full lg:h-[660px]" role="application" aria-label="Map of donors across Ghana" />

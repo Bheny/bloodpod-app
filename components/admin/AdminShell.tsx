@@ -216,7 +216,7 @@ export function AdminShell({
         )}
       </AnimatePresence>
 
-      <main className="lg:pl-60">
+      <main className="min-w-0 overflow-x-clip lg:pl-60">
         <div className="mx-auto max-w-[1240px] px-4 pb-28 pt-5 lg:px-8 lg:py-8">{children}</div>
       </main>
     </div>

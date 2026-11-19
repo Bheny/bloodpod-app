@@ -71,7 +71,7 @@ export function MyBookings({ bookings }: { bookings: MyBooking[] }) {
         const st = BOOKING_STATUS[b.status];
         const open = b.status === "REQUESTED" || b.status === "RESCHEDULED" || b.status === "CONFIRMED";
         return (
-          <article key={b.id} className="rounded-2xl border-[0.5px] border-hairline bg-card p-4 shadow-raised lg:p-5">
+          <article key={b.id} className="rounded-3xl border-[0.5px] border-hairline bg-card lg:rounded-2xl p-4 shadow-raised lg:p-5">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="text-body-sm font-bold text-ink lg:text-title">{b.labName}</p>

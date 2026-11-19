@@ -44,6 +44,24 @@ export function Delta({ value, goodWhenUp = true }: { value: number | null; good
   );
 }
 
+/**
+ * The row of headline numbers. Two columns on phones (an odd last card stretches across so no gap is left),
+ * then the count you pass from tablet width up.
+ */
+export function StatGrid({ cols = 4, children }: { cols?: 3 | 4 | 5 | 6; children: React.ReactNode }) {
+  const wide = { 3: "md:grid-cols-3", 4: "md:grid-cols-4", 5: "md:grid-cols-3 xl:grid-cols-5", 6: "md:grid-cols-3 xl:grid-cols-6" }[cols];
+  return (
+    <div
+      className={cn(
+        "grid grid-cols-2 gap-3 lg:gap-4 [&>*:last-child:nth-child(odd)]:col-span-2 md:[&>*:last-child:nth-child(odd)]:col-span-1",
+        wide,
+      )}
+    >
+      {children}
+    </div>
+  );
+}
+
 export function StatCard({
   label,
   value,
@@ -65,22 +83,22 @@ export function StatCard({
   const body = (
     <Card
       className={cn(
-        "h-full p-4 lg:p-5",
+        "h-full min-w-0 overflow-hidden p-3.5 sm:p-4 lg:p-5",
         href && "transition-colors hover:border-red-mid",
         tone === "warn" && "border-red-mid bg-red-light/40",
       )}
     >
-      <p className="text-caption font-semibold text-ink-muted">{label}</p>
+      <p className="truncate text-caption font-semibold text-ink-muted">{label}</p>
       <p
         className={cn(
-          "mt-1.5 text-[28px] font-extrabold leading-none tracking-[-1px]",
+          "mt-1.5 truncate text-[24px] font-extrabold leading-none tracking-[-0.8px] sm:text-[28px] sm:tracking-[-1px]",
           tone === "good" ? "text-[#1FA855]" : tone === "warn" ? "text-red-fg" : "text-ink",
         )}
       >
         {value}
       </p>
       {(hint || delta) && (
-        <p className="mt-2 flex items-center gap-2 text-caption text-ink-muted">
+        <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-caption leading-snug text-ink-muted">
           {delta}
           {hint}
         </p>
@@ -112,14 +130,14 @@ export function Panel({
 }) {
   return (
     <Card className={className}>
-      <div className="flex items-start justify-between gap-3">
-        <div>
+      <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
+        <div className="min-w-0">
           <h2 className="text-body-sm font-bold text-ink lg:text-title">{title}</h2>
           {subtitle && <p className="mt-0.5 text-caption text-ink-muted">{subtitle}</p>}
         </div>
-        {actions}
+        {actions && <div className="max-w-full shrink-0">{actions}</div>}
       </div>
-      <div className="mt-4">{children}</div>
+      <div className="mt-4 min-w-0">{children}</div>
     </Card>
   );
 }

@@ -20,7 +20,7 @@ export default async function MedicalHistoryPage() {
       <div className="px-4 pt-4">
         <Link
           href="/passport/history"
-          className="flex items-center justify-between rounded-2xl border-[0.5px] border-hairline bg-card px-3.5 py-3"
+          className="flex items-center justify-between rounded-3xl border-[0.5px] border-hairline bg-card lg:rounded-2xl px-3.5 py-3"
         >
           <span className="text-[12px] font-bold text-ink">View donation history</span>
         </Link>

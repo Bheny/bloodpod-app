@@ -37,7 +37,7 @@ export default async function PodsPage() {
         <PodInvitations invitations={invitations} />
 
         {summary.pods > 0 && (
-          <div className="flex items-center justify-between gap-3 rounded-2xl bg-panel px-4 py-3.5 text-white">
+          <div className="flex items-center justify-between gap-3 rounded-3xl bg-panel px-4 py-3.5 text-white lg:rounded-2xl">
             <div>
               <p className="text-label font-bold uppercase tracking-[1.5px] text-white/60">Your network</p>
               <p className="mt-0.5 text-body-sm font-bold">

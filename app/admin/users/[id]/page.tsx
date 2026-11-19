@@ -36,7 +36,7 @@ export default async function AdminUserPage({ params }: { params: Promise<{ id: 
         <ArrowLeft className="size-4" /> All users
       </Link>
 
-      <div className="grid gap-4 lg:grid-cols-[360px_minmax(0,1fr)] lg:gap-6">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[360px_minmax(0,1fr)] lg:gap-6">
         <div className="flex flex-col gap-4 lg:gap-6">
           <Card className="text-center">
             <span className="mx-auto flex size-20 items-center justify-center rounded-full bg-red-light text-2xl font-extrabold text-red-fg">

@@ -1,26 +1,32 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
-import { Check, ChevronRight } from "lucide-react";
+import { Check, ChevronDown, ChevronRight } from "lucide-react";
 import { PushToggle } from "@/components/pwa/PushToggle";
+import { INVITE_GOAL } from "@/lib/next-steps";
 import { cn } from "@/lib/utils";
-
-/** People to invite (besides you) before a Pod counts as started. */
-const INVITE_GOAL = 3;
-
-export function hasOpenNextSteps({ hasPush, memberCount }: { hasPush: boolean; memberCount: number }) {
-  return !hasPush || memberCount - 1 < INVITE_GOAL;
-}
 
 export function NextSteps({ hasPush, memberCount }: { hasPush: boolean; memberCount: number }) {
   const invited = Math.max(0, Math.min(memberCount - 1, INVITE_GOAL));
   const inviteDone = invited >= INVITE_GOAL;
+  const [all, setAll] = useState(false);
+  const done = (hasPush ? 1 : 0) + (inviteDone ? 1 : 0);
+  // On phones, show only what to do next. The finished step and the other one wait behind "See all steps".
+  const stepClass = (isNext: boolean) => (all || isNext ? "" : "max-lg:hidden");
+  const pushNext = !hasPush;
+  const inviteNext = hasPush && !inviteDone;
 
   return (
-    <section className="rounded-2xl border-[0.5px] border-hairline bg-card p-4 shadow-raised lg:p-6">
-      <p className="text-body-sm font-bold text-ink lg:text-title">Get ready</p>
+    <section className="rounded-3xl border-[0.5px] border-hairline bg-card lg:rounded-2xl p-4 shadow-raised lg:p-6">
+      <div className="flex items-center justify-between">
+        <p className="text-body-sm font-bold text-ink lg:text-title">Get ready</p>
+        <span className="rounded-full bg-surface px-2.5 py-0.5 text-label font-bold text-ink-mid lg:hidden">{done} of 2</span>
+      </div>
       <p className="mt-0.5 text-caption text-ink-muted lg:text-body-sm">Two things make your Pod work in an emergency.</p>
 
       <ul className="mt-4 space-y-3">
-        <li className="flex items-start gap-3">
+        <li className={cn("flex items-start gap-3", stepClass(pushNext))}>
           <span
             className={cn(
               "mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full",
@@ -41,7 +47,7 @@ export function NextSteps({ hasPush, memberCount }: { hasPush: boolean; memberCo
           </div>
         </li>
 
-        <li className="flex items-start gap-3">
+        <li className={cn("flex items-start gap-3", stepClass(inviteNext))}>
           <span
             className={cn(
               "mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full",
@@ -75,6 +81,16 @@ export function NextSteps({ hasPush, memberCount }: { hasPush: boolean; memberCo
           </div>
         </li>
       </ul>
+
+      <button
+        type="button"
+        onClick={() => setAll((a) => !a)}
+        aria-expanded={all}
+        className="mt-3 flex w-full items-center justify-between border-t-[0.5px] border-hairline pt-3 text-caption font-bold text-ink-mid lg:hidden"
+      >
+        {all ? "Show less" : "See all steps"}
+        <ChevronDown className={cn("size-4 transition-transform duration-200", all && "rotate-180")} />
+      </button>
     </section>
   );
 }

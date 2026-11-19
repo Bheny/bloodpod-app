@@ -46,7 +46,7 @@ export function QuickActions() {
             <Link
               key={action.href}
               href={action.href}
-              className="rounded-2xl bg-card px-3 py-[13px] shadow-raised transition-transform duration-150 active:scale-[0.97] lg:px-4 lg:py-4"
+              className="flex flex-col items-center rounded-2xl bg-card px-2 py-3.5 text-center shadow-raised lg:block lg:text-left transition-transform duration-150 active:scale-[0.97] lg:px-4 lg:py-4"
             >
               <span
                 className="flex size-8 items-center justify-center rounded-xl lg:size-10"
@@ -54,10 +54,10 @@ export function QuickActions() {
               >
                 <Icon className="size-4 lg:size-5" style={{ color: action.iconColor }} />
               </span>
-              <p className="mt-2 text-label font-bold tracking-[-0.2px] text-ink">
+              <p className="mt-2 text-caption font-bold tracking-[-0.2px] text-ink lg:text-label">
                 {action.label}
               </p>
-              <p className="text-label text-ink-muted">{action.sub}</p>
+              <p className="hidden text-label text-ink-muted lg:block">{action.sub}</p>
             </Link>
           );
         })}

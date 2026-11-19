@@ -3,8 +3,8 @@ import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * The one page header. On phones it is a bar; on desktop a `wide` page drops
- * the bar and shows a large title, while other pages keep a bar inside their card.
+ * The one page header. On phones it is a large title with no bar, the same as the home screen.
+ * On desktop a `wide` page shows a large title, while other pages keep a bar inside their card.
  */
 export function AppHeader({
   title,
@@ -22,15 +22,17 @@ export function AppHeader({
   return (
     <header
       className={cn(
-        "flex items-center gap-3 border-b-[0.5px] border-hairline bg-card px-4 py-3.5",
-        wide ? "lg:border-0 lg:bg-transparent lg:px-0 lg:pb-6 lg:pt-0" : "lg:px-6 lg:py-5",
+        "flex items-end gap-3 px-4 pb-2 pt-5",
+        wide
+          ? "lg:items-center lg:border-0 lg:bg-transparent lg:px-0 lg:pb-6 lg:pt-0"
+          : "lg:items-center lg:border-b-[0.5px] lg:border-hairline lg:bg-card lg:px-6 lg:py-5",
       )}
     >
       {backHref && (
         <Link
           href={backHref}
           aria-label="Back"
-          className="flex size-9 shrink-0 items-center justify-center rounded-full bg-surface transition-colors hover:bg-hairline"
+          className="mb-1 flex size-10 shrink-0 items-center justify-center rounded-full bg-card shadow-raised transition-transform active:scale-95 lg:mb-0 lg:size-9 lg:bg-surface lg:shadow-none lg:hover:bg-hairline"
         >
           <ArrowLeft className="size-4 text-ink" />
         </Link>
@@ -38,15 +40,16 @@ export function AppHeader({
       <div className="min-w-0 flex-1">
         <h1
           className={cn(
-            "truncate text-[19px] font-extrabold leading-tight tracking-[-0.6px] text-ink",
-            wide ? "lg:text-[30px] lg:tracking-[-1px]" : "lg:text-[22px]",
+            "truncate font-extrabold leading-[1.05] text-ink",
+            backHref ? "text-[28px] tracking-[-1px]" : "text-[34px] tracking-[-1.2px]",
+            wide ? "lg:text-[30px] lg:tracking-[-1px]" : "lg:text-[22px] lg:tracking-[-0.6px]",
           )}
         >
           {title}
         </h1>
-        {subtitle && <p className="mt-0.5 truncate text-caption text-ink-muted lg:text-body-sm">{subtitle}</p>}
+        {subtitle && <p className="mt-1 text-caption leading-snug text-ink-muted lg:mt-0.5 lg:truncate lg:text-body-sm">{subtitle}</p>}
       </div>
-      {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
+      {actions && <div className="mb-1 flex shrink-0 items-center gap-2 lg:mb-0">{actions}</div>}
     </header>
   );
 }

@@ -23,7 +23,7 @@ export function PodListCard({
   const progress = Math.min(pod.readyCount / POD_READY_THRESHOLD, 1);
 
   return (
-    <div className="overflow-hidden rounded-2xl border-[0.5px] border-hairline bg-card shadow-raised">
+    <div className="overflow-hidden rounded-3xl border-[0.5px] border-hairline bg-card lg:rounded-2xl shadow-raised">
       <Link
         href={`/pod/${pod.id}`}
         className="flex items-start gap-3 p-4 transition-colors active:bg-surface lg:p-5"

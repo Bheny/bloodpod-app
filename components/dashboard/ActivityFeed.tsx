@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import type { Activity, ActivityType } from "@prisma/client";
 import { formatRelativeTime } from "@/lib/formatters";
+import { cn } from "@/lib/utils";
 
 // Only genuine urgency (BLOOD_REQUEST) gets color. Everything else stays monochrome
 // so the one thing that actually needs attention is the only thing that stands out.
@@ -55,11 +56,13 @@ export function ActivityFeed({
             return (
               <div
                 key={activity.id}
-                className={
-                  i < activities.length - 1
-                    ? "flex items-center gap-3 border-b-[0.5px] border-hairline px-3.5 py-3 lg:px-5 lg:py-4"
-                    : "flex items-center gap-3 px-3.5 py-3 lg:px-5 lg:py-4"
-                }
+                className={cn(
+                  "items-center gap-3 px-3.5 py-3 lg:flex lg:px-5 lg:py-4",
+                  // Phones show the latest three; the full list is one tap away.
+                  i < 3 ? "flex" : "hidden",
+                  i < activities.length - 1 && "border-b-[0.5px] border-hairline",
+                  i === 2 && "max-lg:border-b-0",
+                )}
               >
                 <span
                   className="flex size-8 shrink-0 items-center justify-center rounded-xl lg:size-10"

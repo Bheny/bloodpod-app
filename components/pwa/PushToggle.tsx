@@ -83,7 +83,7 @@ export function PushToggle() {
   if (state === "loading") return null;
 
   return (
-    <div className="rounded-2xl border-[0.5px] border-hairline bg-card px-3.5 py-3 text-caption shadow-raised lg:px-5 lg:py-4 lg:text-body-sm">
+    <div className="rounded-3xl border-[0.5px] border-hairline bg-card lg:rounded-2xl px-3.5 py-3 text-caption shadow-raised lg:px-5 lg:py-4 lg:text-body-sm">
       <p className="font-bold text-ink">Emergency alerts</p>
       {state === "unsupported" && (
         <p className="mt-1 text-ink-mid">

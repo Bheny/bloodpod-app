@@ -43,7 +43,7 @@ export function EssentialsTabs({ cards, documents }: { cards: IdCard[]; document
           cards.length === 0 ? (
             <EmptyState label="No ID cards saved yet." />
           ) : (
-            <div className="divide-y-[0.5px] divide-surface overflow-hidden rounded-2xl border-[0.5px] border-hairline bg-card">
+            <div className="divide-y-[0.5px] divide-surface overflow-hidden rounded-3xl border-[0.5px] border-hairline bg-card lg:rounded-2xl">
               {cards.map((card) => (
                 <CardItem key={card.id} card={card} />
               ))}
@@ -52,7 +52,7 @@ export function EssentialsTabs({ cards, documents }: { cards: IdCard[]; document
         ) : documents.length === 0 ? (
           <EmptyState label="No documents saved yet." />
         ) : (
-          <div className="divide-y-[0.5px] divide-surface overflow-hidden rounded-2xl border-[0.5px] border-hairline bg-card">
+          <div className="divide-y-[0.5px] divide-surface overflow-hidden rounded-3xl border-[0.5px] border-hairline bg-card lg:rounded-2xl">
             {documents.map((document) => (
               <DocumentItem key={document.id} document={document} />
             ))}

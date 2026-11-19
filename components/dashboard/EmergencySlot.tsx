@@ -37,7 +37,7 @@ export function EmergencySlot({
     return (
       <section
         aria-live="polite"
-        className="flex items-center gap-4 rounded-2xl border-[0.5px] border-hairline bg-card p-4 shadow-raised lg:p-6"
+        className="flex items-center gap-4 rounded-3xl border-[0.5px] border-hairline bg-card lg:rounded-2xl p-4 shadow-raised lg:p-6"
       >
         <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-success-soft lg:size-12">
           <ShieldCheck className="size-5 text-[#1FA855] lg:size-6" />

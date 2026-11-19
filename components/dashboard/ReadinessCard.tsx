@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { BellOff, BellRing, BadgeCheck, CircleDashed } from "lucide-react";
+import { BellOff, BellRing, BadgeCheck, CircleDashed, ChevronDown } from "lucide-react";
 import { formatDate } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 
@@ -23,6 +23,7 @@ export function ReadinessCard({
 }) {
   const [available, setAvailable] = useState(initiallyAvailable);
   const [saving, setSaving] = useState(false);
+  const [details, setDetails] = useState(false);
 
   const state: State = !isEligible ? "resting" : available ? "ready" : "paused";
 
@@ -55,7 +56,7 @@ export function ReadinessCard({
   }[state];
 
   return (
-    <section className="rounded-2xl border-[0.5px] border-hairline bg-card p-4 shadow-raised lg:p-6">
+    <section className="rounded-3xl border-[0.5px] border-hairline bg-card lg:rounded-2xl p-4 shadow-raised lg:p-6">
       <div className="flex items-start gap-3">
         <span className="relative mt-1.5 flex size-2.5 shrink-0">
           {state === "ready" && (
@@ -88,7 +89,18 @@ export function ReadinessCard({
         </button>
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-2 border-t-[0.5px] border-hairline pt-4">
+      {/* On phones the extra detail sits behind a tap, so the card reads at a glance. */}
+      <button
+        type="button"
+        onClick={() => setDetails((d) => !d)}
+        aria-expanded={details}
+        className="mt-3 flex w-full items-center justify-between border-t-[0.5px] border-hairline pt-3 text-caption font-bold text-ink-mid lg:hidden"
+      >
+        {details ? "Hide details" : "Alerts and verification"}
+        <ChevronDown className={cn("size-4 transition-transform duration-200", details && "rotate-180")} />
+      </button>
+
+      <div className={cn("mt-3 flex-wrap gap-2 lg:mt-4 lg:flex lg:border-t-[0.5px] lg:border-hairline lg:pt-4", details ? "flex" : "hidden")}>
         {hasPush ? (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-3 py-1.5 text-caption font-semibold text-success-strong">
             <BellRing className="size-3.5" /> Alerts on

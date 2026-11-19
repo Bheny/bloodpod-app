@@ -66,7 +66,7 @@ export default async function PassportPage() {
 
           <div className="order-5 lg:order-none">
             {/* Tiers and streaks are parked until trust and emergency response are proven. */}
-            <details className="group rounded-2xl border-[0.5px] border-hairline bg-card shadow-raised">
+            <details className="group rounded-3xl border-[0.5px] border-hairline bg-card lg:rounded-2xl shadow-raised">
               <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-4 lg:px-6">
                 <span>
                   <span className="block text-body-sm font-bold text-ink lg:text-title">Milestones</span>

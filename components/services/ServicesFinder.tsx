@@ -59,7 +59,7 @@ export function ServicesFinder({
 
   return (
     <div className="flex flex-col gap-4 px-3.5 pb-8 pt-4 lg:px-0 lg:pt-0">
-      <section className="rounded-2xl border-[0.5px] border-hairline bg-card p-4 shadow-raised lg:p-6">
+      <section className="rounded-3xl border-[0.5px] border-hairline bg-card lg:rounded-2xl p-4 shadow-raised lg:p-6">
         <h2 className="text-body-sm font-bold text-ink lg:text-title">What do you need checked?</h2>
         <p className="mt-0.5 text-caption text-ink-muted lg:text-body-sm">Pick one or more. We list the nearest labs that offer them.</p>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">

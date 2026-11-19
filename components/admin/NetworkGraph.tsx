@@ -708,7 +708,7 @@ export function NetworkGraph({ data }: { data: GraphData }) {
         )}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
         {/* The graph */}
         <div className="relative overflow-hidden rounded-2xl border-[0.5px] border-hairline bg-card shadow-raised">
           <div ref={wrapRef} className="h-[62vh] min-h-[440px] w-full lg:h-[640px]">

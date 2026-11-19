@@ -15,7 +15,7 @@ export function PartnerCard({ partner }: { partner: Partner }) {
   return (
     <Link
       href={`/discover/partner/${partner.id}`}
-      className="flex w-[150px] shrink-0 snap-start flex-col gap-1.5 rounded-2xl border-[0.5px] border-hairline bg-card p-3 shadow-raised lg:w-[190px] lg:p-4"
+      className="flex w-[150px] shrink-0 snap-start flex-col gap-1.5 rounded-3xl border-[0.5px] border-hairline bg-card lg:rounded-2xl p-3 shadow-raised lg:w-[190px] lg:p-4"
     >
       <span
         className="flex size-9 items-center justify-center rounded-xl lg:size-11"

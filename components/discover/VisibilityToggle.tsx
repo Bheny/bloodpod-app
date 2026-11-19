@@ -32,7 +32,7 @@ export function VisibilityToggle({ initiallyPublic }: { initiallyPublic: boolean
 
   return (
     // Stacked on narrow phones (message on top, a full-width button underneath), side by side once there's room.
-    <div className="m-3.5 flex flex-col gap-3 rounded-2xl border-[0.5px] border-hairline bg-card px-3.5 py-3.5 shadow-raised min-[480px]:flex-row min-[480px]:items-center lg:mx-6 lg:mt-5 lg:px-5 lg:py-4">
+    <div className="m-3.5 flex flex-col gap-3 rounded-3xl border-[0.5px] border-hairline bg-card lg:rounded-2xl px-3.5 py-3.5 shadow-raised min-[480px]:flex-row min-[480px]:items-center lg:mx-6 lg:mt-5 lg:px-5 lg:py-4">
       <div className="flex min-w-0 flex-1 items-start gap-3">
         <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-surface lg:size-11">
           <Eye className="size-4 text-ink-mid lg:size-5" />

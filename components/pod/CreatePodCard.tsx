@@ -37,7 +37,7 @@ export function CreatePodCard({
 
   if (owned >= limit && variant === "slide") {
     return (
-      <div className="flex h-full min-h-[176px] flex-col items-center justify-center gap-2 rounded-2xl border-[1.5px] border-dashed border-hairline bg-card/40 p-4 text-center lg:p-6">
+      <div className="flex h-full min-h-[176px] flex-col items-center justify-center gap-2 rounded-3xl border-[1.5px] border-dashed border-hairline bg-card/40 p-4 text-center lg:p-6">
         <span className="flex size-11 items-center justify-center rounded-full bg-surface text-ink-faint">
           <Lock className="size-5" />
         </span>
@@ -54,7 +54,7 @@ export function CreatePodCard({
 
   if (owned >= limit) {
     return (
-      <div className="flex items-center gap-3 rounded-2xl border-[1.5px] border-dashed border-hairline bg-card/40 px-4 py-3.5">
+      <div className="flex items-center gap-3 rounded-3xl border-[1.5px] border-dashed border-hairline bg-card/40 px-4 py-3.5">
         <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-surface text-ink-faint">
           <Lock className="size-4.5" />
         </span>
@@ -99,7 +99,7 @@ export function CreatePodCard({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="flex h-full min-h-[176px] w-full flex-col items-center justify-center gap-2 rounded-2xl border-[1.5px] border-dashed border-ink-faint/60 bg-card/60 p-4 text-center transition-colors hover:bg-card lg:p-6"
+        className="flex h-full min-h-[176px] w-full flex-col items-center justify-center gap-2 rounded-3xl border-[1.5px] border-dashed border-ink-faint/60 bg-card/60 p-4 text-center transition-colors hover:bg-card lg:p-6"
       >
         <span className="flex size-11 items-center justify-center rounded-full bg-red-light text-red-fg">
           <Plus className="size-6" />
@@ -113,7 +113,7 @@ export function CreatePodCard({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="flex w-full items-center justify-center gap-2 rounded-2xl border-[1.5px] border-dashed border-red-mid bg-red-light/40 px-4 py-4 text-body-sm font-bold text-red-fg transition-colors hover:bg-red-light"
+        className="flex w-full items-center justify-center gap-2 rounded-3xl border-[1.5px] border-dashed border-red-mid bg-red-light/40 px-4 py-4 text-body-sm font-bold text-red-fg transition-colors hover:bg-red-light"
       >
         <Plus className="size-4" /> Create another Pod
         <span className="text-caption font-semibold text-ink-muted">
