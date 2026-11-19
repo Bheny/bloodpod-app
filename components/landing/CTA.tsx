@@ -25,7 +25,7 @@ export function CTA() {
 
         <Reveal delay={0.2} className="mt-10 flex flex-col items-center gap-4">
           <Button asChild size="lg">
-            <Link href="/start">Build my Blood Card →</Link>
+            <Link href="/start">Build my network →</Link>
           </Button>
           <Link href="/sign-in" className="text-sm font-semibold text-ink-muted hover:text-ink">
             Sign in

@@ -5,8 +5,8 @@ import { getCurrentUser } from "@/lib/auth/current-user";
 import { StartFlow } from "@/components/start/StartFlow";
 
 export const metadata: Metadata = {
-  title: "Build your Blood Card | BloodPod",
-  description: "Answer three quick questions and see your Blood Card. No account needed yet.",
+  title: "Build your donor network | BloodPod",
+  description: "Answer three quick questions and start a network of people ready to give blood. No account needed yet.",
 };
 
 export default async function StartPage() {

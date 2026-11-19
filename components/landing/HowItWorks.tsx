@@ -27,8 +27,8 @@ const TYPES = ["O−", "O+", "A−", "A+", "B−", "B+", "AB−", "AB+"];
 function JoinPanel() {
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl bg-white p-5 shadow-raised">
-        <p className="text-[11px] font-bold uppercase tracking-[2px] text-red">You&apos;re invited</p>
+      <div className="rounded-2xl bg-card p-5 shadow-raised">
+        <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">You&apos;re invited</p>
         <p className="mt-2 text-base font-extrabold text-ink">Join the Example Church Pod</p>
         <p className="mt-1 text-xs text-ink-muted">14 members · Accra</p>
         <span className="mt-4 block rounded-full bg-red py-3 text-center text-sm font-bold text-white">
@@ -36,7 +36,7 @@ function JoinPanel() {
         </span>
       </div>
       <div className="flex items-center gap-3 rounded-2xl border border-dashed border-red-mid bg-red-light/60 p-4">
-        <Smartphone className="size-5 shrink-0 text-red" />
+        <Smartphone className="size-5 shrink-0 text-red-fg" />
         <p className="text-xs leading-snug text-ink-mid">
           <span className="font-bold text-ink">Add to Home Screen</span> so alerts reach you.
         </p>
@@ -47,7 +47,7 @@ function JoinPanel() {
 
 function BasicsPanel() {
   return (
-    <div className="space-y-4 rounded-2xl bg-white p-5 shadow-raised">
+    <div className="space-y-4 rounded-2xl bg-card p-5 shadow-raised">
       <div>
         <p className="text-xs font-bold text-ink">Blood type</p>
         <div className="mt-2 grid grid-cols-4 gap-2">
@@ -80,7 +80,7 @@ function BasicsPanel() {
 
 function AlertPanel() {
   return (
-    <div className="rounded-2xl bg-white p-5 shadow-raised">
+    <div className="rounded-2xl bg-card p-5 shadow-raised">
       <div className="flex items-center gap-3">
         <span className="flex size-11 items-center justify-center rounded-2xl bg-red text-base font-extrabold text-white">
           O−
@@ -120,7 +120,7 @@ export function HowItWorks() {
     <section id="how-it-works" className="px-6 py-24">
       <div className="mx-auto max-w-[1100px]">
         <Reveal className="text-center">
-          <p className="text-[11px] font-bold uppercase tracking-[2.5px] text-red">How it works</p>
+          <p className="text-[11px] font-bold uppercase tracking-[2.5px] text-red-fg">How it works</p>
           <h2 className="mt-4 text-[32px] font-extrabold tracking-[-1px] text-ink lg:text-[40px]">
             Ready in three steps.
           </h2>
@@ -141,10 +141,10 @@ export function HowItWorks() {
                     setActive(i);
                   }}
                   className={cn(
-                    "relative overflow-hidden rounded-card border-[0.5px] p-6 text-left transition-all duration-200",
+                    "relative overflow-hidden rounded-card border-[0.5px] p-6 text-left transition-colors duration-200",
                     on
-                      ? "border-red-mid bg-white shadow-raised"
-                      : "border-[#E5E5EA] bg-transparent hover:bg-white",
+                      ? "border-red-mid bg-card shadow-raised"
+                      : "border-hairline bg-transparent hover:bg-card",
                   )}
                 >
                   <div className="flex items-center gap-3">
@@ -158,19 +158,27 @@ export function HowItWorks() {
                     </span>
                     <h3 className="text-lg font-bold text-ink">{s.title}</h3>
                   </div>
-                  <AnimatePresence initial={false}>
-                    {on && (
-                      <m.p
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.25 }}
-                        className="overflow-hidden pl-10 pt-2 text-sm leading-[1.7] text-ink-mid"
-                      >
-                        {s.body}
-                      </m.p>
-                    )}
-                  </AnimatePresence>
+                  {/* The open card always has the height of the longest description (the others sit
+                      invisibly in the same space), and the old one disappears at once. So the column
+                      is the same height on every step and nothing around it moves. */}
+                  {on && (
+                    <m.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.25 }}
+                      className="grid pl-10 pt-2 text-sm leading-[1.7] text-ink-mid"
+                    >
+                      {STEPS.map((other, k) => (
+                        <p
+                          key={other.title}
+                          aria-hidden={k !== i}
+                          className={cn("col-start-1 row-start-1", k !== i && "invisible")}
+                        >
+                          {other.body}
+                        </p>
+                      ))}
+                    </m.div>
+                  )}
                   {on && !manual && !reduce && (
                     <m.span
                       key={`bar-${active}`}
@@ -187,14 +195,15 @@ export function HowItWorks() {
 
           <div className="relative mx-auto w-full max-w-[380px]">
             <div className="absolute inset-0 -z-10 rounded-[40px] bg-red-light blur-2xl" />
-            <div className="rounded-[32px] border border-[#E5E5EA] bg-surface p-5">
+            <div className="rounded-[32px] border border-hairline bg-surface p-5">
               <div className="mb-4 flex items-center gap-2">
                 <span className="flex size-6 items-center justify-center rounded-md bg-red">
                   <Droplet className="size-3.5 text-white" />
                 </span>
                 <span className="text-xs font-bold text-ink">BloodPod</span>
               </div>
-              <div className="min-h-[250px]">
+              {/* Tall enough for the biggest of the three panels, so the phone never resizes between steps. */}
+              <div className="min-h-[290px]">
                 <AnimatePresence mode="wait">
                   <m.div
                     key={active}

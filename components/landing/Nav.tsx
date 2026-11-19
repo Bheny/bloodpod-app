@@ -22,7 +22,7 @@ export function Nav() {
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-        className="sticky top-0 z-50 h-16 border-b-[0.5px] border-[#E5E5EA] bg-white/92 backdrop-blur-md"
+        className="sticky top-0 z-50 h-16 border-b-[0.5px] border-hairline bg-card/92 backdrop-blur-md"
       >
         <nav className="mx-auto flex h-full max-w-[1280px] items-center justify-between px-5 lg:px-12">
           <Link href="/" className="shrink-0">
@@ -69,7 +69,7 @@ export function Nav() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 top-16 z-40 flex flex-col gap-1 bg-white p-6 lg:hidden"
+            className="fixed inset-0 top-16 z-40 flex flex-col gap-1 bg-card p-6 lg:hidden"
           >
             {LINKS.map((link) => (
               <a

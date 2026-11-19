@@ -5,10 +5,10 @@ import { cn } from "@/lib/utils";
 
 function Card({ t }: { t: Testimonial }) {
   return (
-    <figure className="w-[320px] shrink-0 rounded-card border-[0.5px] border-[#E5E5EA] bg-white p-6 shadow-raised">
+    <figure className="w-[320px] shrink-0 rounded-card border-[0.5px] border-hairline bg-card p-6 shadow-raised">
       <blockquote className="text-sm leading-[1.7] text-ink-mid">&ldquo;{t.quote}&rdquo;</blockquote>
       <figcaption className="mt-5 flex items-center gap-3">
-        <span className="flex size-9 items-center justify-center rounded-full bg-red-light text-xs font-bold text-red">
+        <span className="flex size-9 items-center justify-center rounded-full bg-red-light text-xs font-bold text-red-fg">
           {getInitials(t.name)}
         </span>
         <span>
@@ -24,19 +24,27 @@ function Card({ t }: { t: Testimonial }) {
 }
 
 function Track({ items, reverse, seconds }: { items: Testimonial[]; reverse?: boolean; seconds: number }) {
-  // Repeat enough times that the -50% loop never shows a gap.
-  const row = [...items, ...items, ...items];
+  // Repeat just enough that one copy is wider than a large screen (about 1600px), so the loop never
+  // shows a gap. Repeating more only makes the moving layer huge, which phones struggle to draw.
+  const reps = Math.max(1, Math.ceil(1600 / (items.length * 340)));
+  const row = Array.from({ length: reps }, () => items).flat();
   return (
-    <div className="group overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+    <div className="group relative overflow-hidden">
+      {/* Soft edges drawn as overlays. A CSS mask on the moving strip forces the browser to redraw
+          the whole thing every frame, which was a likely cause of the stutter. */}
+      <span aria-hidden className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-surface to-transparent" />
+      <span aria-hidden className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-surface to-transparent" />
       <div
         className={cn(
-          "flex w-max animate-marquee gap-5 py-2 group-hover:[animation-play-state:paused] motion-reduce:[animation:none]",
+          "flex w-max animate-marquee py-2 group-hover:[animation-play-state:paused] motion-reduce:[animation:none]",
           reverse && "[animation-direction:reverse]",
         )}
         style={{ animationDuration: `${seconds}s` }}
       >
         {[row, row].map((r, i) => (
-          <div key={i} className="flex gap-5" aria-hidden={i === 1}>
+          // Spacing is padding inside each copy, not a gap between them, so both copies are exactly
+          // the same width and the -50% loop lands precisely on the start with no jump.
+          <div key={i} className="flex shrink-0 gap-5 pr-5" aria-hidden={i === 1}>
             {r.map((t, j) => (
               <Card key={`${t.name}-${j}`} t={t} />
             ))}
@@ -59,12 +67,12 @@ export function Testimonials() {
   return (
     <section className="overflow-hidden px-0 py-24">
       <Reveal className="px-6 text-center">
-        <p className="text-[11px] font-bold uppercase tracking-[2.5px] text-red">In their words</p>
+        <p className="text-[11px] font-bold uppercase tracking-[2.5px] text-red-fg">In their words</p>
         <h2 className="mt-4 text-[32px] font-extrabold tracking-[-1px] text-ink lg:text-[40px]">
           What our first Pods say.
         </h2>
         {isSample && (
-          <p className="mx-auto mt-4 max-w-[520px] rounded-xl bg-red-light px-4 py-2 text-xs font-semibold text-red">
+          <p className="mx-auto mt-4 max-w-[520px] rounded-xl bg-red-light px-4 py-2 text-xs font-semibold text-red-fg">
             Development preview with sample text. Hidden in production until real quotes are added in
             lib/testimonials.ts.
           </p>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence, m } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import { BadgeCheck, WifiOff } from "lucide-react";
 import { Reveal } from "@/components/landing/Reveal";
 import { GradientBlob } from "@/components/landing/GradientBlob";
@@ -42,20 +42,34 @@ function Switch({
   );
 }
 
+// One slow cycle shared by the card, its shadow and the glow, so they stay in step.
+const FLOAT = { duration: 5, repeat: Infinity, ease: "easeInOut" } as const;
+
 export function BloodCard() {
+  const reduce = useReducedMotion();
   const [verified, setVerified] = useState(false);
   const [offline, setOffline] = useState(false);
 
   return (
-    <section className="relative overflow-hidden bg-ink px-6 py-24 lg:px-12">
+    <section className="relative overflow-hidden bg-panel px-6 py-24 lg:px-12">
       <GradientBlob color="red" className="-left-32 inset-y-0 my-auto size-105" />
 
-      <div className="relative mx-auto grid max-w-[1100px] items-center gap-14 lg:grid-cols-2">
+      <div className="relative mx-auto grid max-w-[1100px] items-start gap-14 lg:grid-cols-2 lg:items-center">
         <Reveal className="flex flex-col items-center gap-3 lg:items-start">
+          {/* Maglev: the card floats on a slow, steady cycle; its shadow and the glow beneath breathe with it. */}
+          <div className="relative w-full max-w-[360px] pb-12">
+          <m.div
+            animate={reduce ? { y: 0 } : { y: [0, -12, 0] }}
+            transition={FLOAT}
+          >
           <m.div
             animate={{ rotate: verified ? 0 : -2 }}
             transition={{ type: "spring", stiffness: 180, damping: 16 }}
-            className="w-full max-w-[360px] rounded-card border border-white/10 bg-[#2C2C2E] p-6 text-white"
+            style={{
+              boxShadow:
+                "0 1px 0 rgba(255,255,255,0.12) inset, 0 -1px 0 rgba(0,0,0,0.5) inset, 0 30px 50px -20px rgba(0,0,0,0.7)",
+            }}
+            className="w-full rounded-card border border-white/10 bg-[linear-gradient(145deg,#3A3A3E_0%,#2C2C2E_55%,#232326_100%)] p-6 text-white"
           >
             <div className="flex items-start justify-between">
               <span className="text-[11px] font-bold uppercase tracking-[2px] text-white/50">Blood Card</span>
@@ -66,7 +80,7 @@ export function BloodCard() {
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.7, opacity: 0 }}
                   className={cn(
-                    "flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide",
+                    "flex min-w-[116px] items-center justify-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide",
                     verified ? "bg-red text-white" : "bg-white/10 text-white/70",
                   )}
                 >
@@ -76,7 +90,7 @@ export function BloodCard() {
               </AnimatePresence>
             </div>
 
-            <div className="mt-6 text-[52px] font-extrabold leading-none tracking-tight text-red">O−</div>
+            <div className="mt-6 text-[52px] font-extrabold leading-none tracking-tight text-red-fg">O−</div>
             <p className="mt-4 text-base font-bold">Example Donor</p>
             <p className="text-sm text-white/50">Accra, Ghana</p>
 
@@ -93,24 +107,41 @@ export function BloodCard() {
               </div>
             </div>
 
-            <AnimatePresence>
-              {offline && (
-                <m.p
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="mt-4 flex items-center gap-2 overflow-hidden rounded-xl bg-white/10 px-3 py-2 text-xs text-white/80"
-                >
-                  <WifiOff className="size-3.5" /> No signal, and your card still opens
-                </m.p>
-              )}
-            </AnimatePresence>
+            {/* The space is always reserved and only the note fades, so the card never changes height
+                and nothing around it moves when the switch is toggled. */}
+            <m.p
+              animate={{ opacity: offline ? 1 : 0 }}
+              transition={{ duration: 0.25 }}
+              aria-hidden={!offline}
+              className="mt-4 flex items-center gap-2 rounded-xl bg-white/10 px-3 py-2 text-xs text-white/80"
+            >
+              <WifiOff className="size-3.5 shrink-0" /> No signal, and your card still opens
+            </m.p>
           </m.div>
+          </m.div>
+
+          {/* Shadow on the "track": narrower and fainter when the card is high. */}
+          <m.span
+            aria-hidden
+            animate={reduce ? undefined : { scaleX: [1, 0.8, 1], opacity: [0.6, 0.3, 0.6] }}
+            transition={FLOAT}
+            className="pointer-events-none absolute inset-x-10 bottom-3 h-6"
+            style={{ background: "radial-gradient(ellipse at center, rgba(0,0,0,0.7) 0%, transparent 70%)" }}
+          />
+          {/* A thin red line of light, like the field holding it up. */}
+          <m.span
+            aria-hidden
+            animate={reduce ? undefined : { opacity: [0.9, 0.45, 0.9], scaleX: [1, 0.85, 1] }}
+            transition={FLOAT}
+            className="pointer-events-none absolute inset-x-14 bottom-0 h-2"
+            style={{ background: "radial-gradient(ellipse at center, rgba(221,0,0,0.85) 0%, transparent 70%)" }}
+          />
+          </div>
           <p className="text-xs text-white/40">Example card</p>
         </Reveal>
 
         <Reveal delay={0.15}>
-          <p className="text-[11px] font-bold uppercase tracking-[2.5px] text-red">Your Blood Card</p>
+          <p className="text-[11px] font-bold uppercase tracking-[2.5px] text-red-fg">Your Blood Card</p>
           <h2 className="mt-4 text-[32px] font-extrabold leading-[1.15] tracking-[-1px] text-white lg:text-[36px]">
             Your blood type, always on hand.
           </h2>

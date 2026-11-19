@@ -24,7 +24,7 @@ export function Hero() {
             className="inline-flex items-center gap-2 rounded-full border border-red-mid bg-red-light px-3 py-1.5"
           >
             <span className="size-1.5 animate-pulse-dot rounded-full bg-red" />
-            <span className="text-xs font-bold text-red">Pilot launching in Ghana</span>
+            <span className="text-xs font-bold text-red-fg">Pilot launching in Ghana</span>
           </m.div>
 
           <m.h1
@@ -33,7 +33,7 @@ export function Hero() {
           >
             When blood runs short,
             <br />
-            <span className="text-red">minutes</span> matter.
+            <span className="text-red-fg">minutes</span> matter.
           </m.h1>
 
           <m.p
@@ -48,14 +48,8 @@ export function Hero() {
 
           <m.div {...fadeUp(0.5)} className="mt-10 flex flex-wrap items-center gap-6">
             <Button asChild size="lg">
-              <Link href="/start">Build my Blood Card →</Link>
+              <Link href="/start">Build my network →</Link>
             </Button>
-            <a
-              href="#hospitals"
-              className="text-base font-semibold text-ink-mid underline-offset-4 hover:text-ink hover:underline"
-            >
-              I run a blood bank
-            </a>
           </m.div>
 
           <m.ul

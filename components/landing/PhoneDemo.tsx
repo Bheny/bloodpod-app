@@ -22,9 +22,9 @@ export function PhoneDemo() {
 
   return (
     <div className="relative mx-auto w-[280px] sm:w-[300px]">
-      <div className="rounded-[44px] border-[6px] border-ink bg-ink p-0 shadow-[0_40px_80px_-20px_rgba(28,28,30,0.45)]">
+      <div className="rounded-[44px] border-[6px] border-ink bg-panel p-0 shadow-[0_40px_80px_-20px_rgba(28,28,30,0.45)]">
         <div className="relative h-[560px] overflow-hidden rounded-[38px] bg-surface">
-          <div className="absolute left-1/2 top-2.5 z-20 h-5 w-24 -translate-x-1/2 rounded-full bg-ink" />
+          <div className="absolute left-1/2 top-2.5 z-20 h-5 w-24 -translate-x-1/2 rounded-full bg-panel" />
 
           <AnimatePresence mode="wait">
             {shown < 2 ? (
@@ -72,11 +72,11 @@ export function PhoneDemo() {
                 transition={{ duration: 0.3 }}
                 className="absolute inset-0 flex flex-col px-5 pt-14"
               >
-                <p className="text-[11px] font-bold uppercase tracking-[2px] text-red">
+                <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">
                   Emergency alert
                 </p>
 
-                <div className="mt-3 rounded-2xl bg-white p-4 shadow-raised">
+                <div className="mt-3 rounded-2xl bg-card p-4 shadow-raised">
                   <div className="flex items-center gap-3">
                     <span className="flex size-12 items-center justify-center rounded-2xl bg-red text-lg font-extrabold text-white">
                       O−
@@ -110,7 +110,7 @@ export function PhoneDemo() {
                       <span className="rounded-full bg-red py-3 text-center text-sm font-bold text-white">
                         Yes, I can
                       </span>
-                      <span className="rounded-full border border-hairline bg-white py-3 text-center text-sm font-bold text-ink-mid">
+                      <span className="rounded-full border border-hairline bg-card py-3 text-center text-sm font-bold text-ink-mid">
                         No
                       </span>
                     </m.div>
@@ -120,7 +120,7 @@ export function PhoneDemo() {
                       initial={{ opacity: 0, scale: 0.96 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0 }}
-                      className="mt-5 rounded-2xl bg-white p-4 text-center shadow-raised"
+                      className="mt-5 rounded-2xl bg-card p-4 text-center shadow-raised"
                     >
                       <span className="mx-auto flex size-9 items-center justify-center rounded-full bg-[#34C759]">
                         <Check className="size-5 text-white" />

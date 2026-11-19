@@ -10,7 +10,7 @@ const LINKS = [
 
 export function Footer() {
   return (
-    <footer className="border-t-[0.5px] border-[#E5E5EA] px-6 py-10 lg:px-12">
+    <footer className="border-t-[0.5px] border-hairline px-6 py-10 lg:px-12">
       <div className="mx-auto flex max-w-[1280px] flex-col items-center gap-8 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <div className="flex flex-col items-center gap-1 sm:items-start">
           <Logo />
@@ -22,7 +22,7 @@ export function Footer() {
             <Link
               key={link.label}
               href={link.href}
-              className="text-sm text-ink-muted transition-colors duration-150 hover:text-red"
+              className="text-sm text-ink-muted transition-colors duration-150 hover:text-red-fg"
             >
               {link.label}
             </Link>
@@ -32,7 +32,7 @@ export function Footer() {
         <div className="flex items-center gap-4">
           <a
             href="mailto:hello@bloodpod.gh"
-            className="text-sm text-ink-muted transition-colors duration-150 hover:text-red"
+            className="text-sm text-ink-muted transition-colors duration-150 hover:text-red-fg"
           >
             hello@bloodpod.gh
           </a>

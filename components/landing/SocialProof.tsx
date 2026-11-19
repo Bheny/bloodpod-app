@@ -14,7 +14,7 @@ function Row() {
       {ITEMS.map((item, i) => (
         <span key={i} className="flex items-center whitespace-nowrap text-[13px] font-medium text-ink-muted">
           {item}
-          <span className="mx-4 text-red">·</span>
+          <span className="mx-4 text-red-fg">·</span>
         </span>
       ))}
     </div>

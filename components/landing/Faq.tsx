@@ -40,13 +40,13 @@ export function Faq() {
     <section id="faq" className="px-6 py-24">
       <div className="mx-auto max-w-[760px]">
         <Reveal className="text-center">
-          <p className="text-[11px] font-bold uppercase tracking-[2.5px] text-red">Questions</p>
+          <p className="text-[11px] font-bold uppercase tracking-[2.5px] text-red-fg">Questions</p>
           <h2 className="mt-4 text-[32px] font-extrabold tracking-[-1px] text-ink lg:text-[40px]">
             Trust is the whole point.
           </h2>
         </Reveal>
 
-        <div className="mt-12 divide-y-[0.5px] divide-hairline rounded-card border-[0.5px] border-[#E5E5EA] bg-white">
+        <div className="mt-12 divide-y-[0.5px] divide-hairline rounded-card border-[0.5px] border-hairline bg-card">
           {ITEMS.map((item, i) => {
             const on = open === i;
             return (
@@ -58,7 +58,7 @@ export function Faq() {
                   className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
                 >
                   <span className="text-base font-bold text-ink">{item.q}</span>
-                  <Plus className={cn("size-5 shrink-0 text-red transition-transform duration-200", on && "rotate-45")} />
+                  <Plus className={cn("size-5 shrink-0 text-red-fg transition-transform duration-200", on && "rotate-45")} />
                 </button>
                 <AnimatePresence initial={false}>
                   {on && (

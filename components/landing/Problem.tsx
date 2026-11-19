@@ -22,7 +22,7 @@ export function Problem() {
       <div className="mx-auto max-w-[1100px]">
         <div className="mx-auto max-w-[720px] text-center">
           <Reveal>
-            <p className="text-[11px] font-bold uppercase tracking-[2.5px] text-red">
+            <p className="text-[11px] font-bold uppercase tracking-[2.5px] text-red-fg">
               The problem
             </p>
           </Reveal>
@@ -44,7 +44,7 @@ export function Problem() {
         <div className="mt-14 grid gap-6 lg:grid-cols-2">
           {/* Before */}
           <Reveal>
-            <div className="h-full rounded-card border-[0.5px] border-[#E5E5EA] bg-white p-6">
+            <div className="h-full rounded-card border-[0.5px] border-hairline bg-card p-6">
               <div className="flex items-center justify-between">
                 <span className="rounded-full bg-surface px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-ink-muted">
                   Without BloodPod
@@ -64,8 +64,8 @@ export function Problem() {
                       className={cn(
                         "max-w-[85%] rounded-2xl px-3.5 py-2.5 text-[13px] leading-snug",
                         c.side === "right"
-                          ? "rounded-br-md bg-ink text-white"
-                          : "rounded-bl-md bg-white text-ink shadow-raised",
+                          ? "rounded-br-md bg-panel text-white"
+                          : "rounded-bl-md bg-card text-ink shadow-raised",
                       )}
                     >
                       {c.side === "left" && (
@@ -102,12 +102,12 @@ export function Problem() {
                 <span className="rounded-full bg-red px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white">
                   With BloodPod
                 </span>
-                <span className="flex items-center gap-1.5 text-xs font-semibold text-red">
+                <span className="flex items-center gap-1.5 text-xs font-semibold text-red-fg">
                   <span className="size-1.5 animate-pulse-dot rounded-full bg-red" /> Live
                 </span>
               </div>
 
-              <div className="mt-5 rounded-2xl bg-white p-4 shadow-raised">
+              <div className="mt-5 rounded-2xl bg-card p-4 shadow-raised">
                 <div className="flex items-center gap-3 border-b-[0.5px] border-hairline pb-3">
                   <span className="flex size-10 items-center justify-center rounded-xl bg-red text-sm font-extrabold text-white">
                     O−
@@ -124,7 +124,7 @@ export function Problem() {
                       <span
                         className={cn(
                           "flex size-8 items-center justify-center rounded-full text-[11px] font-bold",
-                          r.state === "skip" ? "bg-surface text-ink-muted" : "bg-red-light text-red",
+                          r.state === "skip" ? "bg-surface text-ink-muted" : "bg-red-light text-red-fg",
                         )}
                       >
                         {r.type}
@@ -141,15 +141,15 @@ export function Problem() {
 
               <ul className="mt-5 space-y-2 text-sm text-ink-mid">
                 <li className="flex items-start gap-2.5">
-                  <Check className="mt-0.5 size-4 shrink-0 text-red" />
+                  <Check className="mt-0.5 size-4 shrink-0 text-red-fg" />
                   Only matching, eligible donors are alerted
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <Check className="mt-0.5 size-4 shrink-0 text-red" />
+                  <Check className="mt-0.5 size-4 shrink-0 text-red-fg" />
                   Everyone answers Yes or No from one alert
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <Check className="mt-0.5 size-4 shrink-0 text-red" />
+                  <Check className="mt-0.5 size-4 shrink-0 text-red-fg" />
                   You see who is coming, as it happens
                 </li>
               </ul>

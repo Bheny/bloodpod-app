@@ -6,7 +6,9 @@ const KEY = "bp_start_v1";
 export type StartState = {
   bloodType: string | null; // Prisma BloodType value, e.g. "O_NEG"
   neverDonated: boolean;
-  lastDonated: string | null; // YYYY-MM-DD
+  lastDonated: string | null; // YYYY-MM-DD; a rough date when the visitor picked a range
+  /** Which answer they picked on the "last donated" question, e.g. "m3" or "exact". */
+  donatedChoice?: string | null;
   city: string | null;
   latitude?: number;
   longitude?: number;

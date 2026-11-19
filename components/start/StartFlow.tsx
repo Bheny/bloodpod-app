@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, m } from "framer-motion";
 import { ArrowLeft, BellRing, CheckCircle2, Clock, MapPin } from "lucide-react";
+import { IntroStory } from "@/components/start/IntroStory";
 import { Logo } from "@/components/ui/Logo";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -12,7 +13,9 @@ import { computeEligibility } from "@/lib/eligibility";
 import { nearestCity } from "@/lib/nearest-city";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
 import { cn } from "@/lib/utils";
-import { EMPTY_START, readStartState, writeStartState, type StartState } from "@/lib/start-state";
+import { EMPTY_START, isStartComplete, readStartState, writeStartState, type StartState } from "@/lib/start-state";
+import { canDonateTo } from "@/lib/blood-compatibility";
+import { POD_READY_THRESHOLD } from "@/components/dashboard/PodReadyCard";
 import type { BloodType } from "@prisma/client";
 
 const TYPES: { label: string; value: BloodType; note?: string }[] = [
@@ -26,8 +29,35 @@ const TYPES: { label: string; value: BloodType; note?: string }[] = [
   { label: "AB−", value: "AB_NEG" },
 ];
 
-const TOTAL = 4;
+// Screen 0 is the "be ready" pitch. Screens 1-3 are the questions, 4 is the Blood Card.
+// Only 1-4 get progress dots.
+const CARD_STEP = 4;
+const DOTS = 4;
+const ALL_TYPES = TYPES.map((t) => t.value);
+
+/** Who this blood type can give to, and who can give to it, from the real compatibility table. */
+function compat(type: BloodType) {
+  return {
+    giveTo: ALL_TYPES.filter((r) => canDonateTo(type, r)),
+    receiveFrom: ALL_TYPES.filter((d) => canDonateTo(d, type)),
+  };
+}
+
 const today = () => new Date().toISOString().slice(0, 10);
+const daysAgoISO = (days: number) => new Date(Date.now() - days * 86_400_000).toISOString().slice(0, 10);
+
+// Most people know roughly, not exactly. Each range maps to the most recent date it could mean,
+// so we never count on someone sooner than we should.
+const DONATED_OPTIONS: { id: string; label: string; days: number }[] = [
+  { id: "never", label: "Never", days: 0 },
+  { id: "m0", label: "In the last month", days: 0 },
+  { id: "m1", label: "1 to 2 months ago", days: 30 },
+  { id: "m2", label: "2 to 3 months ago", days: 60 },
+  { id: "m3", label: "3 to 6 months ago", days: 100 },
+  { id: "m6", label: "6 to 12 months ago", days: 182 },
+  { id: "y1", label: "Over a year ago", days: 365 },
+  { id: "unsure", label: "I'm not sure", days: 0 },
+];
 const fmtDate = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 
 export function StartFlow() {
@@ -49,6 +79,8 @@ export function StartFlow() {
     if (saved) {
       setState(saved);
       setCityInput(saved.city ?? "");
+      // Someone who finished earlier goes straight back to their card.
+      if (isStartComplete(saved)) setStep(CARD_STEP);
     }
     setLoaded(true);
     /* eslint-enable react-hooks/set-state-in-effect */
@@ -73,6 +105,9 @@ export function StartFlow() {
     });
   }
 
+  // Older saved answers have no choice recorded, so work it out from what they did save.
+  const donatedChoice = state.donatedChoice ?? (state.neverDonated ? "never" : state.lastDonated ? "exact" : null);
+
   const eligibility = useMemo(() => {
     if (state.neverDonated) return { eligible: true as const };
     if (!state.lastDonated || state.lastDonated > today()) return null;
@@ -80,7 +115,7 @@ export function StartFlow() {
     return e.isEligible ? { eligible: true as const } : { eligible: false as const, date: fmtDate(e.nextEligible!) };
   }, [state.neverDonated, state.lastDonated]);
 
-  const next = () => setStep((s) => Math.min(TOTAL - 1, s + 1));
+  const next = () => setStep((s) => Math.min(CARD_STEP, s + 1));
   const back = () => setStep((s) => Math.max(0, s - 1));
 
   function useMyLocation() {
@@ -103,10 +138,10 @@ export function StartFlow() {
   const signUpHref = `/sign-up?from=start${invite ? `&invite=${encodeURIComponent(invite)}` : ""}`;
   const typeLabel = state.bloodType ? BLOOD_TYPE_LABELS[state.bloodType as BloodType] : null;
 
-  if (!loaded) return <div className="min-h-screen bg-white" />;
+  if (!loaded) return <div className="force-light min-h-screen bg-card" />;
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-[480px] flex-col bg-white px-6 py-6">
+    <div className="force-light mx-auto flex min-h-screen w-full max-w-[480px] flex-col bg-card px-6 py-6">
       <div className="flex items-center justify-between">
         {step > 0 ? (
           <button
@@ -123,30 +158,60 @@ export function StartFlow() {
           </Link>
         )}
 
-        <div
-          className="flex items-center gap-1.5"
-          role="progressbar"
-          aria-valuemin={1}
-          aria-valuemax={TOTAL}
-          aria-valuenow={step + 1}
-          aria-label={`Step ${step + 1} of ${TOTAL}`}
-        >
-          {Array.from({ length: TOTAL }, (_, i) => (
-            <span
-              key={i}
-              className="h-1.5 rounded-full transition-all duration-300"
-              style={{
-                width: i === step ? 18 : 6,
-                backgroundColor: i < step ? "rgba(221,0,0,0.4)" : i === step ? "#DD0000" : "#E5E5EA",
-              }}
-            />
-          ))}
-        </div>
+        {step > 0 ? (
+          <div
+            className="flex items-center gap-1.5"
+            role="progressbar"
+            aria-valuemin={1}
+            aria-valuemax={DOTS}
+            aria-valuenow={step}
+            aria-label={`Step ${step} of ${DOTS}`}
+          >
+            {Array.from({ length: DOTS }, (_, i) => i + 1).map((dot) => (
+              <span
+                key={dot}
+                className="h-1.5 rounded-full transition-all duration-300"
+                style={{
+                  width: dot === step ? 18 : 6,
+                  backgroundColor: dot < step ? "rgba(221,0,0,0.4)" : dot === step ? "#DD0000" : "var(--color-hairline)",
+                }}
+              />
+            ))}
+          </div>
+        ) : (
+          <span />
+        )}
         <span className="w-9" />
       </div>
 
+      {/* You, in your network: fills in as each answer is given, so every answer visibly changes something. */}
+      {step >= 1 && step <= 3 && (
+        <div className="mt-4 flex items-center gap-3 rounded-2xl bg-surface px-3.5 py-3" aria-live="polite">
+          <span
+            className={cn(
+              "flex size-10 shrink-0 items-center justify-center rounded-full text-sm font-extrabold transition-colors",
+              typeLabel ? "bg-red text-white" : "border-[1.5px] border-dashed border-ink-faint/60 text-ink-faint",
+            )}
+          >
+            {typeLabel ?? "You"}
+          </span>
+          <div className="min-w-0">
+            <p className="text-sm font-bold text-ink">You, in your network</p>
+            <p className="truncate text-xs text-ink-muted">
+              {[
+                typeLabel,
+                state.city,
+                eligibility ? (eligibility.eligible ? "Available to donate" : `Back ${eligibility.date}`) : null,
+              ]
+                .filter(Boolean)
+                .join(" · ") || "Answer below and watch this fill in"}
+            </p>
+          </div>
+        </div>
+      )}
+
       {inviteInfo && (
-        <p className="mt-4 rounded-xl bg-red-light px-3 py-2.5 text-xs font-semibold text-red">
+        <p className="mt-4 rounded-xl bg-red-light px-3 py-2.5 text-xs font-semibold text-red-fg">
           You&apos;re invited to join {inviteInfo.pod}
           {inviteInfo.inviter ? ` by ${inviteInfo.inviter}` : ""}. Answer three quick questions first.
         </p>
@@ -161,15 +226,17 @@ export function StartFlow() {
           transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
           className="flex flex-1 flex-col pt-8"
         >
-          {step === 0 && (
+          {step === 0 && <IntroStory onDone={next} />}
+
+          {step === 1 && (
             <>
               <div className="flex-1">
-                <p className="text-[11px] font-bold uppercase tracking-[2px] text-red">Step 1 of 3 · no account needed</p>
+                <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">Step 1 of 3</p>
                 <h1 className="mt-3 text-[26px] font-extrabold leading-[1.15] tracking-[-0.8px] text-ink">
                   What&apos;s your blood type?
                 </h1>
                 <p className="mt-2 text-sm text-ink-muted">
-                  Hospitals match on this, so it is the one thing we need to start.
+                  Hospitals match on this. It decides who you can help.
                 </p>
 
                 <div className="mt-6 grid grid-cols-2 gap-2.5">
@@ -182,7 +249,7 @@ export function StartFlow() {
                         onClick={() => update({ bloodType: t.value })}
                         className={cn(
                           "rounded-xl border-[1.5px] py-3.5 text-center text-lg font-bold transition-colors",
-                          on ? "border-red bg-red-light text-red" : "border-[#E5E5EA] bg-white text-ink hover:border-red-mid",
+                          on ? "border-red bg-red-light text-red-fg" : "border-hairline bg-card text-ink hover:border-red-mid",
                         )}
                       >
                         {t.label}
@@ -192,12 +259,40 @@ export function StartFlow() {
                   })}
                 </div>
 
+                {state.bloodType && (
+                  <m.div
+                    key={state.bloodType}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-4 rounded-card bg-success-soft p-4 text-sm leading-relaxed text-ink-mid"
+                    aria-live="polite"
+                  >
+                    <p>
+                      <span className="font-bold text-ink">
+                        {compat(state.bloodType as BloodType).giveTo.length === ALL_TYPES.length
+                          ? "You can give to anyone."
+                          : `You can give to ${compat(state.bloodType as BloodType).giveTo.length} of 8 blood types.`}
+                      </span>{" "}
+                      {compat(state.bloodType as BloodType)
+                        .giveTo.map((t) => BLOOD_TYPE_LABELS[t])
+                        .join(", ")}
+                    </p>
+                    <p className="mt-1 text-xs text-ink-muted">
+                      You can receive from{" "}
+                      {compat(state.bloodType as BloodType)
+                        .receiveFrom.map((t) => BLOOD_TYPE_LABELS[t])
+                        .join(", ")}
+                      .
+                    </p>
+                  </m.div>
+                )}
+
                 <p className="mt-4 text-center text-sm text-ink-muted">
                   Not sure?{" "}
                   <button
                     type="button"
                     onClick={() => router.push(signUpHref)}
-                    className="font-semibold text-red underline-offset-2 hover:underline"
+                    className="font-semibold text-red-fg underline-offset-2 hover:underline"
                   >
                     Create an account and add it later
                   </button>
@@ -209,37 +304,65 @@ export function StartFlow() {
             </>
           )}
 
-          {step === 1 && (
+          {step === 2 && (
             <>
               <div className="flex-1">
-                <p className="text-[11px] font-bold uppercase tracking-[2px] text-red">Step 2 of 3</p>
+                <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">Step 2 of 3</p>
                 <h1 className="mt-3 text-[26px] font-extrabold leading-[1.15] tracking-[-0.8px] text-ink">
                   When did you last donate?
                 </h1>
-                <p className="mt-2 text-sm text-ink-muted">So we only alert you when you can actually help.</p>
+                <p className="mt-2 text-sm text-ink-muted">
+                  A rough idea is fine. It keeps your network from counting on you too soon.
+                </p>
 
-                <div className="mt-6 flex flex-col gap-3">
-                  <Input
-                    type="date"
-                    max={today()}
-                    aria-label="Last donation date"
-                    disabled={state.neverDonated}
-                    value={state.neverDonated ? "" : (state.lastDonated ?? "")}
-                    onChange={(e) => update({ lastDonated: e.target.value || null })}
-                  />
-                  <label className="flex cursor-pointer items-center gap-2 text-sm text-ink-mid">
-                    <input
-                      type="checkbox"
-                      checked={state.neverDonated}
-                      onChange={(e) => update({ neverDonated: e.target.checked, lastDonated: null })}
-                      className="size-4 accent-[#dd0000]"
+                <div className="mt-5 flex flex-col gap-2" role="radiogroup" aria-label="When you last donated">
+                  {DONATED_OPTIONS.map((o) => {
+                    const on = donatedChoice === o.id;
+                    return (
+                      <button
+                        key={o.id}
+                        type="button"
+                        role="radio"
+                        aria-checked={on}
+                        onClick={() =>
+                          update({
+                            donatedChoice: o.id,
+                            neverDonated: o.id === "never",
+                            lastDonated: o.id === "never" ? null : daysAgoISO(o.days),
+                          })
+                        }
+                        className={cn(
+                          "flex items-center justify-between rounded-xl border-[1.5px] px-4 py-3 text-left text-sm font-semibold transition-colors",
+                          on ? "border-red bg-red-light text-red-fg" : "border-hairline bg-card text-ink hover:border-red-mid",
+                        )}
+                      >
+                        {o.label}
+                        {on && <CheckCircle2 className="size-4" />}
+                      </button>
+                    );
+                  })}
+
+                  {donatedChoice === "exact" ? (
+                    <Input
+                      type="date"
+                      max={today()}
+                      aria-label="Last donation date"
+                      value={state.lastDonated ?? ""}
+                      onChange={(e) => update({ lastDonated: e.target.value || null })}
                     />
-                    I have never donated blood
-                  </label>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => update({ donatedChoice: "exact", neverDonated: false, lastDonated: null })}
+                      className="mt-1 text-center text-sm font-semibold text-ink-muted underline-offset-2 hover:underline"
+                    >
+                      I remember the exact date
+                    </button>
+                  )}
 
                   {eligibility && (
                     <div
-                      className={cn("flex gap-3 rounded-card p-4", eligibility.eligible ? "bg-[#F0FBF3]" : "bg-surface")}
+                      className={cn("flex gap-3 rounded-card p-4", eligibility.eligible ? "bg-success-soft" : "bg-surface")}
                       aria-live="polite"
                     >
                       {eligibility.eligible ? (
@@ -248,15 +371,22 @@ export function StartFlow() {
                         <Clock className="size-5 shrink-0 text-ink-muted" />
                       )}
                       <p className="text-sm text-ink-mid">
-                        {eligibility.eligible ? (
+                        {donatedChoice === "unsure" ? (
+                          <>
+                            <span className="font-bold text-ink">No problem. We&apos;ll play it safe.</span> We&apos;ll hold
+                            alerts for now, and you can correct this later.
+                          </>
+                        ) : eligibility.eligible ? (
                           <>
                             <span className="font-bold text-ink">You can donate now.</span> You would be on the list the
                             moment your type is needed.
                           </>
                         ) : (
                           <>
-                            <span className="font-bold text-ink">Eligible again on {eligibility.date}.</span> We
-                            won&apos;t alert you until then.
+                            <span className="font-bold text-ink">
+                              Eligible again {donatedChoice === "exact" ? "on" : "around"} {eligibility.date}.
+                            </span>{" "}
+                            We won&apos;t count on you until then.
                           </>
                         )}
                       </p>
@@ -266,7 +396,7 @@ export function StartFlow() {
               </div>
               <Button
                 onClick={next}
-                disabled={!state.neverDonated && !(state.lastDonated && state.lastDonated <= today())}
+                disabled={!donatedChoice || (donatedChoice === "exact" && !(state.lastDonated && state.lastDonated <= today()))}
                 size="lg"
                 className="mt-8 w-full"
               >
@@ -275,15 +405,16 @@ export function StartFlow() {
             </>
           )}
 
-          {step === 2 && (
+          {step === 3 && (
             <>
               <div className="flex-1">
-                <p className="text-[11px] font-bold uppercase tracking-[2px] text-red">Step 3 of 3</p>
+                <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">Step 3 of 3</p>
                 <h1 className="mt-3 text-[26px] font-extrabold leading-[1.15] tracking-[-0.8px] text-ink">
                   Where are you?
                 </h1>
                 <p className="mt-2 text-sm text-ink-muted">
-                  Only to match you with emergencies close to you, never to track you.
+                  {typeLabel ? `So ${typeLabel} requests near you reach you first.` : "So requests near you reach you first."}{" "}
+                  We never track you.
                 </p>
 
                 <Button onClick={useMyLocation} loading={locating} variant="secondary" className="mt-6 w-full">
@@ -291,9 +422,9 @@ export function StartFlow() {
                 </Button>
 
                 <div className="my-5 flex items-center gap-3 text-[13px] text-ink-faint">
-                  <div className="h-px flex-1 bg-[#E5E5EA]" />
+                  <div className="h-px flex-1 bg-hairline" />
                   or type your city
-                  <div className="h-px flex-1 bg-[#E5E5EA]" />
+                  <div className="h-px flex-1 bg-hairline" />
                 </div>
 
                 <Input
@@ -307,32 +438,33 @@ export function StartFlow() {
                 />
               </div>
               <Button onClick={next} disabled={!state.city || state.city.length < 2} size="lg" className="mt-8 w-full">
-                See my Blood Card
+                Continue
               </Button>
             </>
           )}
 
-          {step === 3 && (
+          {step === 4 && (
             <>
               <div className="flex-1">
-                <p className="text-[11px] font-bold uppercase tracking-[2px] text-red">Here it is</p>
+                <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">You&apos;re in</p>
                 <h1 className="mt-3 text-[26px] font-extrabold leading-[1.15] tracking-[-0.8px] text-ink">
-                  Your Blood Card.
+                  You&apos;re the first one in your network.
                 </h1>
+                <p className="mt-2 text-sm text-ink-muted">This is how hospitals and your circle will see you.</p>
 
                 <m.div
                   initial={{ opacity: 0, y: 20, rotate: -3 }}
                   animate={{ opacity: 1, y: 0, rotate: 0 }}
                   transition={{ type: "spring", stiffness: 160, damping: 16 }}
-                  className="mt-5 rounded-card border border-white/10 bg-ink p-6 text-white shadow-[0_24px_48px_-16px_rgba(28,28,30,0.5)]"
+                  className="mt-5 rounded-card border border-white/10 bg-panel p-6 text-white shadow-[0_24px_48px_-16px_rgba(28,28,30,0.5)]"
                 >
                   <div className="flex items-start justify-between">
-                    <span className="text-[11px] font-bold uppercase tracking-[2px] text-white/50">Blood Card</span>
+                    <span className="text-[11px] font-bold uppercase tracking-[2px] text-white/50">Available donor</span>
                     <span className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white/70">
                       Self-reported
                     </span>
                   </div>
-                  <div className="mt-5 text-[56px] font-extrabold leading-none tracking-tight text-red">{typeLabel}</div>
+                  <div className="mt-5 text-[56px] font-extrabold leading-none tracking-tight text-red-fg">{typeLabel}</div>
                   <p className="mt-3 flex items-center gap-1.5 text-sm text-white/60">
                     <MapPin className="size-3.5" /> {state.city}
                   </p>
@@ -341,7 +473,11 @@ export function StartFlow() {
                     <div>
                       <p className="text-[11px] text-white/50">Last donation</p>
                       <p className="text-sm font-bold">
-                        {state.neverDonated ? "Never" : state.lastDonated ? fmtDate(new Date(state.lastDonated)) : "-"}
+                        {donatedChoice === "never"
+                          ? "Never"
+                          : donatedChoice === "exact" && state.lastDonated
+                            ? fmtDate(new Date(state.lastDonated))
+                            : (DONATED_OPTIONS.find((o) => o.id === donatedChoice)?.label ?? "-")}
                       </p>
                     </div>
                     <div className="text-right">
@@ -357,22 +493,42 @@ export function StartFlow() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.35 }}
-                  className="mt-4 flex items-start gap-3 rounded-card border-[0.5px] border-[#E5E5EA] bg-white p-4"
+                  className="mt-4 flex items-start gap-3 rounded-card border-[0.5px] border-hairline bg-card p-4"
                 >
                   <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-red-light">
-                    <BellRing className="size-[18px] text-red" />
+                    <BellRing className="size-[18px] text-red-fg" />
                   </span>
                   <p className="text-sm leading-relaxed text-ink-mid">
                     <span className="font-bold text-ink">What happens next:</span> when {typeLabel} blood is needed near{" "}
                     {state.city}, you get an alert and answer Yes or No. Your number is shared only if you say Yes.
                   </p>
                 </m.div>
+
+                <m.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                  className="mt-3 rounded-card bg-surface p-4"
+                >
+                  <div className="flex flex-wrap gap-2" aria-hidden>
+                    <span className="flex size-9 items-center justify-center rounded-full bg-red text-[11px] font-bold text-white">
+                      You
+                    </span>
+                    {Array.from({ length: POD_READY_THRESHOLD - 1 }, (_, i) => (
+                      <span key={i} className="size-9 rounded-full border-[1.5px] border-dashed border-ink-faint/60" />
+                    ))}
+                  </div>
+                  <p className="mt-3 text-sm font-bold text-ink">Next: add {POD_READY_THRESHOLD - 1} people you trust</p>
+                  <p className="text-xs leading-relaxed text-ink-muted">
+                    Your network is ready to answer an emergency once {POD_READY_THRESHOLD} people in it can donate.
+                  </p>
+                </m.div>
               </div>
 
-              <Button asChild size="lg" className="mt-8 w-full">
-                <Link href={signUpHref}>Save my Blood Card</Link>
+              <Button asChild size="lg" className="mt-8 w-full whitespace-nowrap">
+                <Link href={signUpHref}>Start my network</Link>
               </Button>
-              <p className="mt-3 text-center text-xs text-ink-muted">Free for donors. We&apos;ll ask for your name and email next.</p>
+              <p className="mt-3 text-center text-xs text-ink-muted">Free for donors. Next, a name and email to save your place.</p>
             </>
           )}
         </m.div>

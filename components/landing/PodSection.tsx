@@ -65,7 +65,7 @@ export function PodSection() {
     <section className="px-6 py-24 lg:px-12">
       <div className="mx-auto grid max-w-[1100px] items-center gap-14 lg:grid-cols-2">
         <Reveal>
-          <p className="text-[11px] font-bold uppercase tracking-[2.5px] text-red">Your circle</p>
+          <p className="text-[11px] font-bold uppercase tracking-[2.5px] text-red-fg">Your circle</p>
           <h2 className="mt-4 text-[32px] font-extrabold leading-[1.15] tracking-[-1px] text-ink lg:text-[36px]">
             Your Pod. Your people. Your lifeline.
           </h2>
@@ -94,7 +94,7 @@ export function PodSection() {
                   "rounded-full border px-4 py-2 text-sm font-semibold transition-colors",
                   k.id === kind.id
                     ? "border-red bg-red text-white"
-                    : "border-[#E5E5EA] bg-white text-ink-mid hover:border-red-mid",
+                    : "border-hairline bg-card text-ink-mid hover:border-red-mid",
                 )}
               >
                 {k.label}
@@ -104,7 +104,7 @@ export function PodSection() {
         </Reveal>
 
         <Reveal delay={0.15} className="flex flex-col items-center lg:items-end">
-          <div className="w-full max-w-[400px] rounded-card border-[0.5px] border-[#E5E5EA] bg-white p-6 shadow-raised">
+          <div className="w-full max-w-[400px] rounded-card border-[0.5px] border-hairline bg-card p-6 shadow-raised">
             <div className="flex items-center justify-between">
               <p className="font-bold text-ink">{kind.pod}</p>
               <span className="text-xs text-ink-muted">6 of 20</span>
@@ -128,7 +128,7 @@ export function PodSection() {
                     <span
                       className={cn(
                         "flex size-9 items-center justify-center rounded-full text-[11px] font-bold",
-                        matches ? "bg-red-light text-red" : "bg-surface text-ink-muted",
+                        matches ? "bg-red-light text-red-fg" : "bg-surface text-ink-muted",
                       )}
                     >
                       {r.type}
@@ -167,7 +167,7 @@ export function PodSection() {
                   type="button"
                   onClick={reset}
                   disabled={phase === "sent"}
-                  className="rounded-full border border-[#E5E5EA] px-4 py-2 text-sm font-bold text-ink-mid disabled:opacity-40"
+                  className="rounded-full border border-hairline px-4 py-2 text-sm font-bold text-ink-mid disabled:opacity-40"
                 >
                   Reset
                 </button>
