@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, m } from "framer-motion";
 import { ArrowLeft, BellRing, CheckCircle2, Clock, MapPin } from "lucide-react";
+import { BloodTypeHelp } from "@/components/shared/BloodTypeHelp";
 import { IntroStory } from "@/components/start/IntroStory";
 import { Logo } from "@/components/ui/Logo";
 import { Input } from "@/components/ui/Input";
@@ -161,6 +162,7 @@ export function StartFlow({ signedIn = false }: { signedIn?: boolean }) {
 
   const signUpHref = `/sign-up?from=start${invite ? `&invite=${encodeURIComponent(invite)}` : ""}`;
   const typeLabel = state.bloodType ? BLOOD_TYPE_LABELS[state.bloodType as BloodType] : null;
+  const unknownType = !!state.bloodTypeUnknown && !state.bloodType;
 
   if (!loaded) return <div className="force-light min-h-screen bg-card" />;
 
@@ -214,16 +216,16 @@ export function StartFlow({ signedIn = false }: { signedIn?: boolean }) {
           <span
             className={cn(
               "flex size-10 shrink-0 items-center justify-center rounded-full text-sm font-extrabold transition-colors",
-              typeLabel ? "bg-red text-white" : "border-[1.5px] border-dashed border-ink-faint/60 text-ink-faint",
+              typeLabel ? "bg-red text-white" : unknownType ? "bg-fill text-ink-mid" : "border-[1.5px] border-dashed border-ink-faint/60 text-ink-faint",
             )}
           >
-            {typeLabel ?? "You"}
+            {typeLabel ?? (unknownType ? "?" : "You")}
           </span>
           <div className="min-w-0">
             <p className="text-sm font-bold text-ink">You, in your network</p>
             <p className="truncate text-xs text-ink-muted">
               {[
-                typeLabel,
+                typeLabel ?? (unknownType ? "Blood type to add" : null),
                 state.city,
                 eligibility ? (eligibility.eligible ? "Available to donate" : `Back ${eligibility.date}`) : null,
               ]
@@ -270,7 +272,7 @@ export function StartFlow({ signedIn = false }: { signedIn?: boolean }) {
                       <button
                         key={t.value}
                         type="button"
-                        onClick={() => update({ bloodType: t.value })}
+                        onClick={() => update({ bloodType: t.value, bloodTypeUnknown: false })}
                         className={cn(
                           "rounded-xl border-[1.5px] py-3.5 text-center text-lg font-bold transition-colors",
                           on ? "border-red bg-red-light text-red-fg" : "border-hairline bg-card text-ink hover:border-red-mid",
@@ -311,18 +313,25 @@ export function StartFlow({ signedIn = false }: { signedIn?: boolean }) {
                   </m.div>
                 )}
 
-                <p className="mt-4 text-center text-sm text-ink-muted">
-                  Not sure?{" "}
-                  <button
-                    type="button"
-                    onClick={() => router.push(signUpHref)}
-                    className="font-semibold text-red-fg underline-offset-2 hover:underline"
-                  >
-                    Create an account and add it later
-                  </button>
-                </p>
+                <button
+                  type="button"
+                  aria-pressed={unknownType}
+                  onClick={() => update({ bloodType: null, bloodTypeUnknown: !unknownType })}
+                  className={cn(
+                    "mt-3 w-full rounded-xl border-[1.5px] px-4 py-3 text-center text-sm font-semibold transition-colors",
+                    unknownType ? "border-red bg-red-light text-red-fg" : "border-hairline bg-card text-ink hover:border-red-mid",
+                  )}
+                >
+                  I don&apos;t know my blood type
+                </button>
+
+                {unknownType && (
+                  <m.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mt-4">
+                    <BloodTypeHelp />
+                  </m.div>
+                )}
               </div>
-              <Button onClick={next} disabled={!state.bloodType} size="lg" className="mt-4 w-full shrink-0">
+              <Button onClick={next} disabled={!state.bloodType && !unknownType} size="lg" className="mt-4 w-full shrink-0">
                 Continue
               </Button>
             </>
@@ -437,7 +446,7 @@ export function StartFlow({ signedIn = false }: { signedIn?: boolean }) {
                   Where are you?
                 </h1>
                 <p className="mt-2 text-sm text-ink-muted">
-                  {typeLabel ? `So ${typeLabel} requests near you reach you first.` : "So requests near you reach you first."}{" "}
+                  {typeLabel ? `So ${typeLabel} requests near you reach you first.` : unknownType ? "So your network can see who is close." : "So requests near you reach you first."}{" "}
                   We never track you.
                 </p>
 
@@ -488,7 +497,9 @@ export function StartFlow({ signedIn = false }: { signedIn?: boolean }) {
                       Self-reported
                     </span>
                   </div>
-                  <div className="mt-5 text-[56px] font-extrabold leading-none tracking-tight text-red-fg">{typeLabel}</div>
+                  <div className={cn("mt-5 font-extrabold leading-none tracking-tight", typeLabel ? "text-[56px] text-red-fg" : "text-[32px] text-white/70")}>
+                    {typeLabel ?? "Type to add"}
+                  </div>
                   <p className="mt-3 flex items-center gap-1.5 text-sm text-white/60">
                     <MapPin className="size-3.5" /> {state.city}
                   </p>
@@ -523,8 +534,18 @@ export function StartFlow({ signedIn = false }: { signedIn?: boolean }) {
                     <BellRing className="size-[18px] text-red-fg" />
                   </span>
                   <p className="text-sm leading-relaxed text-ink-mid">
-                    <span className="font-bold text-ink">What happens next:</span> when {typeLabel} blood is needed near{" "}
-                    {state.city}, you get an alert and answer Yes or No. Your number is shared only if you say Yes.
+                    <span className="font-bold text-ink">What happens next:</span>{" "}
+                    {typeLabel ? (
+                      <>
+                        when {typeLabel} blood is needed near {state.city}, you get an alert and answer Yes or No. Your
+                        number is shared only if you say Yes.
+                      </>
+                    ) : (
+                      <>
+                        add your blood type once you know it, and you&apos;ll start getting alerts near {state.city}. Until
+                        then you can still build your network.
+                      </>
+                    )}
                   </p>
                 </m.div>
 

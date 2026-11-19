@@ -5,6 +5,8 @@ const KEY = "bp_start_v1";
 
 export type StartState = {
   bloodType: string | null; // Prisma BloodType value, e.g. "O_NEG"
+  /** They told us they do not know it yet. bloodType stays null. */
+  bloodTypeUnknown?: boolean;
   neverDonated: boolean;
   lastDonated: string | null; // YYYY-MM-DD; a rough date when the visitor picked a range
   /** Which answer they picked on the "last donated" question, e.g. "m3" or "exact". */
@@ -48,5 +50,5 @@ export function clearStartState() {
 
 /** True once /start has enough to be worth importing. */
 export function isStartComplete(s: StartState | null): s is StartState {
-  return !!s && !!s.bloodType && (s.neverDonated || !!s.lastDonated) && !!s.city;
+  return !!s && (!!s.bloodType || !!s.bloodTypeUnknown) && (s.neverDonated || !!s.lastDonated) && !!s.city;
 }

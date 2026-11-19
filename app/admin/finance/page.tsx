@@ -2,7 +2,7 @@ import { requireAdmin } from "@/lib/admin/auth";
 import { getFinance } from "@/lib/admin/finance";
 import { ghs, longDate } from "@/lib/admin/format";
 import { Badge, EmptyState, HBars, PageTitle, Panel, StatCard } from "@/components/admin/ui";
-import { PairedBars } from "@/components/admin/charts";
+import { compact, PairedBars } from "@/components/admin/charts";
 import { AddContractForm, AddEntryForm, ContractActions, EntryActions, OpeningBalanceForm } from "@/components/admin/FinanceForms";
 
 const CONTRACT_TONE = { ACTIVE: "green", PAUSED: "amber", ENDED: "gray" } as const;
@@ -61,6 +61,7 @@ export default async function AdminFinancePage() {
             aLabel="Received"
             bLabel="Spent"
             format={(n) => ghs(n, { decimals: false })}
+            axisFormat={(n) => compact(n / 100)}
           />
         </Panel>
 

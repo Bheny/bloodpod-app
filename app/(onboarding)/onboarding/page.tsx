@@ -37,7 +37,7 @@ export default async function OnboardingPage() {
 
   // Anyone who hasn't given their blood type, last donation and city yet (Google sign-up, or email
   // sign-up that skipped /start) gets the same story and questions as /start, then carries on here.
-  const needsAnswers = !user.bloodType || !user.city || (!user.donationInfoAt && !user.lastDonated);
+  const needsAnswers = (!user.bloodType && user.onboardingStep < 2) || !user.city || (!user.donationInfoAt && !user.lastDonated);
   if (needsAnswers) {
     return (
       <ImportGate>

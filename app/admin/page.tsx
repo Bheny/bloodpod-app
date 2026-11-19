@@ -5,7 +5,7 @@ import { getOverview, getPodSummary, getRecentSignups, getSignupSeries } from "@
 import { delta, ghs, pct, shortDate } from "@/lib/admin/format";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
 import { Badge, Delta, EmptyState, FilterTabs, Funnel, PageTitle, Panel, StatCard } from "@/components/admin/ui";
-import { LineChart } from "@/components/admin/charts";
+import { BarChart, Donut, LineChart } from "@/components/admin/charts";
 import { cn } from "@/lib/utils";
 
 const RANGES = [7, 30, 90] as const;
@@ -65,13 +65,14 @@ export default async function AdminOverviewPage({
 
       {/* Headline numbers */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-4 xl:grid-cols-6">
-        <StatCard label="Donors" value={o.donors} hint="signed up in total" href="/admin/users" />
+        <StatCard label="Donors" value={o.donors} hint="signed up in total" href="/admin/users" spark={series.cumulative.map((p) => p.value)} />
         <StatCard
           label="New this week"
           value={o.new7}
           delta={<Delta value={delta(o.new7, o.newPrev7)} />}
           hint="vs last week"
           href="/admin/users"
+          spark={series.daily.map((p) => p.value)}
         />
         <StatCard
           label="Ready to donate"
@@ -118,7 +119,7 @@ export default async function AdminOverviewPage({
           title="New sign-ups per day"
           subtitle={`${o.new30} in the last 30 days, ${delta(o.new30, o.newPrev30) === null ? "none the 30 before" : `${delta(o.new30, o.newPrev30)}% vs the 30 before`}`}
         >
-          <LineChart data={series.daily} color="#1C1C1E" />
+          <BarChart data={series.daily} />
         </Panel>
       </div>
 
@@ -129,22 +130,19 @@ export default async function AdminOverviewPage({
 
         <div className="flex flex-col gap-4 lg:gap-6">
           <Panel title="Hospital pipeline" actions={<Link href="/admin/hospitals" className="text-caption font-bold text-red-fg">Open</Link>}>
-            <div className="grid grid-cols-3 gap-2 text-center">
-              {(
-                [
-                  ["Pending", o.hospitals.PENDING, "amber"],
-                  ["Approved", o.hospitals.APPROVED, "green"],
-                  ["Rejected", o.hospitals.REJECTED, "gray"],
-                ] as const
-              ).map(([label, n, tone]) => (
-                <div key={label} className="rounded-xl bg-surface py-3">
-                  <p className="text-[24px] font-extrabold leading-none text-ink">{n}</p>
-                  <div className="mt-2">
-                    <Badge tone={tone}>{label}</Badge>
-                  </div>
-                </div>
-              ))}
-            </div>
+            {o.hospitals.PENDING + o.hospitals.APPROVED + o.hospitals.REJECTED === 0 ? (
+              <EmptyState title="No hospitals yet" />
+            ) : (
+              <Donut
+                size={120}
+                centerLabel="hospitals"
+                slices={[
+                  { label: "Pending", value: o.hospitals.PENDING, color: "#F59E0B" },
+                  { label: "Approved", value: o.hospitals.APPROVED, color: "#1FA855" },
+                  { label: "Rejected", value: o.hospitals.REJECTED, color: "#8E8E93" },
+                ]}
+              />
+            )}
           </Panel>
 
           <Panel title="Latest sign-ups" actions={<Link href="/admin/users" className="text-caption font-bold text-red-fg">See all</Link>}>

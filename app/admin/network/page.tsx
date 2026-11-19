@@ -3,7 +3,7 @@ import { requireAdmin } from "@/lib/admin/auth";
 import { getNetwork, POD_READY_THRESHOLD } from "@/lib/admin/metrics";
 import { longDate, pct } from "@/lib/admin/format";
 import { EmptyState, FilterTabs, HBars, PageTitle, Panel, StatCard } from "@/components/admin/ui";
-import { LineChart } from "@/components/admin/charts";
+import { BarChart, Donut } from "@/components/admin/charts";
 
 export default async function AdminNetworkPage() {
   await requireAdmin();
@@ -60,7 +60,7 @@ export default async function AdminNetworkPage() {
           {n.bloodTypes.every((b) => b.total === 0) ? (
             <EmptyState title="No donors with a blood type yet" />
           ) : (
-            <HBars rows={n.bloodTypes.map((b) => ({ label: b.label, value: b.total, sub: `${b.eligible} ready` }))} />
+            <Donut centerLabel="donors" slices={n.bloodTypes.filter((b) => b.total > 0).map((b) => ({ label: `${b.label} (${b.eligible} ready)`, value: b.total }))} />
           )}
         </Panel>
 
@@ -68,7 +68,7 @@ export default async function AdminNetworkPage() {
           {n.totalPods === 0 ? (
             <EmptyState title="No Pods yet" />
           ) : (
-            <HBars color="#1C1C1E" rows={n.sizeDistribution} />
+            <BarChart data={n.sizeDistribution.map((r) => ({ label: r.label, value: r.value }))} />
           )}
         </Panel>
 
@@ -80,12 +80,12 @@ export default async function AdminNetworkPage() {
           {n.invites.sent === 0 ? (
             <EmptyState title="No invites sent yet" />
           ) : (
-            <HBars
-              rows={[
-                { label: "Sent", value: n.invites.sent },
-                { label: "Accepted", value: n.invites.accepted },
-                { label: "Still waiting", value: n.invites.pending },
-                { label: "Expired", value: n.invites.expired },
+            <Donut
+              centerLabel="invites"
+              slices={[
+                { label: "Accepted", value: n.invites.accepted, color: "#1FA855" },
+                { label: "Still waiting", value: n.invites.pending, color: "#F59E0B" },
+                { label: "Expired", value: n.invites.expired, color: "#8E8E93" },
               ]}
             />
           )}
@@ -94,7 +94,7 @@ export default async function AdminNetworkPage() {
 
       <div className="mt-6 grid gap-4 lg:grid-cols-[1.2fr_1fr] lg:gap-6">
         <Panel title="People joining Pods" subtitle="New members per week, last 12 weeks.">
-          {n.weeklyJoins.length < 2 ? <EmptyState title="Not enough data yet" body="Needs at least two weeks of joins." /> : <LineChart data={n.weeklyJoins} color="#1C1C1E" />}
+          {n.weeklyJoins.length < 2 ? <EmptyState title="Not enough data yet" body="Needs at least two weeks of joins." /> : <BarChart data={n.weeklyJoins} />}
         </Panel>
 
         <Panel title="Biggest Pods">

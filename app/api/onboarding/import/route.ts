@@ -8,7 +8,8 @@ import { computeEligibility } from "@/lib/eligibility";
 import { recalculatePodStrength } from "@/lib/pod-strength";
 
 const schema = z.object({
-  bloodType: z.string().refine(isBloodType, "Invalid blood type"),
+  bloodType: z.string().refine(isBloodType, "Invalid blood type").nullable().optional(),
+  bloodTypeUnknown: z.boolean().optional(),
   neverDonated: z.boolean(),
   lastDonated: z.string().nullable().optional(),
   city: z.string().trim().min(2).max(60),
@@ -33,12 +34,15 @@ export async function PUT(request: Request) {
     }
   }
 
+  if (!v.bloodType && !v.bloodTypeUnknown) return NextResponse.json({ error: "Blood type missing" }, { status: 400 });
+
   const { nextEligible, isEligible } = computeEligibility(donated);
 
   await prisma.user.update({
     where: { id: user.id },
     data: {
-      bloodType: v.bloodType as BloodType,
+      // Someone who doesn't know yet keeps whatever they had (usually nothing) and skips that step later.
+      ...(v.bloodType ? { bloodType: v.bloodType as BloodType } : { onboardingStep: Math.max(user.onboardingStep, 2) }),
       lastDonated: donated,
       nextEligible,
       isEligible,

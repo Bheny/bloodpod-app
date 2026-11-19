@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
 import { Card } from "@/components/ui/Card";
+import { Sparkline } from "@/components/admin/charts";
 import { cn } from "@/lib/utils";
 
 export function PageTitle({
@@ -50,6 +51,7 @@ export function StatCard({
   delta,
   href,
   tone,
+  spark,
 }: {
   label: string;
   value: string | number;
@@ -57,6 +59,8 @@ export function StatCard({
   delta?: React.ReactNode;
   href?: string;
   tone?: "default" | "good" | "warn";
+  /** A small trend drawn under the number. */
+  spark?: number[];
 }) {
   const body = (
     <Card
@@ -81,6 +85,7 @@ export function StatCard({
           {hint}
         </p>
       )}
+      {spark && <Sparkline values={spark} color={tone === "warn" ? "#DD0000" : "#1C1C1E"} />}
     </Card>
   );
   return href ? (

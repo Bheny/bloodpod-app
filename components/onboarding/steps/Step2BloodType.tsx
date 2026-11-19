@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, m } from "framer-motion";
 import type { BloodType } from "@prisma/client";
 import { cn } from "@/lib/utils";
+import { BloodTypeHelp } from "@/components/shared/BloodTypeHelp";
 import { Button } from "@/components/ui/Button";
 
 const OPTIONS: { label: string; value: BloodType; note?: string }[] = [
@@ -27,7 +28,7 @@ export function Step2BloodType({
   onNext: () => void;
 }) {
   const [showONegMoment, setShowONegMoment] = useState(false);
-  const [showSkipTip, setShowSkipTip] = useState(false);
+  const [unknown, setUnknown] = useState(false);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -39,13 +40,6 @@ export function Step2BloodType({
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showONegMoment]);
-
-  useEffect(() => {
-    if (!showSkipTip) return;
-    const timer = setTimeout(onNext, 1800);
-    return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showSkipTip]);
 
   async function saveBloodType(bloodType: BloodType) {
     setSaving(true);
@@ -68,12 +62,13 @@ export function Step2BloodType({
   }
 
   function selectType(type: BloodType) {
+    setUnknown(false);
     onChange(type);
   }
 
-  function skip() {
+  function toggleUnknown() {
     onChange(null);
-    setShowSkipTip(true);
+    setUnknown((u) => !u);
   }
 
   return (
@@ -115,29 +110,30 @@ export function Step2BloodType({
           })}
         </div>
 
-        <div className="mt-4 text-center">
-          <button
-            type="button"
-            onClick={skip}
-            disabled={showSkipTip}
-            className="text-sm text-ink-faint underline-offset-2 hover:underline disabled:no-underline"
-          >
-            I don&apos;t know my blood type
-          </button>
-          {showSkipTip && (
-            <p className="mt-2 text-xs text-ink-muted">
-              No problem — you can add it later from your profile.
-            </p>
+        <button
+          type="button"
+          aria-pressed={unknown}
+          onClick={toggleUnknown}
+          className={cn(
+            "mt-3 w-full rounded-xl border-[1.5px] px-4 py-3 text-center text-sm font-semibold transition-colors",
+            unknown ? "border-red bg-red-light text-red-fg" : "border-hairline bg-card text-ink hover:border-red-mid",
           )}
-        </div>
+        >
+          I don&apos;t know my blood type
+        </button>
+        {unknown && (
+          <div className="mt-4">
+            <BloodTypeHelp signedIn />
+          </div>
+        )}
       </div>
 
       <Button
-        onClick={() => value && saveBloodType(value)}
-        disabled={!value || showSkipTip}
+        onClick={() => (value ? saveBloodType(value) : onNext())}
+        disabled={!value && !unknown}
         loading={saving}
         size="lg"
-        className="w-full"
+        className="mt-4 w-full shrink-0"
       >
         Continue →
       </Button>

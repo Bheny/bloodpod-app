@@ -9,6 +9,7 @@ import { profileSchema, type ProfileValues } from "@/lib/validations/profile";
 import { Field, Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
+import { BloodTypeHelp } from "@/components/shared/BloodTypeHelp";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
 
 export function EditProfileForm({
@@ -21,6 +22,7 @@ export function EditProfileForm({
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<ProfileValues>({
     resolver: zodResolver(profileSchema),
@@ -73,6 +75,7 @@ export function EditProfileForm({
           ))}
         </Select>
       </Field>
+      {!watch("bloodType") && <BloodTypeHelp signedIn />}
 
       {formError && <p className="text-sm text-red-fg">{formError}</p>}
 
