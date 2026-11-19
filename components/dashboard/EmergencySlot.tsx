@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import useSWR from "swr";
+import { jsonFetcher } from "@/lib/fetcher";
 import { m } from "framer-motion";
 import { Droplet, ShieldCheck } from "lucide-react";
 import type { EmergencyView } from "@/lib/emergencies";
@@ -19,35 +20,16 @@ export function EmergencySlot({
   initial: EmergencyView[];
   bloodType: string | null;
 }) {
-  const [emergencies, setEmergencies] = useState(initial);
-
-  // New alerts should appear without a reload: poll while the tab is visible,
-  // and refresh straight away when the person comes back to it.
-  useEffect(() => {
-    let cancelled = false;
-
-    async function refresh() {
-      if (document.visibilityState !== "visible") return;
-      try {
-        const res = await fetch("/api/emergencies", { cache: "no-store" });
-        if (!res.ok) return;
-        const data = (await res.json()) as { emergencies: EmergencyView[] };
-        if (!cancelled) setEmergencies(data.emergencies);
-      } catch {
-        // offline or a blip: keep showing what we have
-      }
-    }
-
-    const timer = setInterval(refresh, POLL_MS);
-    document.addEventListener("visibilitychange", refresh);
-    window.addEventListener("online", refresh);
-    return () => {
-      cancelled = true;
-      clearInterval(timer);
-      document.removeEventListener("visibilitychange", refresh);
-      window.removeEventListener("online", refresh);
-    };
-  }, []);
+  // New alerts appear without a reload. SWR polls while the tab is visible, refreshes
+  // when the person returns to it or comes back online, and keeps the last good list
+  // on a network blip.
+  const { data } = useSWR<{ emergencies: EmergencyView[] }>("/api/emergencies", jsonFetcher, {
+    fallbackData: { emergencies: initial },
+    refreshInterval: POLL_MS,
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+  });
+  const emergencies = data?.emergencies ?? initial;
 
   const top = emergencies[0];
 

@@ -5,6 +5,11 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.join(__dirname),
   },
+  // Keep visited pages in the client cache for 30s, so hopping between tabs and
+  // going back is instant. Every save calls router.refresh(), which clears it.
+  experimental: {
+    staleTimes: { dynamic: 30, static: 180 },
+  },
   async headers() {
     return [
       {
