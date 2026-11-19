@@ -46,11 +46,28 @@ function Seedling() {
   );
 }
 
-function Plot({ member, index }: { member: PodMemberView | null; index: number }) {
+function Plot({
+  member,
+  index,
+  inviteHref,
+}: {
+  member: PodMemberView | null;
+  index: number;
+  inviteHref?: string;
+}) {
   if (!member) {
+    if (!inviteHref) {
+      // Members can see the open spots but only the owner can fill them.
+      return (
+        <div className="flex flex-col items-center gap-1 py-1">
+          <span className="flex aspect-square w-full max-w-14 items-center justify-center rounded-full border-[1.5px] border-dashed border-hairline" />
+          <span className="text-label text-ink-faint">Open</span>
+        </div>
+      );
+    }
     return (
       <Link
-        href="/pod/invite"
+        href={inviteHref}
         aria-label="Invite someone to this spot"
         className="group flex flex-col items-center gap-1 rounded-xl py-1 transition-transform active:scale-95"
       >
@@ -107,10 +124,13 @@ export function PodGarden({
   members,
   covered,
   gaps,
+  inviteHref,
 }: {
   members: PodMemberView[];
   covered: string[];
   gaps: string[];
+  /** Where an empty plot leads. Leave out for members, who can't invite. */
+  inviteHref?: string;
 }) {
   const count = members.length;
   const milestone = MILESTONES.find((m) => count < m.seats) ?? MILESTONES[MILESTONES.length - 1];
@@ -129,14 +149,14 @@ export function PodGarden({
       </CardTitle>
       <p className="mt-1 text-caption text-ink-muted lg:text-body-sm">
         {missing > 0
-          ? `${missing} more ${missing === 1 ? "person" : "people"} to fill your ${milestone.name}.`
-          : `Your ${milestone.name} is full.`}
+          ? `${missing} more ${missing === 1 ? "person" : "people"} to fill ${inviteHref ? "your" : "this"} ${milestone.name}.`
+          : `${inviteHref ? "Your" : "This"} ${milestone.name} is full.`}
         {readyCount > 0 && ` ${readyCount} in bloom, ready to donate.`}
       </p>
 
       <div className="mt-3 grid grid-cols-5 gap-x-2 gap-y-2">
         {plots.map((member, i) => (
-          <Plot key={member?.id ?? `empty-${i}`} member={member} index={i} />
+          <Plot key={member?.id ?? `empty-${i}`} member={member} index={i} inviteHref={inviteHref} />
         ))}
       </div>
 

@@ -221,3 +221,119 @@ export async function getJoinedPodDetail(
     members,
   };
 }
+
+export interface PodListItem {
+  id: string;
+  name: string;
+  role: "owner" | "member";
+  ownerName: string;
+  memberCount: number;
+  readyCount: number;
+  avatars: { id: string; initials: string; bgColor: string; textColor: string; avatarUrl: string | null }[];
+}
+
+/** Every Pod the person owns or has joined, for the Pods list. */
+export async function getPodList(userId: string): Promise<PodListItem[]> {
+  const pods = await prisma.pod.findMany({
+    where: { OR: [{ ownerId: userId }, { members: { some: { userId } } }] },
+    orderBy: { createdAt: "asc" },
+    take: 60,
+    include: {
+      owner: { select: { id: true, name: true, avatarUrl: true, isEligible: true } },
+      members: {
+        orderBy: { joinedAt: "asc" },
+        include: { user: { select: { id: true, name: true, avatarUrl: true, isEligible: true } } },
+      },
+    },
+  });
+
+  return pods.map((pod) => {
+    const people = [pod.owner, ...pod.members.map((m) => m.user)];
+    return {
+      id: pod.id,
+      name: pod.name,
+      role: pod.ownerId === userId ? "owner" : "member",
+      ownerName: pod.owner.name ?? "Pod owner",
+      memberCount: people.length,
+      readyCount: people.filter((p) => p.isEligible).length,
+      avatars: people.slice(0, 5).map((p) => ({
+        id: p.id,
+        initials: getInitials(p.name ?? "Member"),
+        bgColor: getAvatarColor(p.id),
+        textColor: getAvatarTextColor(p.id),
+        avatarUrl: p.avatarUrl,
+      })),
+    };
+  });
+}
+
+export interface PodDetail {
+  id: string;
+  name: string;
+  role: "owner" | "member";
+  ownerId: string;
+  ownerName: string;
+  memberCount: number;
+  bloodTypesCovered: string[];
+  bloodTypeGaps: string[];
+  members: PodMemberView[];
+}
+
+/** One Pod, for its owner or any member. Anyone else gets null. */
+export async function getPodDetail(userId: string, podId: string): Promise<PodDetail | null> {
+  const pod = await prisma.pod.findUnique({
+    where: { id: podId },
+    include: {
+      owner: { include: { _count: { select: { donations: true } } } },
+      members: {
+        include: { user: { include: { _count: { select: { donations: true } } } } },
+        orderBy: { joinedAt: "asc" },
+      },
+    },
+  });
+  if (!pod) return null;
+
+  const isOwner = pod.ownerId === userId;
+  if (!isOwner && !pod.members.some((m) => m.userId === userId)) return null;
+
+  const members = buildMemberViews(pod, userId);
+  const { bloodTypesCovered, bloodTypeGaps } = bloodTypeCoverageFor(pod.owner, pod.members);
+
+  return {
+    id: pod.id,
+    name: pod.name,
+    role: isOwner ? "owner" : "member",
+    ownerId: pod.ownerId,
+    ownerName: pod.owner.name ?? "Pod owner",
+    memberCount: members.length,
+    bloodTypesCovered,
+    bloodTypeGaps,
+    members,
+  };
+}
+
+/** Direct invites an owner has sent for one Pod. */
+export async function getPodPendingInvites(podId: string) {
+  const invites = await prisma.podInvite.findMany({
+    where: { podId, kind: "DIRECT" },
+    orderBy: { createdAt: "desc" },
+  });
+  return invites.map((inv) => ({
+    id: inv.id,
+    email: inv.email,
+    token: inv.token,
+    status: inv.status,
+    createdAt: inv.createdAt,
+    expiresAt: inv.expiresAt,
+  }));
+}
+
+/** The person's own earliest Pod, which the dashboard and the old /pod/invite shortcut use. */
+export async function getPrimaryPodId(userId: string): Promise<string | null> {
+  const pod = await prisma.pod.findFirst({
+    where: { ownerId: userId },
+    orderBy: { createdAt: "asc" },
+    select: { id: true },
+  });
+  return pod?.id ?? null;
+}

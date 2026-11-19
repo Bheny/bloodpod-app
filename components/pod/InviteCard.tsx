@@ -19,11 +19,14 @@ export function InviteCard({
   inviteUrl,
   inviteCode,
   full,
+  moreHref = "/pod/invite",
 }: {
   podName: string;
   inviteUrl: string;
   inviteCode: string;
   full: boolean;
+  /** The full invite page for this Pod. */
+  moreHref?: string;
 }) {
   const [copied, setCopied] = useState<"link" | "code" | null>(null);
 
@@ -56,7 +59,7 @@ export function InviteCard({
     <Card>
       <CardTitle
         aside={
-          <Link href="/pod/invite" className="text-caption font-bold text-ink-mid hover:text-ink">
+          <Link href={moreHref} className="text-caption font-bold text-ink-mid hover:text-ink">
             More options
           </Link>
         }
