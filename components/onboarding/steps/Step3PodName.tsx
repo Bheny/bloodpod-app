@@ -46,8 +46,8 @@ export function Step3PodName({
   }
 
   return (
-    <div className="flex flex-1 flex-col px-6 py-10">
-      <div className="flex-1">
+    <div className="flex min-h-0 flex-1 flex-col px-6 py-6">
+      <div className="min-h-0 flex-1 overflow-y-auto">
         <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">Your Pod</p>
         <h1 className="mt-3 text-[22px] font-extrabold tracking-[-0.6px] text-ink">Who will you build it with?</h1>
         <p className="mt-2 text-sm text-ink-muted">
@@ -97,7 +97,7 @@ export function Step3PodName({
         </div>
       </div>
 
-      <Button onClick={handleContinue} disabled={!name.trim()} loading={saving} size="lg" className="mt-8 w-full">
+      <Button onClick={handleContinue} disabled={!name.trim()} loading={saving} size="lg" className="mt-4 w-full shrink-0">
         Create my Pod
       </Button>
     </div>

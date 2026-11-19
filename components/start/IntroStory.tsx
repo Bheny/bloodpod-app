@@ -38,12 +38,12 @@ function Dot({ filled = false, fillAt, label }: { filled?: boolean; fillAt?: num
 }
 
 /** Three short screens, one idea each, before the first question. */
-export function IntroStory({ onDone }: { onDone: () => void }) {
+export function IntroStory({ onDone, signedIn = false }: { onDone: () => void; signedIn?: boolean }) {
   const [slide, setSlide] = useState(0);
   const last = slide === SLIDES - 1;
 
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex items-center gap-1.5" role="progressbar" aria-valuemin={1} aria-valuemax={SLIDES} aria-valuenow={slide + 1}>
         {Array.from({ length: SLIDES }, (_, i) => (
           <span key={i} className="h-1 flex-1 overflow-hidden rounded-full bg-hairline">
@@ -65,8 +65,9 @@ export function IntroStory({ onDone }: { onDone: () => void }) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.25 }}
-          className="flex flex-1 flex-col justify-center py-8"
+          className="flex min-h-0 flex-1 flex-col overflow-y-auto py-6"
         >
+          <div className="my-auto">
           {slide === 0 && (
             <>
               <div className="mb-8 flex items-center gap-3" aria-hidden>
@@ -181,10 +182,11 @@ export function IntroStory({ onDone }: { onDone: () => void }) {
               </p>
             </>
           )}
+          </div>
         </m.div>
       </AnimatePresence>
 
-      <div className="flex gap-2">
+      <div className="flex shrink-0 gap-2">
         {slide > 0 && (
           <button
             type="button"

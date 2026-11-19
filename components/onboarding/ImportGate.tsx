@@ -37,7 +37,7 @@ export function ImportGate({ children }: { children: React.ReactNode }) {
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 text-center">
         <LogoMark className="size-10" />
         <p className="flex items-center gap-2 text-sm text-ink-muted">
-          <Loader2 className="size-4 animate-spin" /> Saving your Blood Card...
+          <Loader2 className="size-4 animate-spin" /> Setting up your network...
         </p>
       </div>
     );

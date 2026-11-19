@@ -70,8 +70,8 @@ export function Step5Invite({
   }
 
   return (
-    <div className="flex flex-1 flex-col px-6 py-10">
-      <div className="flex-1">
+    <div className="flex min-h-0 flex-1 flex-col px-6 py-6">
+      <div className="min-h-0 flex-1 overflow-y-auto">
         <div className="inline-flex items-center gap-2 rounded-full bg-red-light px-3 py-1.5">
           <span className="size-1.5 animate-pulse-dot rounded-full bg-[#AA0000]" />
           <span className="text-xs font-bold text-[#AA0000]">Your Pod has 1 member: you</span>

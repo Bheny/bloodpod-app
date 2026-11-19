@@ -26,8 +26,8 @@ const BENEFITS = [
 export function Step1Welcome({ name, onNext }: { name: string | null; onNext: () => void }) {
   const first = name?.split(" ")[0];
   return (
-    <div className="flex flex-1 flex-col px-6 py-10">
-      <div className="flex-1">
+    <div className="flex min-h-0 flex-1 flex-col px-6 py-6">
+      <div className="min-h-0 flex-1 overflow-y-auto">
         <m.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}>
           <LogoMark className="size-11" />
         </m.div>
@@ -72,7 +72,7 @@ export function Step1Welcome({ name, onNext }: { name: string | null; onNext: ()
         </ul>
       </div>
 
-      <Button onClick={onNext} size="lg" className="mt-8 w-full">
+      <Button onClick={onNext} size="lg" className="mt-4 w-full shrink-0">
         Let&apos;s start
       </Button>
     </div>

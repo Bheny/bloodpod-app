@@ -68,8 +68,8 @@ export function Step6Location({
   }
 
   return (
-    <div className="flex flex-1 flex-col items-center px-6 py-10 text-center">
-      <div className="flex-1">
+    <div className="flex min-h-0 flex-1 flex-col items-center px-6 py-6 text-center">
+      <div className="min-h-0 flex-1 overflow-y-auto">
         <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-red-light">
           <MapPin className="size-7 text-red-fg" />
         </span>

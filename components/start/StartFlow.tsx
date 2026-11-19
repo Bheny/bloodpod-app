@@ -13,7 +13,7 @@ import { computeEligibility } from "@/lib/eligibility";
 import { nearestCity } from "@/lib/nearest-city";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
 import { cn } from "@/lib/utils";
-import { EMPTY_START, isStartComplete, readStartState, writeStartState, type StartState } from "@/lib/start-state";
+import { EMPTY_START, clearStartState, isStartComplete, readStartState, writeStartState, type StartState } from "@/lib/start-state";
 import { canDonateTo } from "@/lib/blood-compatibility";
 import { POD_READY_THRESHOLD } from "@/components/dashboard/PodReadyCard";
 import type { BloodType } from "@prisma/client";
@@ -60,7 +60,11 @@ const DONATED_OPTIONS: { id: string; label: string; days: number }[] = [
 ];
 const fmtDate = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 
-export function StartFlow() {
+/**
+ * `signedIn` is for someone who already has an account (for example after Google sign-up) but
+ * hasn't answered yet: same story and questions, but the last button saves instead of signing up.
+ */
+export function StartFlow({ signedIn = false }: { signedIn?: boolean }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const invite = searchParams.get("invite");
@@ -70,6 +74,8 @@ export function StartFlow() {
   const [loaded, setLoaded] = useState(false);
   const [cityInput, setCityInput] = useState("");
   const [locating, setLocating] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
   const [inviteInfo, setInviteInfo] = useState<{ pod: string; inviter: string | null } | null>(null);
 
   // Returning visitors keep their earlier answers.
@@ -135,13 +141,31 @@ export function StartFlow() {
     );
   }
 
+  async function saveAnswers() {
+    setSaving(true);
+    setSaveError(false);
+    try {
+      const res = await fetch("/api/onboarding/import", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(state),
+      });
+      if (!res.ok) throw new Error("save failed");
+      clearStartState();
+      window.location.reload();
+    } catch {
+      setSaveError(true);
+      setSaving(false);
+    }
+  }
+
   const signUpHref = `/sign-up?from=start${invite ? `&invite=${encodeURIComponent(invite)}` : ""}`;
   const typeLabel = state.bloodType ? BLOOD_TYPE_LABELS[state.bloodType as BloodType] : null;
 
   if (!loaded) return <div className="force-light min-h-screen bg-card" />;
 
   return (
-    <div className="force-light mx-auto flex min-h-screen w-full max-w-[480px] flex-col bg-card px-6 py-6">
+    <div className="force-light mx-auto flex h-dvh w-full max-w-[480px] flex-col bg-card px-6 py-5">
       <div className="flex items-center justify-between">
         {step > 0 ? (
           <button
@@ -224,13 +248,13 @@ export function StartFlow() {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -32 }}
           transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-          className="flex flex-1 flex-col pt-8"
+          className="flex min-h-0 flex-1 flex-col pt-6"
         >
-          {step === 0 && <IntroStory onDone={next} />}
+          {step === 0 && <IntroStory onDone={next} signedIn={signedIn} />}
 
           {step === 1 && (
             <>
-              <div className="flex-1">
+              <div className="min-h-0 flex-1 overflow-y-auto">
                 <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">Step 1 of 3</p>
                 <h1 className="mt-3 text-[26px] font-extrabold leading-[1.15] tracking-[-0.8px] text-ink">
                   What&apos;s your blood type?
@@ -298,7 +322,7 @@ export function StartFlow() {
                   </button>
                 </p>
               </div>
-              <Button onClick={next} disabled={!state.bloodType} size="lg" className="mt-8 w-full">
+              <Button onClick={next} disabled={!state.bloodType} size="lg" className="mt-4 w-full shrink-0">
                 Continue
               </Button>
             </>
@@ -306,7 +330,7 @@ export function StartFlow() {
 
           {step === 2 && (
             <>
-              <div className="flex-1">
+              <div className="min-h-0 flex-1 overflow-y-auto">
                 <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">Step 2 of 3</p>
                 <h1 className="mt-3 text-[26px] font-extrabold leading-[1.15] tracking-[-0.8px] text-ink">
                   When did you last donate?
@@ -407,7 +431,7 @@ export function StartFlow() {
 
           {step === 3 && (
             <>
-              <div className="flex-1">
+              <div className="min-h-0 flex-1 overflow-y-auto">
                 <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">Step 3 of 3</p>
                 <h1 className="mt-3 text-[26px] font-extrabold leading-[1.15] tracking-[-0.8px] text-ink">
                   Where are you?
@@ -437,7 +461,7 @@ export function StartFlow() {
                   }}
                 />
               </div>
-              <Button onClick={next} disabled={!state.city || state.city.length < 2} size="lg" className="mt-8 w-full">
+              <Button onClick={next} disabled={!state.city || state.city.length < 2} size="lg" className="mt-4 w-full shrink-0">
                 Continue
               </Button>
             </>
@@ -445,7 +469,7 @@ export function StartFlow() {
 
           {step === 4 && (
             <>
-              <div className="flex-1">
+              <div className="min-h-0 flex-1 overflow-y-auto">
                 <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">You&apos;re in</p>
                 <h1 className="mt-3 text-[26px] font-extrabold leading-[1.15] tracking-[-0.8px] text-ink">
                   You&apos;re the first one in your network.
@@ -525,10 +549,21 @@ export function StartFlow() {
                 </m.div>
               </div>
 
-              <Button asChild size="lg" className="mt-8 w-full whitespace-nowrap">
-                <Link href={signUpHref}>Start my network</Link>
-              </Button>
-              <p className="mt-3 text-center text-xs text-ink-muted">Free for donors. Next, a name and email to save your place.</p>
+              {signedIn ? (
+                <>
+                  {saveError && <p className="mt-3 text-center text-sm text-red-fg">Couldn&apos;t save that. Please try again.</p>}
+                  <Button onClick={saveAnswers} loading={saving} size="lg" className="mt-4 w-full shrink-0 whitespace-nowrap">
+                    Start my network
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button asChild size="lg" className="mt-4 w-full shrink-0 whitespace-nowrap">
+                    <Link href={signUpHref}>Start my network</Link>
+                  </Button>
+                  <p className="mt-3 text-center text-xs text-ink-muted">Free for donors. Next, a name and email to save your place.</p>
+                </>
+              )}
             </>
           )}
         </m.div>

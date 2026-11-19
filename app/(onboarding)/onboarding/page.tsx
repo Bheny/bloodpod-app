@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { prisma } from "@/lib/prisma";
 import { getOrCreateShareInvite, inviteUrlFor } from "@/lib/pod-invite";
+import { Suspense } from "react";
+import { StartFlow } from "@/components/start/StartFlow";
 import { OnboardingShell } from "@/components/onboarding/OnboardingShell";
 import { ImportGate } from "@/components/onboarding/ImportGate";
 
@@ -32,6 +34,19 @@ export default async function OnboardingPage() {
 
   let initialStep = Math.min(user.onboardingStep + 1, 7);
   while (initialStep < 7 && skip.includes(initialStep)) initialStep++;
+
+  // Anyone who hasn't given their blood type, last donation and city yet (Google sign-up, or email
+  // sign-up that skipped /start) gets the same story and questions as /start, then carries on here.
+  const needsAnswers = !user.bloodType || !user.city || (!user.donationInfoAt && !user.lastDonated);
+  if (needsAnswers) {
+    return (
+      <ImportGate>
+        <Suspense>
+          <StartFlow signedIn />
+        </Suspense>
+      </ImportGate>
+    );
+  }
 
   return (
     <ImportGate>

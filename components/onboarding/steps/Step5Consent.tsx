@@ -33,8 +33,8 @@ export function Step5Consent({ onNext }: { onNext: () => void }) {
   }
 
   return (
-    <div className="flex flex-1 flex-col px-6 py-10">
-      <div className="flex-1">
+    <div className="flex min-h-0 flex-1 flex-col px-6 py-6">
+      <div className="min-h-0 flex-1 overflow-y-auto">
         <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">Your choice</p>
         <h1 className="mt-3 text-[22px] font-extrabold tracking-[-0.6px] text-ink">
           Here&apos;s exactly what you&apos;re agreeing to.
@@ -78,7 +78,7 @@ export function Step5Consent({ onNext }: { onNext: () => void }) {
         {error && <p className="mt-2 text-sm text-red-fg">{error}</p>}
       </div>
 
-      <Button onClick={submit} disabled={!agreed} loading={saving} size="lg" className="mt-8 w-full">
+      <Button onClick={submit} disabled={!agreed} loading={saving} size="lg" className="mt-4 w-full shrink-0">
         Count me in
       </Button>
     </div>

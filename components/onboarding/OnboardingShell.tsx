@@ -71,7 +71,7 @@ export function OnboardingShell(props: OnboardingShellProps) {
   const showBack = dotPosition > 1 || (dotPosition === 1 && !skipped.includes(1));
 
   return (
-    <div className="relative mx-auto flex min-h-screen w-full max-w-[480px] flex-col">
+    <div className="relative mx-auto flex h-dvh w-full max-w-[480px] flex-col">
       {showDots && (
         <div
           className="absolute inset-x-0 top-3 z-10 flex justify-center gap-1.5"
@@ -113,7 +113,7 @@ export function OnboardingShell(props: OnboardingShellProps) {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -40 }}
           transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-          className="flex flex-1 flex-col pt-12"
+          className="flex min-h-0 flex-1 flex-col pt-12"
         >
           {step === 1 && <Step1Welcome name={props.name} onNext={() => advance(1)} />}
 

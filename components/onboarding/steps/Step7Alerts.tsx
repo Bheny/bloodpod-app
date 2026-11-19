@@ -35,8 +35,8 @@ export function Step7Alerts() {
   }
 
   return (
-    <div className="flex flex-1 flex-col px-6 py-10">
-      <div className="flex-1">
+    <div className="flex min-h-0 flex-1 flex-col px-6 py-6">
+      <div className="min-h-0 flex-1 overflow-y-auto">
         <m.span
           initial={{ scale: 0.6, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -56,7 +56,7 @@ export function Step7Alerts() {
         </div>
       </div>
 
-      <Button onClick={finish} loading={finishing} size="lg" className="mt-8 w-full">
+      <Button onClick={finish} loading={finishing} size="lg" className="mt-4 w-full shrink-0">
         Finish and go to my dashboard
       </Button>
       <p className="mt-3 text-center text-xs text-ink-muted">You can change this later in your profile.</p>
