@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { createPodInvite, inviteUrlFor, isValidEmail } from "@/lib/pod-invite";
 import { isPodFull } from "@/lib/pod-limits";
+import { emailPodInvite } from "@/lib/email/notify";
 
 export async function POST(request: Request) {
   const user = await getCurrentUser();
@@ -32,8 +33,17 @@ export async function POST(request: Request) {
 
   const invite = await createPodInvite({ podId, senderId: user.id, email });
 
-  // Email delivery (Supabase/Resend) is not wired up yet — the invite record
-  // and link are created regardless so the UI can still show it as pending.
+  // The invite and its link exist either way; the email is a convenience on top.
+  if (invite.email) {
+    emailPodInvite({
+      to: invite.email,
+      inviteId: invite.id,
+      inviterName: user.name,
+      podName: pod.name,
+      token: invite.token,
+      expiresAt: invite.expiresAt,
+    });
+  }
 
   return NextResponse.json({
     success: true,

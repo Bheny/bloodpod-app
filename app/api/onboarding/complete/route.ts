@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth/current-user";
+import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
+import { emailWelcome } from "@/lib/email/notify";
 
 export async function POST(request: Request) {
   const user = await getCurrentUser();
@@ -17,6 +19,11 @@ export async function POST(request: Request) {
     where: { id: user.id },
     data: { onboardingStep: step, onboardingComplete },
   });
+
+  // Only the first time they finish. The idempotency key backs this up if the request is retried.
+  if (onboardingComplete && !user.onboardingComplete && user.email) {
+    emailWelcome({ to: user.email, userId: user.id, name: user.name, bloodType: user.bloodType ? BLOOD_TYPE_LABELS[user.bloodType] : null });
+  }
 
   return NextResponse.json({ success: true, nextStep: onboardingComplete ? step : step + 1 });
 }

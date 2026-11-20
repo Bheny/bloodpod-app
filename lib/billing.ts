@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { PRICING } from "@/lib/pricing";
 import type { PaystackCharge } from "@/lib/paystack";
+import { emailPaymentReceipt } from "@/lib/email/notify";
 
 const PERIOD_DAYS = 30;
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -64,6 +65,19 @@ export async function applySuccessfulCharge(charge: PaystackCharge): Promise<{ u
       await tx.subscription.create({ data: { userId, plan: "CARE", status: "ACTIVE", currentPeriodEnd: newEnd } });
     }
   });
+
+  // The early return above means a repeat (return page, then webhook) never sends a second receipt.
+  const payer = await prisma.user.findUnique({ where: { id: userId }, select: { email: true, name: true } });
+  if (payer?.email) {
+    emailPaymentReceipt({
+      to: payer.email,
+      reference: charge.reference,
+      name: payer.name,
+      amountPesewas: charge.amount,
+      planName: "the Care plan",
+      periodEnd: newEnd,
+    });
+  }
 
   return { userId };
 }

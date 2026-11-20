@@ -2,6 +2,7 @@ import type { BookingStatus, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { sendPushToUser } from "@/lib/push";
 import { parseLabTests, testLabel, isServiceTestId } from "@/lib/service-tests";
+import { emailBookingRequested, emailBookingUpdate, emailLabNewRequest } from "@/lib/email/notify";
 
 /** Open requests one person can have at once, so the labs' inboxes can't be flooded. */
 export const MAX_OPEN_BOOKINGS = 5;
@@ -25,7 +26,7 @@ const startOfToday = () => {
 };
 
 export async function createBooking(
-  user: { id: string; name: string | null },
+  user: { id: string; name: string | null; email?: string | null },
   input: { labId: string; testIds: string[]; preferredDate: string; note?: string; consent: boolean },
 ): Promise<Result> {
   if (!input.consent) return fail("Please agree to share your name and phone with the lab");
@@ -37,7 +38,7 @@ export async function createBooking(
   if (Number.isNaN(preferred.getTime()) || preferred < startOfToday()) return fail("Pick a day from today onwards");
   if (preferred.getTime() - Date.now() > 1000 * 60 * 60 * 24 * 120) return fail("Pick a day within the next 4 months");
 
-  const lab = await prisma.lab.findUnique({ where: { id: input.labId }, include: { staff: { select: { id: true } } } });
+  const lab = await prisma.lab.findUnique({ where: { id: input.labId }, include: { staff: { select: { id: true, email: true } } } });
   if (!lab || !lab.active) return fail("That lab isn't available", 404);
 
   const offered = new Set(parseLabTests(lab.tests).map((t) => t.id));
@@ -64,6 +65,18 @@ export async function createBooking(
     `${user.name ?? "Someone"} wants ${booking.testName}`,
     "/lab",
   );
+
+  if (user.email) {
+    emailBookingRequested({ to: user.email, bookingId: booking.id, name: user.name, labName: lab.name, testName: booking.testName, when: preferred });
+  }
+  emailLabNewRequest({
+    to: lab.staff.map((s) => s.email).filter(Boolean),
+    bookingId: booking.id,
+    personName: user.name,
+    labName: lab.name,
+    testName: booking.testName,
+    preferred,
+  });
   return { ok: true, id: booking.id };
 }
 
@@ -97,7 +110,10 @@ export async function respondAsLab(
   action: LabAction,
   opts: { scheduledFor?: string; note?: string },
 ): Promise<Result> {
-  const booking = await prisma.booking.findUnique({ where: { id: bookingId }, include: { lab: { select: { name: true } } } });
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    include: { lab: { select: { name: true } }, user: { select: { email: true, name: true } } },
+  });
   if (!staff.labId || !booking || booking.labId !== staff.labId) return fail("Booking not found", 404);
 
   const note = opts.note?.trim().slice(0, 300) || null;
@@ -130,6 +146,25 @@ export async function respondAsLab(
 
   await prisma.booking.update({ where: { id: bookingId }, data });
   if (message) await tell([booking.userId], message[0], message[1], "/services/bookings");
+
+  const status = { accept: "CONFIRMED", propose: "RESCHEDULED", decline: "DECLINED", complete: "COMPLETED", cancel: "CANCELLED" }[action] as
+    | "CONFIRMED"
+    | "RESCHEDULED"
+    | "DECLINED"
+    | "COMPLETED"
+    | "CANCELLED";
+  if (booking.user.email) {
+    emailBookingUpdate({
+      to: booking.user.email,
+      bookingId,
+      name: booking.user.name,
+      status,
+      labNote: note,
+      labName: booking.lab.name,
+      testName: booking.testName,
+      when: action === "propose" ? new Date(opts.scheduledFor ?? "") : action === "accept" ? booking.preferredDate : booking.scheduledFor,
+    });
+  }
   return { ok: true, id: bookingId };
 }
 

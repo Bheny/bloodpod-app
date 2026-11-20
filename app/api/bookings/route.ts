@@ -18,7 +18,7 @@ export async function POST(request: Request) {
   const parsed = schema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Check the form and try again" }, { status: 400 });
 
-  const result = await createBooking({ id: user.id, name: user.name }, parsed.data);
+  const result = await createBooking({ id: user.id, name: user.name, email: user.email }, parsed.data);
   if (!result.ok) return NextResponse.json({ error: result.error }, { status: result.status });
   return NextResponse.json({ id: result.id }, { status: 201 });
 }

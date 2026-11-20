@@ -5,6 +5,7 @@ import { recalculatePodStrength } from "@/lib/pod-strength";
 import { logActivity } from "@/lib/activity";
 import { findInviteByIdentifier } from "@/lib/pod-invite";
 import { isPodFull } from "@/lib/pod-limits";
+import { emailMemberJoined } from "@/lib/email/notify";
 
 export async function POST(
   _request: Request,
@@ -92,6 +93,20 @@ export async function POST(
       `${user.name ?? "Someone"} joined your pod`,
       invite.pod.name,
     );
+
+    const owner = await prisma.user.findUnique({ where: { id: invite.pod.ownerId }, select: { email: true, name: true } });
+    if (owner?.email) {
+      const people = (await prisma.podMember.count({ where: { podId: invite.podId } })) + 1; // +1 for the owner
+      emailMemberJoined({
+        to: owner.email,
+        ownerName: owner.name,
+        memberName: user.name,
+        podName: invite.pod.name,
+        memberCount: people,
+        podId: invite.podId,
+        joinKey: `${invite.podId}/${user.id}`,
+      });
+    }
   }
 
   return NextResponse.json({ success: true, pod: { name: invite.pod.name, slug: invite.pod.slug } });

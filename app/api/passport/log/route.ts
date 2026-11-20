@@ -5,6 +5,7 @@ import { donationSchema } from "@/lib/validations/donation";
 import { calculateStreak, nextEligibleDate } from "@/lib/passport";
 import { recalculatePodStrength } from "@/lib/pod-strength";
 import { logActivity } from "@/lib/activity";
+import { emailDonationRecorded } from "@/lib/email/notify";
 
 export async function POST(request: Request) {
   const user = await getCurrentUser();
@@ -47,6 +48,18 @@ export async function POST(request: Request) {
     `Logged a donation at ${facility}`,
     `Donation #${donations.length}`,
   );
+
+  if (user.email) {
+    emailDonationRecorded({
+      to: user.email,
+      donationId: donation.id,
+      name: user.name,
+      facility,
+      donatedAt: donation.donatedAt,
+      count: donations.length,
+      nextEligible,
+    });
+  }
 
   return NextResponse.json({
     success: true,

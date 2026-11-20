@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireAdminApi } from "@/lib/admin/auth";
+import { emailLabStaffAdded } from "@/lib/email/notify";
 
 const addSchema = z.object({ email: z.string().trim().toLowerCase().email() });
 const removeSchema = z.object({ userId: z.string().min(1) });
@@ -21,6 +22,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   if (person.labId && person.labId !== id) return NextResponse.json({ error: "That account already belongs to another lab" }, { status: 409 });
 
   await prisma.user.update({ where: { id: person.id }, data: { labId: id } });
+  const lab = await prisma.lab.findUnique({ where: { id }, select: { name: true } });
+  if (lab && person.labId !== id) emailLabStaffAdded({ to: person.email, userId: person.id, name: person.name, labName: lab.name });
   return NextResponse.json({ ok: true });
 }
 
