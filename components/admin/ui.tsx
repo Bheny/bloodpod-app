@@ -103,7 +103,7 @@ export function StatCard({
           {hint}
         </p>
       )}
-      {spark && <Sparkline values={spark} color={tone === "warn" ? "#DD0000" : "#1C1C1E"} />}
+      {spark && <Sparkline values={spark} color={tone === "warn" ? "#DD0000" : "var(--color-ink-mid)"} />}
     </Card>
   );
   return href ? (

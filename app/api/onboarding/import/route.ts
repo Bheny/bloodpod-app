@@ -6,6 +6,7 @@ import { getCurrentUser } from "@/lib/auth/current-user";
 import { isBloodType } from "@/lib/blood-type";
 import { computeEligibility } from "@/lib/eligibility";
 import { recalculatePodStrength } from "@/lib/pod-strength";
+import { canonicalCity } from "@/lib/nearest-city";
 
 const schema = z.object({
   bloodType: z.string().refine(isBloodType, "Invalid blood type").nullable().optional(),
@@ -47,7 +48,7 @@ export async function PUT(request: Request) {
       nextEligible,
       isEligible,
       donationInfoAt: new Date(),
-      city: v.city,
+      city: canonicalCity(v.city),
       latitude: v.latitude,
       longitude: v.longitude,
     },

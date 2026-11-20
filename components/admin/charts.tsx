@@ -244,7 +244,7 @@ export function LineChart({
 export function BarChart({
   data,
   height = 200,
-  color = "#1C1C1E",
+  color = "var(--color-ink-mid)",
   highlightColor = "#DD0000",
   format = compact,
   axisFormat,
@@ -315,8 +315,12 @@ export function BarChart({
                   initial={reduce ? false : { height: 0 }}
                   animate={{
                     height: `${Math.max((d.value / max) * 100, d.value > 0 ? 2 : 0)}%`,
-                    backgroundColor: shown === i && (hover !== null || sel !== null) ? highlightColor : color,
                     opacity: hover === null && sel === null ? 1 : shown === i ? 1 : 0.5,
+                  }}
+                  // Colour is a plain style, not animated by framer: it can be a theme variable, which framer cannot tween.
+                  style={{
+                    backgroundColor: shown === i && (hover !== null || sel !== null) ? highlightColor : color,
+                    transition: reduce ? undefined : "background-color 150ms ease-out",
                   }}
                   transition={{ duration: 0.45, delay: reduce ? 0 : Math.min(i * 0.02, 0.4), ease: "easeOut" }}
                 />
@@ -458,7 +462,7 @@ export function PairedBars({
   aLabel,
   bLabel,
   aColor = "#1FA855",
-  bColor = "#1C1C1E",
+  bColor = "var(--color-ink-mid)",
   format = compact,
   axisFormat,
   height = 200,

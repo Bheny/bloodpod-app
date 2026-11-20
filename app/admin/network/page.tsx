@@ -73,19 +73,19 @@ export default async function AdminNetworkPage() {
         </Panel>
 
         <Panel title="Where donors are" subtitle="Top cities by onboarded donors.">
-          {n.cities.length === 0 ? <EmptyState title="No cities yet" /> : <HBars color="#1C1C1E" rows={n.cities.map((c) => ({ label: c.city, value: c.value }))} />}
+          {n.cities.length === 0 ? <EmptyState title="No cities yet" /> : <HBars color="var(--color-ink-mid)" rows={n.cities.map((c) => ({ label: c.city, value: c.value }))} />}
         </Panel>
 
-        <Panel title="Invites" subtitle={n.invites.sent ? `${acceptRate}% of invites were accepted` : undefined}>
+        <Panel title="Invites" subtitle={n.invites.sent ? `${acceptRate}% of invitations led to someone joining` : "People who joined through a link, code or email"}>
           {n.invites.sent === 0 ? (
-            <EmptyState title="No invites sent yet" />
+            <EmptyState title="No one has joined through an invite yet" />
           ) : (
             <Donut
               centerLabel="invites"
               slices={[
-                { label: "Accepted", value: n.invites.accepted, color: "#1FA855" },
-                { label: "Still waiting", value: n.invites.pending, color: "#F59E0B" },
-                { label: "Expired", value: n.invites.expired, color: "#8E8E93" },
+                { label: "Joined", value: n.invites.accepted, color: "#1FA855" },
+                { label: "Email invites waiting", value: n.invites.pending, color: "#F59E0B" },
+                { label: "Email invites expired", value: n.invites.expired, color: "#8E8E93" },
               ]}
             />
           )}

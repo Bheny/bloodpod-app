@@ -77,7 +77,7 @@ export default async function AdminFinancePage() {
             {f.expenseByCategory.length === 0 ? (
               <EmptyState title="No spending recorded" />
             ) : (
-              <HBars color="#1C1C1E" rows={f.expenseByCategory.map((r) => ({ label: r.name, value: r.value }))} formatValue={(n) => ghs(n, { decimals: false })} />
+              <HBars color="var(--color-ink-mid)" rows={f.expenseByCategory.map((r) => ({ label: r.name, value: r.value }))} formatValue={(n) => ghs(n, { decimals: false })} />
             )}
           </Panel>
         </div>

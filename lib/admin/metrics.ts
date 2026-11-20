@@ -218,6 +218,25 @@ const SIZE_BUCKETS = [
   { label: "20 or more", test: (n: number) => n >= 20 },
 ];
 
+/**
+ * How invitations are doing. The durable share link and code of each Pod is a door, not an invitation
+ * that gets "accepted", so it is not counted as waiting. Instead:
+ *  - joined: people who came into a Pod through any invite (link, code or email). Counted from the
+ *    membership itself, so it is right however they joined.
+ *  - pending / expired: invitations sent to one person by email that have not been answered.
+ */
+async function inviteCounts() {
+  const now = new Date();
+  const [joined, pending, expired] = await Promise.all([
+    prisma.podMember.count({ where: { invitedById: { not: null } } }),
+    prisma.podInvite.count({ where: { kind: "DIRECT", status: "PENDING", expiresAt: { gt: now } } }),
+    prisma.podInvite.count({
+      where: { kind: "DIRECT", OR: [{ status: "EXPIRED" }, { status: "PENDING", expiresAt: { lte: now } }] },
+    }),
+  ]);
+  return { sent: joined + pending + expired, accepted: joined, pending, expired };
+}
+
 export async function getNetwork() {
   const [podRows, bloodGroups, cityGroups, inviteGroups, joinRows, topPods] = await Promise.all([
     getPodRows(),
@@ -226,14 +245,15 @@ export async function getNetwork() {
       where: { ...DONORS, onboardingComplete: true, bloodType: { not: null } },
       _count: { _all: true },
     }),
-    prisma.user.groupBy({
-      by: ["city"],
-      where: { ...DONORS, onboardingComplete: true, city: { not: null } },
-      _count: { _all: true },
-      orderBy: { _count: { city: "desc" } },
-      take: 8,
-    }),
-    prisma.podInvite.groupBy({ by: ["status", "kind"], _count: { _all: true } }),
+    // "Ho", "HO" and "ho " are one place, so group on a tidied-up spelling rather than the raw text.
+    prisma.$queryRaw<{ city: string; n: number }[]>`
+      SELECT initcap(lower(btrim("city"))) AS city, count(*)::int AS n
+      FROM "User"
+      WHERE "onboardingComplete" = true AND "hospitalId" IS NULL AND btrim(coalesce("city", '')) <> ''
+      GROUP BY initcap(lower(btrim("city")))
+      ORDER BY n DESC, city
+      LIMIT 8`,
+    inviteCounts(),
     prisma.$queryRaw<{ week: string; n: number }[]>`
       SELECT to_char(date_trunc('week', "joinedAt"), 'YYYY-MM-DD') AS week, count(*)::int AS n
       FROM "PodMember" WHERE "joinedAt" >= ${daysAgo(84)}
@@ -262,14 +282,7 @@ export async function getNetwork() {
     return { type, label: BLOOD_TYPE_LABELS[type], total, eligible };
   });
 
-  const invites = { sent: 0, accepted: 0, pending: 0, expired: 0 };
-  for (const g of inviteGroups) {
-    const n = g._count._all;
-    invites.sent += n;
-    if (g.status === "ACCEPTED") invites.accepted += n;
-    else if (g.status === "PENDING") invites.pending += n;
-    else if (g.status === "EXPIRED") invites.expired += n;
-  }
+  const invites = inviteGroups;
 
   const weeklyJoins: SeriesPoint[] = joinRows.map((r) => ({
     date: r.week,
@@ -285,7 +298,7 @@ export async function getNetwork() {
     ownerOnlyPods: podRows.filter((r) => r.size === 1).length,
     sizeDistribution,
     bloodTypes,
-    cities: cityGroups.map((c) => ({ city: c.city ?? "Unknown", value: c._count._all })),
+    cities: cityGroups.map((c) => ({ city: c.city, value: c.n })),
     invites,
     weeklyJoins,
     topPods: topPods.map((p) => ({

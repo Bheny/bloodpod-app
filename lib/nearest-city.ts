@@ -9,6 +9,17 @@ const GHANA_CITIES = [
   { name: "Ho", lat: 6.6, lng: 0.4713 },
 ];
 
+/**
+ * One spelling per place, so "HO", "ho" and "Ho " are the same city everywhere.
+ * Known cities use their proper name; anything else is trimmed and capitalised word by word.
+ */
+export function canonicalCity(input: string): string {
+  const clean = input.trim().replace(/\s+/g, " ");
+  const known = GHANA_CITIES.find((c) => c.name.toLowerCase() === clean.toLowerCase());
+  if (known) return known.name;
+  return clean.toLowerCase().replace(/(^|[\s-])(\p{L})/gu, (_, sep: string, ch: string) => sep + ch.toUpperCase());
+}
+
 export function nearestCity(lat: number, lng: number): string {
   let best = GHANA_CITIES[0];
   let bestDist = Infinity;
