@@ -21,6 +21,10 @@ const fail = (error: string, status = 400) => ({ ok: false as const, error, stat
 
 export const drillClosesAt = (d: { startedAt: Date; windowMinutes: number }) => new Date(d.startedAt.getTime() + d.windowMinutes * MIN);
 
+/** Still taking answers? */
+export const isDrillOpen = (d: { startedAt: Date; windowMinutes: number; closedAt: Date | null }) =>
+  !d.closedAt && Date.now() < drillClosesAt(d).getTime();
+
 /** Passed: enough people were eligible, and enough of them answered in time. */
 export function drillResult(eligibleCount: number, responded: number): boolean {
   return eligibleCount >= CAPTAIN.drillMinEligible && responded / eligibleCount >= CAPTAIN.drillPassRate;

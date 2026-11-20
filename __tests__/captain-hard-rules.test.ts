@@ -68,6 +68,29 @@ describe("captain hard rules", () => {
     for (const f of joining) expect(read(f)).not.toMatch(/captain/i);
   });
 
+  it("the programme is behind its flag: pages, APIs and the nightly job all check it", () => {
+    const pages = all.filter((f) => /^app\/\(app\)\/captain\/.*page\.tsx$/.test(f));
+    const apis = all.filter((f) => /^app\/api\/captain\/.*route\.ts$/.test(f));
+    expect(pages.length).toBeGreaterThanOrEqual(2);
+    expect(apis.length).toBeGreaterThanOrEqual(4);
+    for (const f of pages) expect(read(f), f).toMatch(/isCaptainEnabled\(\)/);
+    for (const f of apis) expect(read(f), f).toMatch(/captainApi\(\)/);
+    expect(read("app/api/cron/captain/route.ts")).toMatch(/isCaptainEnabled\(\)/);
+  });
+
+  it("existing screens only show Captain things when the flag is on", () => {
+    for (const f of ["app/(app)/pod/[podId]/page.tsx", "app/(app)/profile/page.tsx"]) {
+      expect(read(f), f).toMatch(/isCaptainEnabled\(\)/);
+    }
+  });
+
+  it("copy stays warm: no rank, recruit or earn", () => {
+    const copy = all.filter((f) => /^components\/captain\/|^app\/\(app\)\/captain\/|^lib\/email\/captain\.ts$/.test(f));
+    expect(copy.length).toBeGreaterThan(0);
+    const offenders = copy.filter((f) => /\b(rank|recruit|earn)/i.test(read(f)));
+    expect(offenders).toEqual([]);
+  });
+
   it("gold is used only for Captain badges", () => {
     // PassportTiers used gold for its Legend tier before the Captain programme existed.
     const before = ["components/passport/PassportTiers.tsx"];

@@ -13,6 +13,9 @@ import { SignOutButton } from "@/components/profile/SignOutButton";
 import { JoinByCodeForm } from "@/components/invite/JoinByCodeForm";
 import { PushToggle } from "@/components/pwa/PushToggle";
 import { isAdminEmail } from "@/lib/admin/auth";
+import { isCaptainEnabled } from "@/lib/captain/flag";
+import { getBadgeFor } from "@/lib/captain/view";
+import { CaptainBadge } from "@/components/captain/CaptainBadge";
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return <h2 className="px-1 text-caption font-bold uppercase tracking-wide text-ink-muted">{children}</h2>;
@@ -55,6 +58,8 @@ export default async function ProfilePage() {
 
   const passportData = await getPassportData(user.id);
   const donations = passportData?.passport.donationCount ?? 0;
+  const captainOn = await isCaptainEnabled();
+  const captainBadge = captainOn ? await getBadgeFor(user.id) : null;
 
   return (
     <div>
@@ -80,6 +85,7 @@ export default async function ProfilePage() {
               {user.name ?? "BloodPod member"}
             </p>
             <p className="text-caption text-ink-muted lg:text-body-sm">{user.email}</p>
+            {captainBadge && <CaptainBadge title={captainBadge.title} size="md" className="mt-2" />}
 
             <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
               <span className="rounded-full bg-red-light px-3 py-1 text-caption font-bold text-red-fg">
@@ -130,6 +136,7 @@ export default async function ProfilePage() {
             <LinkRow href="/medical-history" icon={HeartPulse} label="Medical history" hint="Allergies, genotype, emergency contact" />
             <LinkRow href="/essentials" icon={Wallet} label="My Essentials" hint="Cards and documents you keep handy" />
             <LinkRow href="/passport/history" icon={IdCard} label="Donation history" />
+            {captainOn && <LinkRow href="/captain" icon={Shield} label="Captain" hint="Grow your network and see how it is doing" />}
           </section>
 
           {isAdminEmail(user.email) && (
