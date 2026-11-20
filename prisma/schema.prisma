@@ -89,6 +89,10 @@ model User {
   bookings         Booking[]
   notificationLogs NotificationLog[]
 
+  // Asking a donor for help from Discover
+  requestsSent     DonorRequest[] @relation("RequestsSent")
+  requestsReceived DonorRequest[] @relation("RequestsReceived")
+
   // Captain programme
   drillResponses    DrillResponse[]
   captainStatus     CaptainStatus?
@@ -820,4 +824,33 @@ model CaptainAuditLog {
   createdAt  DateTime @default(now())
 
   @@index([userId, createdAt])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Asking one donor for help from Discover. Until the donor accepts, the asker sees only a
+// first name. Accepting shares both people's full name and phone with each other, and nothing else.
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum DonorRequestStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  CANCELLED
+}
+
+model DonorRequest {
+  id          String             @id @default(cuid())
+  seekerId    String
+  seeker      User               @relation("RequestsSent", fields: [seekerId], references: [id], onDelete: Cascade)
+  donorId     String
+  donor       User               @relation("RequestsReceived", fields: [donorId], references: [id], onDelete: Cascade)
+  message     String?
+  status      DonorRequestStatus @default(PENDING)
+  createdAt   DateTime           @default(now())
+  // A request nobody answers lapses on its own: PENDING past this is treated as expired.
+  expiresAt   DateTime
+  respondedAt DateTime?
+
+  @@index([donorId, status])
+  @@index([seekerId, createdAt])
 }

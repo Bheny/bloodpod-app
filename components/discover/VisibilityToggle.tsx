@@ -38,9 +38,9 @@ export function VisibilityToggle({ initiallyPublic }: { initiallyPublic: boolean
           <Eye className="size-4 text-ink-mid lg:size-5" />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="text-body-sm font-bold text-ink">You&apos;re not visible to other donors</p>
+          <p className="text-body-sm font-bold text-ink">Your first name is hidden</p>
           <p className="mt-0.5 text-caption leading-snug text-ink-mid">
-            Opt in so people searching nearby can find you. Only your blood type and rough area are shown.
+            People nearby can already see your blood type and rough area, without your name. Show your first name to let them ask you for help. You choose whether to answer, and nothing more is shared unless you say yes.
           </p>
           {failed && <p className="mt-1.5 text-caption font-semibold text-red-fg">Couldn&apos;t save that. Please try again.</p>}
         </div>
@@ -51,7 +51,7 @@ export function VisibilityToggle({ initiallyPublic }: { initiallyPublic: boolean
         size="sm"
         className="w-full shrink-0 min-[480px]:w-auto"
       >
-        Make me visible
+        Show my first name
       </Button>
     </div>
   );

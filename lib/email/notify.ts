@@ -397,6 +397,49 @@ export function emailPaymentReceipt(p: {
   );
 }
 
+// ── Asking a donor for help ─────────────────────────────────────────────────
+
+export function emailDonorRequestReceived(p: {
+  to: string;
+  requestId: string;
+  donorName: string | null;
+  seekerFirstName: string;
+  message: string | null;
+}) {
+  queue(
+    p.to,
+    {
+      subject: `${p.seekerFirstName} is asking for your help`,
+      preheader: "Nothing is shared unless you say yes.",
+      heading: `${p.seekerFirstName} is asking for your help`,
+      paragraphs: [
+        hi(p.donorName),
+        `${p.seekerFirstName} found you on BloodPod and would like your help.`,
+        ...(p.message ? [`They wrote: "${p.message}"`] : []),
+        "You decide. Your name and number are shared only if you say yes. Say no and nothing is shared.",
+      ],
+      cta: { label: "Answer the request", url: appUrl("/profile/notifications") },
+      footnote: "If you do not answer, the request lapses by itself in 48 hours.",
+    },
+    `donor-request/${p.requestId}`,
+  );
+}
+
+export function emailDonorRequestAccepted(p: { to: string; requestId: string; seekerName: string | null; donorFirstName: string }) {
+  queue(
+    p.to,
+    {
+      subject: `${p.donorFirstName} said yes`,
+      preheader: "Open BloodPod to see how to reach them.",
+      heading: `${p.donorFirstName} said yes`,
+      paragraphs: [hi(p.seekerName), `${p.donorFirstName} agreed to help. Open BloodPod to see their details and get in touch.`],
+      cta: { label: "See their details", url: appUrl("/discover/requests") },
+      footnote: "Their phone number is only in the app, never in this email.",
+    },
+    `donor-request-accepted/${p.requestId}`,
+  );
+}
+
 // ── For you, the admin ──────────────────────────────────────────────────────
 
 export function emailAdmins(p: { key: string; subject: string; lines: string[]; cta?: { label: string; url: string } }) {

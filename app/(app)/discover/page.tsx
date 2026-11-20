@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { getDiscoverDonors } from "@/lib/discover-data";
 import { AppHeader } from "@/components/layout/AppHeader";
@@ -17,7 +18,19 @@ export default async function DiscoverPage() {
 
   return (
     <div>
-      <AppHeader wide title="Discover" subtitle="Find donors near you by blood type and area" />
+      <AppHeader
+        wide
+        title="Discover"
+        subtitle="Find donors near you by blood type and area"
+        actions={
+          <Link
+            href="/discover/requests"
+            className="flex min-h-10 items-center rounded-full bg-surface px-4 text-caption font-bold text-ink-mid transition-colors hover:bg-hairline lg:bg-card lg:shadow-raised"
+          >
+            My requests
+          </Link>
+        }
+      />
       <VisibilityToggle initiallyPublic={user.isPublic} />
       <div className="mt-3 overflow-hidden rounded-2xl lg:bg-card lg:shadow-raised">
         <DiscoverList initial={initial} myCity={user.city} />

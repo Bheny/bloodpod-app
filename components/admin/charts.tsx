@@ -4,6 +4,7 @@ import { useEffect, useId, useState } from "react";
 import { m, useReducedMotion } from "framer-motion";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ghs } from "@/lib/admin/format";
 
 export type ChartPoint = { label: string; value: number };
 
@@ -24,6 +25,17 @@ export const compact = (n: number) =>
       : n >= 1000
         ? `${+(n / 1000).toFixed(1)}k`
         : String(Math.round(n * 10) / 10);
+
+/**
+ * How a chart writes its numbers. It is a name, not a function, because charts are rendered from server
+ * pages and a function cannot be passed from a server component to a client one.
+ */
+export type ValueFormat = "number" | "ghs";
+const FORMATS: Record<ValueFormat, { format: (n: number) => string; axisFormat: (n: number) => string }> = {
+  number: { format: compact, axisFormat: compact },
+  // Amounts arrive in pesewas; the axis shows whole cedis.
+  ghs: { format: (n) => ghs(n, { decimals: false }), axisFormat: (n) => compact(n / 100) },
+};
 
 /** The y-axis numbers, drawn in HTML so they never stretch with the SVG. */
 function YAxis({ max, format }: { max: number; format: (n: number) => string }) {
@@ -112,17 +124,16 @@ export function LineChart({
   data,
   height = 200,
   color = "#DD0000",
-  format = compact,
-  axisFormat,
+  valueFormat = "number",
   unit,
 }: {
   data: ChartPoint[];
   height?: number;
   color?: string;
-  format?: (n: number) => string;
-  axisFormat?: (n: number) => string;
+  valueFormat?: ValueFormat;
   unit?: string;
 }) {
+  const { format, axisFormat } = FORMATS[valueFormat];
   const gradientId = useId();
   const reduce = useReducedMotion();
   const [sel, setSel] = useState<number | null>(null);
@@ -246,18 +257,17 @@ export function BarChart({
   height = 200,
   color = "var(--color-ink-mid)",
   highlightColor = "#DD0000",
-  format = compact,
-  axisFormat,
+  valueFormat = "number",
   unit,
 }: {
   data: ChartPoint[];
   height?: number;
   color?: string;
   highlightColor?: string;
-  format?: (n: number) => string;
-  axisFormat?: (n: number) => string;
+  valueFormat?: ValueFormat;
   unit?: string;
 }) {
+  const { format, axisFormat } = FORMATS[valueFormat];
   const reduce = useReducedMotion();
   const [sel, setSel] = useState<number | null>(null);
   const [hover, setHover] = useState<number | null>(null);
@@ -463,8 +473,7 @@ export function PairedBars({
   bLabel,
   aColor = "#1FA855",
   bColor = "var(--color-ink-mid)",
-  format = compact,
-  axisFormat,
+  valueFormat = "number",
   height = 200,
 }: {
   data: { label: string; a: number; b: number }[];
@@ -472,10 +481,10 @@ export function PairedBars({
   bLabel: string;
   aColor?: string;
   bColor?: string;
-  format?: (n: number) => string;
-  axisFormat?: (n: number) => string;
+  valueFormat?: ValueFormat;
   height?: number;
 }) {
+  const { format, axisFormat } = FORMATS[valueFormat];
   const reduce = useReducedMotion();
   const [sel, setSel] = useState<number | null>(null);
   const [hover, setHover] = useState<number | null>(null);

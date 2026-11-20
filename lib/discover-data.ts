@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
 import { haversineDistanceKm } from "@/lib/geo";
 import { canDonateTo } from "@/lib/blood-compatibility";
+import { firstNameOf } from "@/lib/donor-requests-rules";
 
 const RESULT_LIMIT = 60;
 const CANDIDATE_LIMIT = 300;
@@ -21,10 +22,18 @@ export interface DiscoverFilters {
   eligibleOnly?: boolean;
 }
 
-/** All a search result says about a person: blood type, rough place, rough distance. */
+/**
+ * All a search result says about a person: blood type, rough place, rough distance. Everyone appears
+ * like this. Only people who chose to be listed by name also show a first name, and only they can be
+ * asked for help. A last name, phone number or email is never part of a search result.
+ */
 export interface DiscoverDonor {
   /** Position in the result, only for list keys. Not a user id. */
   key: string;
+  /** First name only, and only for people who opted in to being listed by name. */
+  firstName: string | null;
+  /** Set only for people who can be asked right now: opted in and able to give. Otherwise null. */
+  askId: string | null;
   bloodType: string | null;
   city: string | null;
   distanceKm: number | null;
@@ -53,7 +62,10 @@ export async function getDiscoverDonors(
   const candidates = await prisma.user.findMany({
     where: {
       id: { not: viewerId },
-      isPublic: true,
+      // Everyone who finished joining can be found. Staff accounts are not donors.
+      onboardingComplete: true,
+      hospitalId: null,
+      labId: null,
       // Only people with a position can be shown on a map.
       latitude: { not: null },
       longitude: { not: null },
@@ -61,7 +73,7 @@ export async function getDiscoverDonors(
       city: filters.city ? { contains: filters.city, mode: "insensitive" } : undefined,
       isEligible: filters.eligibleOnly ? true : undefined,
     },
-    select: { bloodType: true, city: true, latitude: true, longitude: true },
+    select: { id: true, name: true, isPublic: true, isEligible: true, bloodType: true, city: true, latitude: true, longitude: true },
     take: CANDIDATE_LIMIT,
   });
 
@@ -71,6 +83,8 @@ export async function getDiscoverDonors(
     const lat = snap(u.latitude as number);
     const lng = snap(u.longitude as number);
     return {
+      firstName: u.isPublic ? firstNameOf(u.name) : null,
+      askId: u.isPublic && u.isEligible ? u.id : null,
       bloodType: u.bloodType ? BLOOD_TYPE_LABELS[u.bloodType] : null,
       city: u.city,
       distanceKm: hasViewerLocation ? haversineDistanceKm(viewer.latitude!, viewer.longitude!, lat, lng) : null,

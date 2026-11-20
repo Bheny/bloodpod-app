@@ -5,6 +5,8 @@ import type { Activity } from "@prisma/client";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { getActivityFeed } from "@/lib/activity";
 import { getOpenEmergencies } from "@/lib/emergencies";
+import { getReceivedRequests } from "@/lib/donor-requests";
+import { RequestCard } from "@/components/discover/RequestCard";
 import { formatRelativeTime } from "@/lib/formatters";
 import { ACTIVITY_ICONS } from "@/components/dashboard/ActivityFeed";
 import { AppHeader } from "@/components/layout/AppHeader";
@@ -45,9 +47,10 @@ export default async function NotificationsPage() {
   if (user.labId) redirect("/lab");
   if (!user.onboardingComplete) redirect("/onboarding");
 
-  const [emergencies, { items }] = await Promise.all([
+  const [emergencies, { items }, asks] = await Promise.all([
     getOpenEmergencies(user.id, user.bloodType),
     getActivityFeed(user.id, 1, 30),
+    getReceivedRequests(user.id),
   ]);
   const groups = group(items);
 
@@ -56,6 +59,16 @@ export default async function NotificationsPage() {
       <AppHeader title="Notifications" subtitle="Alerts for you, and what has been happening" backHref="/dashboard" />
 
       <div className="flex flex-col gap-6 px-3.5 pb-8 pt-3 lg:max-w-2xl lg:px-6 lg:pt-5">
+        {/* People who found you on Discover and asked for help. Nothing is shared until you say yes. */}
+        {asks.length > 0 && (
+          <section className="flex flex-col gap-2.5" aria-label="Asking for your help">
+            <SectionLabel>Asking for your help</SectionLabel>
+            {asks.map((row) => (
+              <RequestCard key={row.id} row={row} role="donor" />
+            ))}
+          </section>
+        )}
+
         {/* What needs an answer comes first. */}
         {emergencies.length > 0 && (
           <section className="flex flex-col gap-2.5" aria-label="Needs you">
@@ -86,7 +99,7 @@ export default async function NotificationsPage() {
         )}
 
         {/* Earlier */}
-        {groups.length === 0 && emergencies.length === 0 ? (
+        {groups.length === 0 && emergencies.length === 0 && asks.length === 0 ? (
           <Card className="text-center">
             <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-fill">
               <BellRing className="size-6 text-ink-muted" />

@@ -32,8 +32,8 @@ export function VisibilityRow({ initiallyPublic }: { initiallyPublic: boolean })
         <Eye className="size-4 text-ink-mid lg:size-5" />
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-caption font-bold text-ink lg:text-body-sm">Visible to other donors</p>
-        <p className="text-label text-ink-muted">Show up in Discover search results</p>
+        <p className="text-caption font-bold text-ink lg:text-body-sm">Show my first name</p>
+        <p className="text-label text-ink-muted">Lets people nearby ask you for help. Your blood type and area are visible either way</p>
       </div>
       <button
         type="button"
