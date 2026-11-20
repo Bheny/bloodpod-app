@@ -43,7 +43,7 @@ model User {
 
   // Lab staff accounts (the /lab portal)
   labId String?
-  lab   Lab?   @relation("LabStaff", fields: [labId], references: [id], onDelete: SetNull)
+  lab   Lab?    @relation("LabStaff", fields: [labId], references: [id], onDelete: SetNull)
 
   // Pod strength tracking
   podStrengthScore Int @default(0) // 0–100
@@ -88,6 +88,11 @@ model User {
   planInterests    PlanInterest[]
   bookings         Booking[]
   notificationLogs NotificationLog[]
+
+  // Captain programme
+  drillResponses    DrillResponse[]
+  captainStatus     CaptainStatus?
+  captainPromotions CaptainPromotion[]
 }
 
 enum Genotype {
@@ -110,6 +115,17 @@ model Pod {
   invites   PodInvite[]
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
+
+  // Captain programme. A Pod that grew out of another one points back at it. Set once, never changed.
+  parentPodId     String?
+  parent          Pod?      @relation("PodLineage", fields: [parentPodId], references: [id], onDelete: SetNull)
+  children        Pod[]     @relation("PodLineage")
+  spawnedByUserId String?
+  // Last drill or real-alert answer from anyone in the Pod.
+  lastActivityAt  DateTime?
+  drills          Drill[]
+
+  @@index([parentPodId])
 }
 
 model PodMember {
@@ -708,4 +724,100 @@ model PlanInterest {
 
   @@unique([userId, plan])
   @@index([plan])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Captain programme. Recognition, tools and access only: nothing here pays anyone,
+// and nothing here changes who is alerted or in what order.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// A practice alert a Pod leader sends to their own Pod. Never a real emergency.
+model Drill {
+  id             String    @id @default(cuid())
+  podId          String
+  pod            Pod       @relation(fields: [podId], references: [id], onDelete: Cascade)
+  startedById    String
+  startedAt      DateTime  @default(now())
+  windowMinutes  Int
+  // Eligible members when it started. Fixed then, so later changes cannot change the result.
+  eligibleCount  Int
+  // Set when the window closes.
+  closedAt       DateTime?
+  respondedCount Int       @default(0)
+  passed         Boolean?
+
+  responses DrillResponse[]
+
+  @@index([podId, startedAt])
+}
+
+model DrillResponse {
+  id               String   @id @default(cuid())
+  drillId          String
+  drill            Drill    @relation(fields: [drillId], references: [id], onDelete: Cascade)
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  respondedAt      DateTime @default(now())
+  secondsToRespond Int
+
+  @@unique([drillId, userId])
+  @@index([userId])
+}
+
+/// One row per leader: the level their best Pod computes to, what is shown, and the lapse clock.
+model CaptainStatus {
+  id               String    @id @default(cuid())
+  userId           String    @unique
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  podId            String?
+  // What the rules say today (null = Pod Starter).
+  level            Int?
+  computedAt       DateTime  @default(now())
+  // The level the badge shows. Moves up only on approval.
+  approvedLevel    Int?
+  // Set when the rules stop being met. Cleared when they are met again.
+  lapseStartedAt   DateTime?
+  lapseWarnedAt    DateTime?
+  lapsedAt         DateTime?
+  pledgeAcceptedAt DateTime?
+  updatedAt        DateTime  @updatedAt
+}
+
+enum PromotionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model CaptainPromotion {
+  id             String          @id @default(cuid())
+  userId         String
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  podId          String
+  toLevel        Int
+  status         PromotionStatus @default(PENDING)
+  // What the rules saw when it was created, so a decision can be checked later.
+  evidence       Json
+  flags          Json
+  autoApproved   Boolean         @default(false)
+  decidedBy      String?
+  decisionReason String?
+  createdAt      DateTime        @default(now())
+  decidedAt      DateTime?
+
+  @@index([status, createdAt])
+  @@index([userId])
+}
+
+model CaptainAuditLog {
+  id         String   @id @default(cuid())
+  actorEmail String
+  userId     String
+  action     String
+  fromLevel  Int?
+  toLevel    Int?
+  reason     String
+  createdAt  DateTime @default(now())
+
+  @@index([userId, createdAt])
 }
