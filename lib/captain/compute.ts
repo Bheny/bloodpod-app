@@ -20,7 +20,7 @@ export function phoneKey(phone: string | null | undefined): string | null {
 const counts = (m: TreeMember) => m.phoneVerified && m.eligible;
 
 /** Everyone who counts in one Pod: verified, eligible, once each by account and by phone number. */
-export function countedMembers(pod: TreePod): TreeMember[] {
+export function countedMembers(pod: Pick<TreePod, "members">): TreeMember[] {
   const seenIds = new Set<string>();
   const seenPhones = new Set<string>();
   const out: TreeMember[] = [];
