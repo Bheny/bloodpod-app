@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   Menu,
   Network,
+  ShieldCheck,
   Siren,
   Users,
   Wallet,
@@ -27,6 +28,7 @@ const NAV: { href: string; label: string; icon: LucideIcon; badge?: "hospitals" 
   { href: "/admin/hospitals", label: "Hospitals", icon: Building2, badge: "hospitals" },
   { href: "/admin/services", label: "Services", icon: FlaskConical },
   { href: "/admin/emergencies", label: "Emergencies", icon: Siren, badge: "emergencies" },
+  { href: "/admin/captains", label: "Captains", icon: ShieldCheck },
   { href: "/admin/finance", label: "Finance", icon: Wallet },
 ];
 

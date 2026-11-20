@@ -12,9 +12,9 @@ import { formatPesewas } from "@/lib/pricing";
 function first(name: string | null | undefined) {
   return name?.trim().split(/\s+/)[0] || null;
 }
-const hi = (name: string | null | undefined) => (first(name) ? `Hi ${first(name)},` : "Hi,");
+export const hi = (name: string | null | undefined) => (first(name) ? `Hi ${first(name)},` : "Hi,");
 
-function queue(to: string | string[] | null | undefined, content: EmailContent, idempotencyKey?: string) {
+export function queue(to: string | string[] | null | undefined, content: EmailContent, idempotencyKey?: string) {
   if (!to || (Array.isArray(to) && to.length === 0)) return;
   deferEmail(() => sendEmail({ to, ...render(content), idempotencyKey }));
 }
