@@ -33,7 +33,7 @@ export default async function UpgradeDonePage({
     <div className="flex flex-col items-center px-6 pb-10 pt-16 text-center">
       {paid ? <CheckCircle2 className="size-12 text-[#1FA855]" /> : <Clock className="size-12 text-[#F59E0B]" />}
       <h1 className="mt-4 text-[22px] font-extrabold tracking-[-0.6px] text-ink">
-        {paid ? "You're on the Care plan" : "We're confirming your payment"}
+        {paid ? "Your Care Pod is active" : "We're confirming your payment"}
       </h1>
       <p className="mt-2 max-w-sm text-body-sm text-ink-muted">
         {paid

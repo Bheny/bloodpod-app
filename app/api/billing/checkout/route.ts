@@ -17,7 +17,7 @@ export async function POST() {
   // Never start a second subscription while one is still running.
   const current = await getCareSubscription(user.id);
   if (current && current.status === "ACTIVE" && current.currentPeriodEnd > new Date()) {
-    return NextResponse.json({ error: "You already have an active Care plan." }, { status: 409 });
+    return NextResponse.json({ error: "You already have an active Care Pod subscription." }, { status: 409 });
   }
 
   const reference = `bp_${randomUUID().replace(/-/g, "")}`;

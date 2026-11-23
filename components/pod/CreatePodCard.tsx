@@ -46,7 +46,7 @@ export function CreatePodCard({
           You own {owned} of {limit} Pods, the most your plan allows.
         </span>
         <Link href="/upgrade" className="mt-1 rounded-full bg-red px-4 py-2 text-caption font-bold text-white">
-          See the Care plan
+          See plans
         </Link>
       </div>
     );

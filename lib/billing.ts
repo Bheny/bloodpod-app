@@ -74,7 +74,7 @@ export async function applySuccessfulCharge(charge: PaystackCharge): Promise<{ u
       reference: charge.reference,
       name: payer.name,
       amountPesewas: charge.amount,
-      planName: "the Care plan",
+      planName: "the Care Pod",
       periodEnd: newEnd,
     });
   }
