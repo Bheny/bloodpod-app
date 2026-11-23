@@ -1,0 +1,28 @@
+{
+  "name": "bloodpod-tutorial-video",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "render": "remotion render src/index.ts Tutorial out/bloodpod-tutorial.mp4 --crf=26",
+    "still": "remotion still src/index.ts Tutorial out/poster.png --frame=60",
+    "typecheck": "tsc --noEmit",
+    "capture": "node capture/capture.mjs",
+    "seed-demo": "node --env-file=../.env.local --env-file=../.env capture/seed-demo.mjs",
+    "cleanup-demo": "node --env-file=../.env.local --env-file=../.env capture/cleanup-demo.mjs",
+    "capture-flows": "node --env-file=../.env.local --env-file=../.env capture/capture-flows.mjs"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.545",
+    "@remotion/google-fonts": "4.0.545",
+    "lucide-react": "^1.21.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "remotion": "4.0.545"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "playwright-core": "^1.65.1",
+    "typescript": "^5"
+  }
+}
