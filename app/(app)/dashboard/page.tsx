@@ -6,8 +6,8 @@ import { getDashboardData } from "@/lib/dashboard-data";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { EmergencySlot } from "@/components/dashboard/EmergencySlot";
 import { ReadinessCard } from "@/components/dashboard/ReadinessCard";
-import { NextSteps } from "@/components/dashboard/NextSteps";
-import { hasOpenNextSteps } from "@/lib/next-steps";
+import { GetStartedCard } from "@/components/get-started/GetStartedCard";
+import { getGetStartedState } from "@/lib/get-started-data";
 import { PassportMini } from "@/components/dashboard/PassportMini";
 import { PodCarousel } from "@/components/dashboard/PodCarousel";
 import { getNetworkSummary, getPodList } from "@/lib/pod-data";
@@ -34,18 +34,18 @@ export default async function DashboardPage() {
   if (user.labId) redirect("/lab");
   if (!user.onboardingComplete) redirect("/onboarding");
 
-  const [data, invitations, pods, allowance, network, careWaiting] = await Promise.all([
+  const [data, invitations, pods, allowance, network, careWaiting, getStarted] = await Promise.all([
     getDashboardData(user.id),
     getReceivedInvitations({ id: user.id, email: user.email }),
     getPodList(user.id),
     getPodAllowance(user.id),
     getNetworkSummary(user.id),
     countCareAsksWaiting(user.id),
+    getGetStartedState(user),
   ]);
   if (!data) redirect("/sign-in");
 
-  const memberCount = data.pod?.memberCount ?? 1;
-  const showNextSteps = hasOpenNextSteps({ hasPush: data.user.hasPush, memberCount });
+  const showGetStarted = !getStarted.dismissed && !getStarted.allDone;
   const isAdmin = isAdminEmail(user.email);
   const firstName = data.user.name?.split(" ")[0] ?? null;
 
@@ -81,7 +81,7 @@ export default async function DashboardPage() {
             <ActionTile href="/discover" label="Find donors" icon={Search} />
           </div>
 
-          {showNextSteps && <NextSteps hasPush={data.user.hasPush} memberCount={memberCount} />}
+          {showGetStarted && <GetStartedCard state={getStarted} />}
 
           <div className="empty:hidden">
             <InstallPrompt />
@@ -115,7 +115,7 @@ export default async function DashboardPage() {
             {invitations.length > 0 && <PodInvitations invitations={invitations} />}
             <CareAsksBanner waiting={careWaiting} />
 
-            <div className={showNextSteps ? "grid grid-cols-2 gap-6" : undefined}>
+            <div className={showGetStarted ? "grid grid-cols-2 gap-6" : undefined}>
               <ReadinessCard
                 isEligible={data.user.isEligible}
                 nextEligible={data.user.nextEligible ? new Date(data.user.nextEligible).toISOString() : null}
@@ -123,7 +123,7 @@ export default async function DashboardPage() {
                 hasPush={data.user.hasPush}
                 verified={data.passport?.verificationStatus === "VERIFIED"}
               />
-              {showNextSteps && <NextSteps hasPush={data.user.hasPush} memberCount={memberCount} />}
+              {showGetStarted && <GetStartedCard state={getStarted} />}
             </div>
 
             <ActivityFeed

@@ -20,6 +20,11 @@ model User {
   isPublic     Boolean    @default(false)
   // What they said matters to them at sign-up (ids from lib/intents.ts). Empty when not asked.
   intents      String[]   @default([])
+  // Get started checklist and first-run tour. Steps are marked done by what the person has actually done;
+  // these only record what cannot be seen from the data: steps visited or skipped, hidden, and the tour.
+  getStartedSeen        String[]   @default([])
+  getStartedDismissedAt DateTime?
+  tourSeenAt            DateTime?
   isEligible   Boolean    @default(true)
   isAvailable  Boolean    @default(false)
   lastDonated  DateTime?

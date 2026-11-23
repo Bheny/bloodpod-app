@@ -12,6 +12,7 @@ import { PassportCard } from "@/components/passport/PassportCard";
 import { PassportTiers } from "@/components/passport/PassportTiers";
 import { DonationHistory } from "@/components/passport/DonationHistory";
 import { cn } from "@/lib/utils";
+import { InfoTip } from "@/components/ui/InfoTip";
 
 export default async function PassportPage() {
   const user = await getCurrentUser();
@@ -76,7 +77,12 @@ export default async function PassportPage() {
               </summary>
 
               <div className="space-y-4 border-t-[0.5px] border-hairline px-4 py-4 lg:px-6 lg:py-5">
-                <PassportTiers currentTier={passport.tier} />
+                <div>
+                  <p className="mb-2 flex items-center gap-1.5 text-caption font-semibold text-ink-muted">
+                    Your tier <InfoTip term="passportTier" />
+                  </p>
+                  <PassportTiers currentTier={passport.tier} />
+                </div>
 
                 {passport.donationCount >= 1 && (
                   <div>

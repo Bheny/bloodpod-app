@@ -5,6 +5,7 @@ import type { PodListItem } from "@/lib/pod-data";
 import type { DependableResult } from "@/lib/pod-dependable";
 import { DependableChip } from "@/components/pod/DependableCard";
 import { POD_READY_THRESHOLD } from "@/components/dashboard/PodReadyCard";
+import { InfoTip } from "@/components/ui/InfoTip";
 
 /** A Pod in the list. The role badge is only shown where it isn't already obvious. */
 export function PodListCard({
@@ -51,10 +52,11 @@ export function PodListCard({
                 style={{ width: `${progress * 100}%` }}
               />
             </div>
-            <p className={cn("mt-1.5 text-caption font-semibold", ready ? "text-success-strong" : "text-ink-mid")}>
+            <p className={cn("mt-1.5 flex items-center gap-1 text-caption font-semibold", ready ? "text-success-strong" : "text-ink-mid")}>
               {ready
                 ? `Pod ready · ${pod.readyCount} can donate now`
                 : `${pod.readyCount} of ${POD_READY_THRESHOLD} ready${owner ? ` · add ${needed} more` : ""}`}
+              <InfoTip term="podReady" />
             </p>
           </div>
 

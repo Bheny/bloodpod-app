@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Download } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { buildMedicalId, wrapText, type MedicalIdSource, type MedicalIdView } from "@/lib/medical-id";
+import { InfoTip } from "@/components/ui/InfoTip";
 
 const W = 1170;
 const H = 2532; // a tall phone screen. The clock sits in the top third, so the card starts lower.
@@ -192,7 +193,9 @@ export function MedicalIdCard({ source }: { source: MedicalIdSource }) {
       )}
 
       <section className="rounded-3xl border-[0.5px] border-hairline bg-card p-4 shadow-raised lg:rounded-2xl">
-        <h2 className="text-body-sm font-bold text-ink">What goes on the image</h2>
+        <h2 className="flex items-center gap-1.5 text-body-sm font-bold text-ink">
+          What goes on the image <InfoTip term="medicalId" />
+        </h2>
         <p className="mt-1 text-caption text-ink-muted">Blood group, genotype, allergies and your emergency contact are always included. Anyone who sees your lock screen can read them.</p>
         <label className="mt-3 flex min-h-11 items-center gap-3 text-body-sm text-ink">
           <input type="checkbox" checked={includeConditions} onChange={(e) => setIncludeConditions(e.target.checked)} className="size-4 accent-red" />

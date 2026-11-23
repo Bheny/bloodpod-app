@@ -46,6 +46,7 @@ export function BottomNav() {
           <Link
             key={tab.href}
             href={tab.href}
+            data-tour={`nav-${tab.href}`}
             className="flex flex-1 flex-col items-center justify-center gap-1"
           >
             <TabContent active={active} label={tab.label} Icon={tab.icon} />

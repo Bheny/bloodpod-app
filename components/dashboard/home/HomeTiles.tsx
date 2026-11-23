@@ -3,15 +3,18 @@ import { BadgeCheck, CheckCircle2, CreditCard, Droplet, Plus, Users, type Lucide
 import { daysUntil } from "@/lib/eligibility";
 import { formatDate, formatRelativeTime } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
+import { InfoTip } from "@/components/ui/InfoTip";
+import type { TermId } from "@/lib/glossary";
 
 /** The shell every small tile shares, so they line up and feel like one set. */
 export const tileClass =
   "flex h-full min-h-[148px] flex-col rounded-3xl border-[0.5px] border-hairline bg-card p-4 shadow-raised transition-transform active:scale-[0.98]";
 
-export function TileLabel({ icon: Icon, children }: { icon: LucideIcon; children: React.ReactNode }) {
+export function TileLabel({ icon: Icon, children, tip }: { icon: LucideIcon; children: React.ReactNode; tip?: TermId }) {
   return (
     <p className="flex items-center gap-1.5 text-caption font-semibold text-ink-muted">
       <Icon className="size-3.5" /> {children}
+      {tip && <InfoTip term={tip} className="-my-1" />}
     </p>
   );
 }
@@ -20,7 +23,7 @@ export function BloodCardTile({ bloodType, verified, podCount = 0 }: { bloodType
   if (!bloodType) {
     return (
       <Link href="/profile/edit" className={tileClass}>
-        <TileLabel icon={CreditCard}>Blood Card</TileLabel>
+        <TileLabel icon={CreditCard} tip="bloodCard">Blood Card</TileLabel>
         <span className="mt-4 flex size-11 items-center justify-center rounded-full bg-red-light">
           <Plus className="size-5 text-red-fg" />
         </span>
@@ -32,7 +35,7 @@ export function BloodCardTile({ bloodType, verified, podCount = 0 }: { bloodType
 
   return (
     <Link href="/passport" className={tileClass}>
-      <TileLabel icon={CreditCard}>Blood Card</TileLabel>
+      <TileLabel icon={CreditCard} tip="bloodCard">Blood Card</TileLabel>
       <p className="mt-3 text-[48px] font-extrabold leading-none tracking-[-2px] text-red-fg">{bloodType}</p>
       <p className="mt-auto text-caption font-semibold text-ink">
         {podCount} {podCount === 1 ? "Pod" : "Pods"}
@@ -67,7 +70,7 @@ export function NextDonationTile({
 
   return (
     <Link href="/passport/log" className={tileClass}>
-      <TileLabel icon={Droplet}>Next donation</TileLabel>
+      <TileLabel icon={Droplet} tip="eligible">Next donation</TileLabel>
       {resting ? (
         <>
           <p className="mt-3 text-[40px] font-extrabold leading-none tracking-[-1.5px] text-ink">

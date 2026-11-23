@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { InfoTip } from "@/components/ui/InfoTip";
 
 export function VisibilityRow({ initiallyPublic }: { initiallyPublic: boolean }) {
   const [isPublic, setIsPublic] = useState(initiallyPublic);
@@ -32,7 +33,9 @@ export function VisibilityRow({ initiallyPublic }: { initiallyPublic: boolean })
         <Eye className="size-4 text-ink-mid lg:size-5" />
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-caption font-bold text-ink lg:text-body-sm">Show my first name</p>
+        <p className="flex items-center gap-1.5 text-caption font-bold text-ink lg:text-body-sm">
+          Show my first name <InfoTip term="discover" />
+        </p>
         <p className="text-label text-ink-muted">Lets people nearby ask you for help. Your blood type and area are visible either way</p>
       </div>
       <button

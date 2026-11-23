@@ -51,6 +51,7 @@ export function Sidebar({ user, isAdmin = false }: { user: SidebarUser | null; i
             <Link
               key={tab.href}
               href={tab.href}
+              data-tour={`nav-${tab.href}`}
               aria-current={active ? "page" : undefined}
               className={cn(
                 "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors duration-150",

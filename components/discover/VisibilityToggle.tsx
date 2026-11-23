@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Eye } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { InfoTip } from "@/components/ui/InfoTip";
 
 export function VisibilityToggle({ initiallyPublic }: { initiallyPublic: boolean }) {
   const [isPublic, setIsPublic] = useState(initiallyPublic);
@@ -38,7 +39,9 @@ export function VisibilityToggle({ initiallyPublic }: { initiallyPublic: boolean
           <Eye className="size-4 text-ink-mid lg:size-5" />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="text-body-sm font-bold text-ink">Your first name is hidden</p>
+          <p className="flex items-center gap-1.5 text-body-sm font-bold text-ink">
+            Your first name is hidden <InfoTip term="discover" />
+          </p>
           <p className="mt-0.5 text-caption leading-snug text-ink-mid">
             People nearby can already see your blood type and rough area, without your name. Show your first name to let them ask you for help. You choose whether to answer, and nothing more is shared unless you say yes.
           </p>

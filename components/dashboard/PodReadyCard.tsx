@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { UserPlus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { InfoTip } from "@/components/ui/InfoTip";
 
 /** A Pod counts as ready when at least this many members can donate right now. */
 export const POD_READY_THRESHOLD = 3;
@@ -39,14 +40,17 @@ export function PodReadyCard({
             {readyCount} of {memberCount} can donate now
           </p>
         </div>
-        <span
-          className={cn(
-            "shrink-0 rounded-full px-3 py-1 text-caption font-bold",
-            ready ? "bg-success-soft text-success-strong" : "bg-surface text-ink-mid",
-          )}
-        >
-          {ready ? "Pod ready" : "Building"}
-        </span>
+        <div className="flex shrink-0 items-center gap-1">
+          <span
+            className={cn(
+              "rounded-full px-3 py-1 text-caption font-bold",
+              ready ? "bg-success-soft text-success-strong" : "bg-surface text-ink-mid",
+            )}
+          >
+            {ready ? "Pod ready" : "Building"}
+          </span>
+          <InfoTip term="podReady" />
+        </div>
       </div>
 
       <div className="mt-4 flex -space-x-2">

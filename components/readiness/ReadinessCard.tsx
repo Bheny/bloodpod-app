@@ -3,6 +3,7 @@ import { CheckCircle2, Radio } from "lucide-react";
 import type { PodReadiness } from "@/lib/readiness/drill";
 import { Card } from "@/components/ui/Card";
 import { DrillButton } from "@/components/readiness/ReadinessActions";
+import { InfoTip } from "@/components/ui/InfoTip";
 
 /** Is this Pod ready to answer? One honest number, the last drill, and the one thing to do next. */
 export function ReadinessCard({ podId, readiness, headingLevel = "h2" }: { podId: string; readiness: PodReadiness; headingLevel?: "h2" | "h3" }) {
@@ -12,7 +13,9 @@ export function ReadinessCard({ podId, readiness, headingLevel = "h2" }: { podId
 
   return (
     <Card>
-      <p className="text-label font-bold uppercase tracking-wide text-red-fg">Pod readiness</p>
+      <p className="flex items-center gap-1.5 text-label font-bold uppercase tracking-wide text-red-fg">
+        Pod readiness <InfoTip term="drill" />
+      </p>
       <Heading className="mt-1 text-title font-extrabold leading-tight tracking-[-0.4px] text-ink">
         {enough ? "Your Pod can run a drill" : `${needed - ready} more ${needed - ready === 1 ? "person" : "people"} to run a drill`}
       </Heading>

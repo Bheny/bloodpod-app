@@ -3,6 +3,7 @@ import { Plus } from "lucide-react";
 import { Card, CardTitle } from "@/components/ui/Card";
 import { FREE_POD_MEMBER_LIMIT } from "@/lib/pod-limits";
 import type { PodMemberView } from "@/lib/pod-data";
+import { InfoTip } from "@/components/ui/InfoTip";
 
 /** Plots shown: 10 to start, which is the low end of "10 to 20 people", then up to the Pod's limit. */
 const FIRST_GOAL = 10;
@@ -170,6 +171,7 @@ export function PodGarden({
         <span className="flex items-center gap-1.5">
           <span className="size-2 rounded-full bg-[#7CCB92]" /> Seedling: resting
         </span>
+        <InfoTip term="bloom" />
       </div>
 
       <div className="mt-4 border-t-[0.5px] border-hairline pt-4">

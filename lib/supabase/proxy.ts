@@ -10,6 +10,7 @@ const PROTECTED_PREFIXES = [
   "/services",
   "/upgrade",
   "/care",
+  "/get-started",
   "/profile",
   "/essentials",
   "/medical-history",
