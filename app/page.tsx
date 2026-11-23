@@ -7,6 +7,7 @@ import { HowItWorks } from "@/components/landing/HowItWorks";
 import { PodSection } from "@/components/landing/PodSection";
 import { BloodCard } from "@/components/landing/BloodCard";
 import { Hospitals } from "@/components/landing/Hospitals";
+import { Pricing } from "@/components/landing/Pricing";
 import { Testimonials } from "@/components/landing/Testimonials";
 import { Faq } from "@/components/landing/Faq";
 import { CTA } from "@/components/landing/CTA";
@@ -28,6 +29,7 @@ export default function Home() {
         <PodSection />
         <BloodCard />
         <Hospitals />
+        <Pricing />
         <Testimonials />
         <Faq />
         <CTA />

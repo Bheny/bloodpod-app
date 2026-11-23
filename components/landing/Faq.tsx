@@ -12,6 +12,10 @@ const ITEMS = [
     a: "Yes for donors. We will never charge a donor to be listed, never charge a patient to find blood, and never pay cash for a donation.",
   },
   {
+    q: "What does the paid plan buy?",
+    a: "Planning tools for families who need blood again and again: a transfusion calendar, a donor rota and reminders. It never changes who is alerted or in what order. Your own Pod is always alerted first, free.",
+  },
+  {
     q: "Who can see my details?",
     a: "Pod members can see each other. A hospital or family member only sees your name and phone number after you say Yes to an alert. If you say No, nothing private is shared.",
   },
