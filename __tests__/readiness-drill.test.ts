@@ -23,7 +23,7 @@ describe("drill result", () => {
 
 const person = (over: Partial<PodPerson> & { userId: string }): PodPerson => ({
   phone: null,
-  phoneVerified: true,
+  confirmed: true,
   eligible: true,
   joinedAt: new Date("2026-01-01T00:00:00Z"),
   ...over,
@@ -33,7 +33,7 @@ describe("who counts as ready", () => {
   it("counts only verified, eligible people", () => {
     const out = countedMembers([
       person({ userId: "a", phone: "0241234567" }),
-      person({ userId: "b", phone: "0241234568", phoneVerified: false }),
+      person({ userId: "b", phone: "0241234568", confirmed: false }),
       person({ userId: "c", phone: "0241234569", eligible: false }),
     ]);
     expect(out.map((m) => m.userId)).toEqual(["a"]);

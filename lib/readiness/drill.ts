@@ -1,7 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { sendPushToUser } from "@/lib/push";
 import { READINESS } from "@/lib/readiness-config";
-import { countedMembers, type PodPerson } from "@/lib/readiness/members";
+import { countedMembers } from "@/lib/readiness/members";
+import { podPeople } from "@/lib/readiness/people";
+import { recordTended } from "@/lib/garden-data";
 
 /**
  * Drills: a practice alert a Pod leader sends to their own Pod, to show the Pod would answer.
@@ -27,32 +29,6 @@ export const isDrillOpen = (d: { startedAt: Date; windowMinutes: number; closedA
 /** Passed: enough people were eligible, and enough of them answered in time. */
 export function drillResult(eligibleCount: number, responded: number): boolean {
   return eligibleCount >= READINESS.drillMinEligible && responded / eligibleCount >= READINESS.drillPassRate;
-}
-
-async function podPeople(podId: string) {
-  const pod = await prisma.pod.findUnique({
-    where: { id: podId },
-    include: {
-      owner: { select: { id: true, name: true, phone: true, phoneVerifiedAt: true, isEligible: true, nextEligible: true, bloodType: true } },
-      members: {
-        select: {
-          joinedAt: true,
-          user: { select: { id: true, name: true, phone: true, phoneVerifiedAt: true, isEligible: true, nextEligible: true, bloodType: true } },
-        },
-      },
-    },
-  });
-  if (!pod) return null;
-  const now = new Date();
-  const toMember = (u: (typeof pod.owner), joinedAt: Date): PodPerson & { bloodType: string | null } => ({
-    userId: u.id,
-    phone: u.phone,
-    phoneVerified: !!u.phoneVerifiedAt,
-    eligible: u.isEligible && (!u.nextEligible || u.nextEligible <= now),
-    joinedAt,
-    bloodType: u.bloodType,
-  });
-  return { pod, people: [toMember(pod.owner, pod.createdAt), ...pod.members.map((m) => toMember(m.user, m.joinedAt))] };
 }
 
 /** Blood types with a real request open right now. Anyone who could be asked to answer one is left alone. */
@@ -83,7 +59,7 @@ export async function startDrill(userId: string, podId: string): Promise<Result<
   });
   if (recipients.length < READINESS.drillMinEligible) {
     return fail(
-      `A drill needs at least ${READINESS.drillMinEligible} verified, eligible people who are free right now. You have ${recipients.length}.`,
+      `A drill needs at least ${READINESS.drillMinEligible} ready people (profile finished, able to give) who are free right now. You have ${recipients.length}.`,
       409,
     );
   }
@@ -113,6 +89,7 @@ export async function startDrill(userId: string, podId: string): Promise<Result<
       }),
   );
 
+  await recordTended(userId, "DRILL_STARTED");
   return { ok: true, id: drill.id, sent, eligible: recipients.length };
 }
 
@@ -136,6 +113,7 @@ export async function respondToDrill(userId: string, drillId: string): Promise<R
     prisma.drill.update({ where: { id: drillId }, data: { respondedCount: { increment: 1 } } }),
     prisma.pod.update({ where: { id: drill.podId }, data: { lastActivityAt: new Date() } }),
   ]);
+  await recordTended(userId, "DRILL_ANSWERED");
   return { ok: true, secondsToRespond: seconds };
 }
 

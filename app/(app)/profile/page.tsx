@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { ChevronRight, ClipboardCheck, Pencil, Bell, Wallet, HeartPulse, IdCard, MapPin, Shield, type LucideIcon } from "lucide-react";
+import { ChevronRight, ClipboardCheck, Pencil, Bell, Wallet, HeartPulse, IdCard, MapPin, Shield, Sprout, type LucideIcon } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { getPassportData } from "@/lib/passport-data";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
@@ -131,6 +131,7 @@ export default async function ProfilePage() {
             <LinkRow href="/medical-id" icon={IdCard} label="Medical ID" hint="A lock screen image with your blood group and contact" />
             <LinkRow href="/essentials" icon={Wallet} label="My Essentials" hint="Cards and documents you keep handy" />
             <LinkRow href="/passport/history" icon={IdCard} label="Donation history" />
+            <LinkRow href="/garden" icon={Sprout} label="Your Garden" hint="Your stage, your title, and how each Pod is doing" />
             <LinkRow href="/pod/ready" icon={Shield} label="Pod readiness" hint="Check your Pod would answer when it counts" />
             <LinkRow href="/get-started" icon={ClipboardCheck} label="Get started" hint="Your first steps, and a quick tour of the app" />
           </section>

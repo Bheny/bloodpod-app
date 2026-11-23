@@ -102,6 +102,9 @@ model User {
 
   // Pod readiness
   drillResponses DrillResponse[]
+  tendedWeeks    TendedWeek[]
+  // The person asked to be left off BloodPod's Garden leaders posters. Everyone else shows by first name only.
+  gardenHidden   Boolean @default(false)
 }
 
 enum Genotype {
@@ -773,6 +776,23 @@ model DrillResponse {
 
   @@unique([drillId, userId])
   @@index([userId])
+}
+
+/// One row per person per calendar week in which they did real upkeep for their Pods (the Garden's gardener title).
+/// Kept as a ledger of its own, so deleting or merging a Pod never takes earned weeks away.
+/// Never read by alerts, listing, search or joining.
+model TendedWeek {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// Monday of the week, midnight UTC.
+  weekStart DateTime @db.Date
+  /// The highest Garden stage reached that week (0 to 4).
+  stage     Int      @default(0)
+  kind      String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, weekStart])
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

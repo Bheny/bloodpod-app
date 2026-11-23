@@ -20,7 +20,7 @@ export function ReadinessCard({ podId, readiness, headingLevel = "h2" }: { podId
         {enough ? "Your Pod can run a drill" : `${needed - ready} more ${needed - ready === 1 ? "person" : "people"} to run a drill`}
       </Heading>
       <p className="mt-1 text-caption text-ink-muted">
-        {ready} verified, eligible {ready === 1 ? "person" : "people"} ready now. A drill needs {needed}.
+        {ready} {ready === 1 ? "person" : "people"} ready now (profile finished, able to give). A drill needs {needed}.
       </p>
 
       {lastDrill && (

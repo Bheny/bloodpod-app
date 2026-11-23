@@ -11,6 +11,13 @@ export const READINESS = {
   /** One drill per Pod per this many days. */
   drillCooldownDays: 7,
 
+  /**
+   * Who counts as ready: a finished profile and eligible to give. Turn this on once the app can verify phones
+   * with a texted code (nothing sets a verified phone yet, so with it on, nobody would count). People are
+   * still counted once by phone number either way.
+   */
+  requireVerifiedPhone: false,
+
   /** A member can start their own Pod once this many people they invited have joined and finished their profile. */
   spinoffMinInvitees: 5,
   /** Across everyone, new spin-off Pods per person per week. */

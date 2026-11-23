@@ -6,8 +6,6 @@ import { getDashboardData } from "@/lib/dashboard-data";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { EmergencySlot } from "@/components/dashboard/EmergencySlot";
 import { ReadinessCard } from "@/components/dashboard/ReadinessCard";
-import { GetStartedCard } from "@/components/get-started/GetStartedCard";
-import { getGetStartedState } from "@/lib/get-started-data";
 import { PassportMini } from "@/components/dashboard/PassportMini";
 import { PodCarousel } from "@/components/dashboard/PodCarousel";
 import { getNetworkSummary, getPodList } from "@/lib/pod-data";
@@ -26,6 +24,10 @@ import { getReceivedInvitations } from "@/lib/pod-invitations";
 import { PodInvitations } from "@/components/pod/PodInvitations";
 import { CareAsksBanner } from "@/components/care/CareAsksBanner";
 import { countCareAsksWaiting } from "@/lib/care";
+import { getGardenSummary } from "@/lib/garden-data";
+import { GardenStrip } from "@/components/garden/GardenStrip";
+import { GetStartedCard } from "@/components/get-started/GetStartedCard";
+import { getGetStartedState } from "@/lib/get-started-data";
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
@@ -34,13 +36,14 @@ export default async function DashboardPage() {
   if (user.labId) redirect("/lab");
   if (!user.onboardingComplete) redirect("/onboarding");
 
-  const [data, invitations, pods, allowance, network, careWaiting, getStarted] = await Promise.all([
+  const [data, invitations, pods, allowance, network, careWaiting, garden, getStarted] = await Promise.all([
     getDashboardData(user.id),
     getReceivedInvitations({ id: user.id, email: user.email }),
     getPodList(user.id),
     getPodAllowance(user.id),
     getNetworkSummary(user.id),
     countCareAsksWaiting(user.id),
+    getGardenSummary(user.id),
     getGetStartedState(user),
   ]);
   if (!data) redirect("/sign-in");
@@ -75,6 +78,8 @@ export default async function DashboardPage() {
             />
             <NetworkTile people={network.people} pods={network.pods} ready={network.ready} />
           </div>
+
+          <GardenStrip garden={garden} />
 
           <div className="grid grid-cols-2 gap-3">
             <ActionTile href="/passport/log" label="Log a donation" icon={Droplet} />
@@ -156,6 +161,8 @@ export default async function DashboardPage() {
                 </Link>
               </div>
             )}
+
+            <GardenStrip garden={garden} />
 
             <QuickActions />
 

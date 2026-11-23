@@ -9,6 +9,7 @@ import { AppHeader } from "@/components/layout/AppHeader";
 import { PodListCard } from "@/components/pod/PodListCard";
 import { CreatePodCard } from "@/components/pod/CreatePodCard";
 import { PodInvitations } from "@/components/pod/PodInvitations";
+import { GardenStripLoader } from "@/components/garden/GardenStripLoader";
 
 export default async function PodsPage() {
   const user = await getCurrentUser();
@@ -51,6 +52,8 @@ export default async function PodsPage() {
             </p>
           </div>
         )}
+
+        {summary.pods > 0 && <GardenStripLoader userId={user.id} />}
 
         <section>
           <h2 className="mb-2.5 px-1 text-body-sm font-bold text-ink lg:text-title">Your Pods</h2>
