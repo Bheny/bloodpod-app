@@ -13,6 +13,16 @@ function intFromEnv(name: string, fallback: number): number {
 export const CURRENCY = "GHS";
 
 export const PRICING = {
+  BASIC: {
+    pesewas: intFromEnv("BASIC_PLAN_PRICE_PESEWAS", 1000), // GH₵10 / month (to test: see PlanInterest first)
+    interval: "monthly" as const,
+    paystackPlanCode: process.env.PAYSTACK_BASIC_PLAN_CODE ?? null,
+  },
+  PLUS: {
+    pesewas: intFromEnv("PLUS_PLAN_PRICE_PESEWAS", 2500), // GH₵25 / month
+    interval: "monthly" as const,
+    paystackPlanCode: process.env.PAYSTACK_PLUS_PLAN_CODE ?? null,
+  },
   CARE: {
     pesewas: intFromEnv("CARE_POD_PRICE_PESEWAS", 3000), // GH₵30 / month
     interval: "monthly" as const,
@@ -23,6 +33,16 @@ export const PRICING = {
     interval: "one-off" as const,
     durationDays: 90,
   },
+} as const;
+
+/**
+ * Plus billed once a year. Two months free against twelve monthly payments, unless set otherwise.
+ * Display only for now: checkout for Plus is not open yet.
+ */
+export const PLUS_YEARLY = {
+  pesewas: intFromEnv("PLUS_PLAN_YEARLY_PRICE_PESEWAS", PRICING.PLUS.pesewas * 10),
+  interval: "yearly" as const,
+  paystackPlanCode: process.env.PAYSTACK_PLUS_YEARLY_PLAN_CODE ?? null,
 } as const;
 
 export type PaidPlan = Exclude<SubscriptionPlan, "FREE">;

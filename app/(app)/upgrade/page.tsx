@@ -1,23 +1,44 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Check, Clock } from "lucide-react";
+import { Check } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { prisma } from "@/lib/prisma";
 import { getCareSubscription } from "@/lib/billing";
 import { paymentsConfigured } from "@/lib/paystack";
-import { formatPesewas, PRICING } from "@/lib/pricing";
-import { FREE_OWNED_POD_LIMIT, PAID_OWNED_POD_LIMIT } from "@/lib/pod-limits";
 import { formatDate } from "@/lib/formatters";
+import { PACKAGES, PLAN_NAMES, PLAN_PROMISE, TIERS, type PlanLine } from "@/lib/plan-catalog";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { BillingButton } from "@/components/billing/BillingButton";
 import { InterestButton } from "@/components/billing/InterestButton";
+import { ComparisonTable } from "@/components/plans/ComparisonTable";
+import { PlusHeader } from "@/components/plans/PlusHeader";
 
-const COMING = [
-  { title: "A donor rota", body: "Line up who gives for each transfusion date, so the next one is never a scramble." },
-  { title: "Reminders", body: "Donors get a nudge before the day, so people turn up." },
-  { title: "A Blood Card for your loved one", body: "Their blood type and details, ready to share with family or a hospital." },
-  { title: "A medical ID", body: "The essentials a hospital needs in one place." },
-];
+const card = "rounded-3xl border-[0.5px] border-hairline bg-card p-5 shadow-raised lg:rounded-2xl lg:p-6";
+
+function Lines({ lines }: { lines: PlanLine[] }) {
+  return (
+    <ul className="mt-3 flex flex-col gap-2.5 text-body-sm text-ink">
+      {lines.map((l) => (
+        <li key={l.text} className="flex items-start gap-2.5">
+          <Check className="mt-0.5 size-4 shrink-0 text-success-strong" aria-hidden />
+          <span>
+            {l.text}
+            {l.soon && <span className="ml-2 rounded-full bg-surface px-2 py-0.5 text-label font-bold uppercase tracking-wide text-ink-muted">Soon</span>}
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function Price({ price, cadence }: { price: string; cadence: string }) {
+  return (
+    <p className="text-[28px] font-extrabold leading-none tracking-[-1px] text-ink">
+      {price}
+      <span className="ml-1 text-body-sm font-semibold tracking-normal text-ink-muted">{cadence}</span>
+    </p>
+  );
+}
 
 export default async function UpgradePage() {
   const user = await getCurrentUser();
@@ -26,63 +47,78 @@ export default async function UpgradePage() {
   if (user.labId) redirect("/lab");
   if (!user.onboardingComplete) redirect("/onboarding");
 
-  const [sub, interest] = await Promise.all([
+  const [careSub, interests] = await Promise.all([
     getCareSubscription(user.id),
-    prisma.planInterest.findUnique({ where: { userId_plan: { userId: user.id, plan: "CARE" } }, select: { id: true } }),
+    prisma.planInterest.findMany({ where: { userId: user.id }, select: { plan: true } }),
   ]);
-  const live = Boolean(sub && sub.status !== "EXPIRED" && sub.currentPeriodEnd > new Date());
-  const ready = paymentsConfigured();
-  const price = formatPesewas(PRICING.CARE.pesewas);
+  const wants = new Set<string>(interests.map((i) => i.plan));
+  const careLive = Boolean(careSub && careSub.status !== "EXPIRED" && careSub.currentPeriodEnd > new Date());
+  const paymentsReady = paymentsConfigured();
+  const carePkg = PACKAGES.find((p) => p.id === "CARE")!;
+  const casePkg = PACKAGES.find((p) => p.id === "CASE")!;
 
   return (
     <div>
-      <AppHeader title="Care plan" subtitle="Planning help for families who need blood again and again" />
+      <AppHeader title="Plans" subtitle="Tools for looking after the people you trust" />
 
       <div className="flex flex-col gap-3.5 px-3.5 pb-8 pt-4 lg:max-w-xl lg:px-0 lg:pt-0">
-        <section className="rounded-3xl border-[0.5px] border-hairline bg-card lg:rounded-2xl p-5 shadow-raised lg:p-6">
-          <h2 className="text-title font-extrabold tracking-[-0.4px] text-ink">What is the Care plan?</h2>
-          <p className="mt-2 text-body-sm leading-relaxed text-ink-mid">
-            Some families need blood again and again. A child with sickle cell, for example, may need a transfusion
-            every few weeks. Finding donors each time is stressful.
-          </p>
-          <p className="mt-2 text-body-sm leading-relaxed text-ink-mid">
-            The Care plan helps your family plan ahead, so the people who give are lined up before the day comes.
-          </p>
+        <p className="rounded-2xl bg-surface px-4 py-3 text-caption leading-relaxed text-ink-mid">{PLAN_PROMISE}</p>
 
-          <h3 className="mt-5 text-body-sm font-bold text-ink">You get today</h3>
-          <ul className="mt-2 flex flex-col gap-2.5 text-body-sm text-ink">
-            <li className="flex items-start gap-2.5">
-              <Check className="mt-0.5 size-4 shrink-0 text-[#1FA855]" />
-              Room for more circles: own up to {PAID_OWNED_POD_LIMIT} Pods, instead of {FREE_OWNED_POD_LIMIT}. Use one
-              for each group you look out for.
-            </li>
-          </ul>
-
-          <h3 className="mt-5 text-body-sm font-bold text-ink">Being built, and included when ready</h3>
-          <ul className="mt-2 flex flex-col gap-3">
-            {COMING.map((c) => (
-              <li key={c.title} className="flex items-start gap-2.5">
-                <Clock className="mt-0.5 size-4 shrink-0 text-ink-faint" />
+        {TIERS.map((tier) => (
+          <section key={tier.id} className={card} aria-labelledby={`plan-${tier.id}`}>
+            {tier.yearly ? (
+              <PlusHeader tier={tier} />
+            ) : (
+              <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-body-sm font-bold text-ink">{c.title}</p>
-                  <p className="text-caption leading-relaxed text-ink-muted">{c.body}</p>
+                  <h2 id={`plan-${tier.id}`} className="text-title font-extrabold tracking-[-0.4px] text-ink">
+                    {tier.name}
+                  </h2>
+                  <p className="mt-0.5 text-caption text-ink-muted">{tier.audience}</p>
                 </div>
-              </li>
-            ))}
-          </ul>
+                <Price price={tier.price} cadence={tier.cadence} />
+              </div>
+            )}
+            <Lines lines={tier.lines} />
+            <div className="mt-4">
+              {tier.id === "FREE" ? (
+                <p className="text-center text-body-sm font-bold text-ink-muted">{careLive ? "Always included" : "Your plan"}</p>
+              ) : (
+                <InterestButton
+                  plan={tier.id}
+                  planName={PLAN_NAMES[tier.id]}
+                  label={`Tell me when ${tier.name} opens`}
+                  initiallyInterested={wants.has(tier.id)}
+                  variant={tier.id === "PLUS" ? "primary" : "secondary"}
+                />
+              )}
+            </div>
+          </section>
+        ))}
 
-          <p className="mt-5 rounded-xl bg-surface px-3.5 py-3 text-caption leading-relaxed text-ink-mid">
-            One promise: alerts work the same way on every plan. The Care plan never changes who is alerted, in what
-            order, or whether you can join a Pod or send an alert.
-          </p>
-        </section>
+        <div className="px-1 pt-3">
+          <h2 className="text-title font-extrabold tracking-[-0.4px] text-ink">Free and Plus, side by side</h2>
+          <p className="mt-0.5 text-caption text-ink-muted">Everything on Free stays free.</p>
+        </div>
+        <ComparisonTable />
 
-        <section className="rounded-3xl border-[0.5px] border-hairline bg-card lg:rounded-2xl p-5 shadow-raised lg:p-6">
-          <p className="text-[32px] font-extrabold leading-none tracking-[-1px] text-ink">
-            {price}
-            <span className="ml-1 text-body-sm font-semibold tracking-normal text-ink-muted">/ month</span>
-          </p>
-          <p className="mt-1 text-caption text-ink-muted">
+        <div className="px-1 pt-3">
+          <h2 className="text-title font-extrabold tracking-[-0.4px] text-ink">Special packages</h2>
+          <p className="mt-0.5 text-caption text-ink-muted">For a patient who needs blood on a schedule. You don&apos;t need Plus.</p>
+        </div>
+
+        <section className={card} aria-labelledby="plan-CARE">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h3 id="plan-CARE" className="text-title font-extrabold tracking-[-0.4px] text-ink">
+                {carePkg.name}
+              </h3>
+              <p className="mt-0.5 text-caption text-ink-muted">{carePkg.audience}</p>
+            </div>
+            <Price price={carePkg.price} cadence={carePkg.cadence} />
+          </div>
+          <Lines lines={carePkg.lines} />
+          <p className="mt-3 text-caption text-ink-muted">
             Cancel any time and keep access until the month ends. See our{" "}
             <Link href="/terms#s7" className="font-bold underline underline-offset-2">
               payment and refund terms
@@ -91,39 +127,56 @@ export default async function UpgradePage() {
           </p>
 
           <div className="mt-4">
-            {live && sub ? (
+            {careLive && careSub ? (
               <div>
                 <p className="text-body-sm font-bold text-ink">
-                  {sub.status === "CANCELLED"
-                    ? `Cancelled. Your Care plan runs until ${formatDate(sub.currentPeriodEnd)}.`
-                    : sub.status === "PAST_DUE"
-                      ? `Your last payment didn't go through. Access runs until ${formatDate(sub.currentPeriodEnd)}.`
-                      : `Active. Renews around ${formatDate(sub.currentPeriodEnd)}.`}
+                  {careSub.status === "CANCELLED"
+                    ? `Cancelled. Your Care Pod access runs until ${formatDate(careSub.currentPeriodEnd)}.`
+                    : careSub.status === "PAST_DUE"
+                      ? `Your last payment didn't go through. Access runs until ${formatDate(careSub.currentPeriodEnd)}.`
+                      : `Active. Renews around ${formatDate(careSub.currentPeriodEnd)}.`}
                 </p>
-                {sub.paystackSubscriptionCode && (
+                <div className="mt-3">
+                  <Link href="/care" className="text-body-sm font-bold text-red-fg underline underline-offset-2">
+                    Open your Care Pods
+                  </Link>
+                </div>
+                {careSub.paystackSubscriptionCode && (
                   <div className="mt-3">
                     <BillingButton endpoint="/api/billing/manage" variant="quiet">
                       Update card or cancel
                     </BillingButton>
                   </div>
                 )}
-                {sub.status !== "ACTIVE" && ready && (
+                {careSub.status !== "ACTIVE" && paymentsReady && (
                   <div className="mt-3">
                     <BillingButton endpoint="/api/billing/checkout">Subscribe again</BillingButton>
                   </div>
                 )}
               </div>
-            ) : ready ? (
+            ) : paymentsReady ? (
               <>
-                <BillingButton endpoint="/api/billing/checkout">Subscribe for {price} / month</BillingButton>
-                <p className="mt-2 text-center text-caption text-ink-muted">
-                  Pay with mobile money or card through Paystack.
-                </p>
+                <BillingButton endpoint="/api/billing/checkout">Subscribe for {carePkg.price} / month</BillingButton>
+                <p className="mt-2 text-center text-caption text-ink-muted">Pay with mobile money or card through Paystack.</p>
               </>
             ) : (
-              <InterestButton label={`Subscribe for ${price} / month`} initiallyInterested={Boolean(interest)} />
+              <InterestButton plan="CARE" planName={PLAN_NAMES.CARE} label={`Subscribe for ${carePkg.price} / month`} initiallyInterested={wants.has("CARE")} />
             )}
           </div>
+        </section>
+
+        <section className={card} aria-labelledby="plan-CASE">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h3 id="plan-CASE" className="text-title font-extrabold tracking-[-0.4px] text-ink">
+                {casePkg.name}
+              </h3>
+              <p className="mt-0.5 text-caption text-ink-muted">{casePkg.audience}</p>
+            </div>
+            <Price price={casePkg.price} cadence={casePkg.cadence} />
+          </div>
+          <Lines lines={casePkg.lines} />
+          <p className="mt-4 rounded-xl bg-surface px-3.5 py-3 text-center text-body-sm font-bold text-ink-muted">Coming soon</p>
         </section>
       </div>
     </div>
