@@ -560,8 +560,10 @@ model RotaEntry {
 
 enum SubscriptionPlan {
   FREE
-  CARE
-  CASE
+  BASIC // tools for one person looking after a circle
+  PLUS // the same, for a whole family
+  CARE // add-on: recurring transfusion planning, per patient
+  CASE // add-on: one planned event, 90 days
 }
 
 enum SubscriptionStatus {
