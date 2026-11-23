@@ -33,6 +33,7 @@ const SECTIONS: LegalSection[] = [
       "Donating is voluntary and unpaid. You must never sell blood, or ask or pay anyone to donate.",
       "You are responsible for judging whether you are well enough and eligible to donate, and for answering the hospital's screening questions honestly.",
       "A donor may say no to any request at any time, without giving a reason.",
+      "Everyone on BloodPod makes the same promise: I will never ask for, offer or accept payment for donating blood.",
     ],
   },
   {
@@ -44,6 +45,7 @@ const SECTIONS: LegalSection[] = [
       "Only invite people who would want to be in your Pod.",
       "A Pod holds up to 20 people, and the number of Pods one person can own depends on their plan.",
       "Pod alerts work the same way on every plan.",
+      "A Pod owner can run a practice drill: a clearly marked alert to their own Pod to check it would answer. A drill is never a real emergency, and answering one is optional.",
     ],
   },
   {
