@@ -12,6 +12,8 @@ export type StartState = {
   /** Which answer they picked on the "last donated" question, e.g. "m3" or "exact". */
   donatedChoice?: string | null;
   city: string | null;
+  /** What they said matters to them (ids from lib/intents.ts), in the order they picked. */
+  intents?: string[];
   latitude?: number;
   longitude?: number;
 };

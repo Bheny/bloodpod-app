@@ -6,7 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, m } from "framer-motion";
 import { ArrowLeft, BellRing, CheckCircle2, Clock, MapPin } from "lucide-react";
 import { BloodTypeHelp } from "@/components/shared/BloodTypeHelp";
-import { IntroStory } from "@/components/start/IntroStory";
+import { AffirmStep, IntentStep, WelcomeStep } from "@/components/start/OpeningSteps";
+import { StoryPanel } from "@/components/start/StoryPanel";
 import { Logo } from "@/components/ui/Logo";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -30,10 +31,10 @@ const TYPES: { label: string; value: BloodType; note?: string }[] = [
   { label: "AB−", value: "AB_NEG" },
 ];
 
-// Screen 0 is the "be ready" pitch. Screens 1-3 are the questions, 4 is the Blood Card.
-// Only 1-4 get progress dots.
-const CARD_STEP = 4;
-const DOTS = 4;
+// 0 welcome, 1 what matters to you, 2 "first step" screen, 3-5 the three questions, 6 the Blood Card.
+// Only 1-6 get progress dots.
+const CARD_STEP = 6;
+const DOTS = 6;
 const ALL_TYPES = TYPES.map((t) => t.value);
 
 /** Who this blood type can give to, and who can give to it, from the real compatibility table. */
@@ -167,7 +168,11 @@ export function StartFlow({ signedIn = false }: { signedIn?: boolean }) {
   if (!loaded) return <div className="force-light min-h-screen bg-card" />;
 
   return (
-    <div className="force-light mx-auto flex h-dvh w-full max-w-[480px] flex-col bg-card px-6 py-5">
+    <div className="force-light lg:flex lg:min-h-dvh lg:items-center lg:justify-center lg:bg-surface lg:px-6 lg:py-8">
+    <div className="mx-auto flex h-dvh w-full max-w-[480px] flex-col bg-card lg:grid lg:h-[min(700px,calc(100dvh-4rem))] lg:max-w-[1000px] lg:grid-cols-[400px_minmax(0,1fr)] lg:overflow-hidden lg:rounded-3xl lg:border-[0.5px] lg:border-hairline lg:shadow-floating">
+      <StoryPanel step={step} />
+      <div className="flex min-h-0 flex-1 flex-col px-6 py-5 lg:px-14 lg:py-9">
+      <div className="mx-auto flex min-h-0 w-full flex-1 flex-col lg:max-w-[440px]">
       <div className="flex items-center justify-between">
         {step > 0 ? (
           <button
@@ -211,7 +216,7 @@ export function StartFlow({ signedIn = false }: { signedIn?: boolean }) {
       </div>
 
       {/* You, in your network: fills in as each answer is given, so every answer visibly changes something. */}
-      {step >= 1 && step <= 3 && (
+      {step >= 3 && step <= 5 && (
         <div className="mt-4 flex items-center gap-3 rounded-2xl bg-surface px-3.5 py-3" aria-live="polite">
           <span
             className={cn(
@@ -252,9 +257,15 @@ export function StartFlow({ signedIn = false }: { signedIn?: boolean }) {
           transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
           className="flex min-h-0 flex-1 flex-col pt-6"
         >
-          {step === 0 && <IntroStory onDone={next} signedIn={signedIn} />}
+          {step === 0 && <WelcomeStep onNext={next} />}
 
           {step === 1 && (
+            <IntentStep chosen={state.intents ?? []} onChange={(intents) => update({ intents })} onNext={next} />
+          )}
+
+          {step === 2 && <AffirmStep chosen={state.intents ?? []} onNext={next} />}
+
+          {step === 3 && (
             <>
               <div className="min-h-0 flex-1 overflow-y-auto">
                 <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">Step 1 of 3</p>
@@ -337,7 +348,7 @@ export function StartFlow({ signedIn = false }: { signedIn?: boolean }) {
             </>
           )}
 
-          {step === 2 && (
+          {step === 4 && (
             <>
               <div className="min-h-0 flex-1 overflow-y-auto">
                 <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">Step 2 of 3</p>
@@ -438,7 +449,7 @@ export function StartFlow({ signedIn = false }: { signedIn?: boolean }) {
             </>
           )}
 
-          {step === 3 && (
+          {step === 5 && (
             <>
               <div className="min-h-0 flex-1 overflow-y-auto">
                 <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">Step 3 of 3</p>
@@ -476,7 +487,7 @@ export function StartFlow({ signedIn = false }: { signedIn?: boolean }) {
             </>
           )}
 
-          {step === 4 && (
+          {step === 6 && (
             <>
               <div className="min-h-0 flex-1 overflow-y-auto">
                 <p className="text-[11px] font-bold uppercase tracking-[2px] text-red-fg">You&apos;re in</p>
@@ -589,6 +600,9 @@ export function StartFlow({ signedIn = false }: { signedIn?: boolean }) {
           )}
         </m.div>
       </AnimatePresence>
+      </div>
+      </div>
+    </div>
     </div>
   );
 }

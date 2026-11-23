@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Mail, Share2, RefreshCw } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { InviteQr } from "@/components/invite/InviteQr";
 
 function WhatsAppIcon() {
   return (
@@ -162,6 +163,8 @@ export function InviteOptions({
           </button>
         </div>
       </div>
+
+      <InviteQr inviteUrl={inviteUrl} inviteCode={inviteCode} podName={podName} />
 
       <p className="mt-5 text-[11px] font-bold uppercase tracking-wide text-ink-muted">Share via</p>
 

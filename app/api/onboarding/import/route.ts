@@ -7,6 +7,7 @@ import { isBloodType } from "@/lib/blood-type";
 import { computeEligibility } from "@/lib/eligibility";
 import { recalculatePodStrength } from "@/lib/pod-strength";
 import { canonicalCity } from "@/lib/nearest-city";
+import { INTENT_IDS } from "@/lib/intents";
 
 const schema = z.object({
   bloodType: z.string().refine(isBloodType, "Invalid blood type").nullable().optional(),
@@ -14,6 +15,7 @@ const schema = z.object({
   neverDonated: z.boolean(),
   lastDonated: z.string().nullable().optional(),
   city: z.string().trim().min(2).max(60),
+  intents: z.array(z.string().refine((id) => INTENT_IDS.includes(id))).max(8).optional(),
   latitude: z.number().min(-90).max(90).optional(),
   longitude: z.number().min(-180).max(180).optional(),
 });
@@ -48,6 +50,8 @@ export async function PUT(request: Request) {
       nextEligible,
       isEligible,
       donationInfoAt: new Date(),
+      // Only written when they answered, so a later save never wipes an earlier answer.
+      ...(v.intents ? { intents: [...new Set(v.intents)] } : {}),
       city: canonicalCity(v.city),
       latitude: v.latitude,
       longitude: v.longitude,

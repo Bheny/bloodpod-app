@@ -71,7 +71,8 @@ export function OnboardingShell(props: OnboardingShellProps) {
   const showBack = dotPosition > 1 || (dotPosition === 1 && !skipped.includes(1));
 
   return (
-    <div className="relative mx-auto flex h-dvh w-full max-w-[480px] flex-col">
+    <div className="lg:flex lg:min-h-dvh lg:items-center lg:justify-center lg:px-6 lg:py-8">
+    <div className="relative mx-auto flex h-dvh w-full max-w-[480px] flex-col lg:h-[min(760px,calc(100dvh-4rem))] lg:max-w-[520px] lg:overflow-hidden lg:rounded-3xl lg:border-[0.5px] lg:border-hairline lg:bg-card lg:shadow-floating">
       {showDots && (
         <div
           className="absolute inset-x-0 top-3 z-10 flex justify-center gap-1.5"
@@ -148,6 +149,7 @@ export function OnboardingShell(props: OnboardingShellProps) {
           {step === 7 && <Step7Alerts />}
         </m.div>
       </AnimatePresence>
+    </div>
     </div>
   );
 }

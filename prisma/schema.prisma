@@ -18,6 +18,8 @@ model User {
   location     String?
   avatarUrl    String?
   isPublic     Boolean    @default(false)
+  // What they said matters to them at sign-up (ids from lib/intents.ts). Empty when not asked.
+  intents      String[]   @default([])
   isEligible   Boolean    @default(true)
   isAvailable  Boolean    @default(false)
   lastDonated  DateTime?
