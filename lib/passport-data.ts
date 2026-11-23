@@ -9,7 +9,7 @@ export async function getPassportData(userId: string) {
     where: { id: userId },
     include: {
       donations: { orderBy: { donatedAt: "desc" } },
-      _count: { select: { podMemberships: true } },
+      _count: { select: { podMemberships: true, ownedPods: true } },
     },
   });
 
@@ -36,6 +36,7 @@ export async function getPassportData(userId: string) {
       city: user.city,
       avatarUrl: user.avatarUrl,
       podsJoined: user._count.podMemberships,
+      podCount: user._count.podMemberships + user._count.ownedPods,
     },
     passport: {
       tier,

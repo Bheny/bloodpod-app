@@ -8,7 +8,7 @@ import { getOpenEmergencies } from "@/lib/emergencies";
 export async function getDashboardData(userId: string) {
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    include: { _count: { select: { podMemberships: true } } },
+    include: { _count: { select: { podMemberships: true, ownedPods: true } } },
   });
   if (!user) return null;
 
@@ -33,6 +33,7 @@ export async function getDashboardData(userId: string) {
       onboardingComplete: user.onboardingComplete,
       plan: user.plan,
       podsJoined: user._count.podMemberships,
+      podCount: user._count.podMemberships + user._count.ownedPods,
     },
     pod: pod
       ? {

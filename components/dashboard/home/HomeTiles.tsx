@@ -16,7 +16,7 @@ export function TileLabel({ icon: Icon, children }: { icon: LucideIcon; children
   );
 }
 
-export function BloodCardTile({ bloodType, verified }: { bloodType: string | null; verified: boolean }) {
+export function BloodCardTile({ bloodType, verified, podCount = 0 }: { bloodType: string | null; verified: boolean; podCount?: number }) {
   if (!bloodType) {
     return (
       <Link href="/profile/edit" className={tileClass}>
@@ -34,7 +34,10 @@ export function BloodCardTile({ bloodType, verified }: { bloodType: string | nul
     <Link href="/passport" className={tileClass}>
       <TileLabel icon={CreditCard}>Blood Card</TileLabel>
       <p className="mt-3 text-[48px] font-extrabold leading-none tracking-[-2px] text-red-fg">{bloodType}</p>
-      <p className="mt-auto flex items-center gap-1 text-caption font-semibold text-ink-muted">
+      <p className="mt-auto text-caption font-semibold text-ink">
+        {podCount} {podCount === 1 ? "Pod" : "Pods"}
+      </p>
+      <p className="flex items-center gap-1 text-caption font-semibold text-ink-muted">
         {verified ? (
           <>
             <BadgeCheck className="size-3.5 text-success-strong" /> <span className="text-success-strong">Lab-verified</span>

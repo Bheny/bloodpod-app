@@ -128,6 +128,7 @@ export default async function ProfilePage() {
           <section className="flex flex-col gap-2.5">
             <SectionLabel>Your details</SectionLabel>
             <LinkRow href="/medical-history" icon={HeartPulse} label="Medical history" hint="Allergies, genotype, emergency contact" />
+            <LinkRow href="/medical-id" icon={IdCard} label="Medical ID" hint="A lock screen image with your blood group and contact" />
             <LinkRow href="/essentials" icon={Wallet} label="My Essentials" hint="Cards and documents you keep handy" />
             <LinkRow href="/passport/history" icon={IdCard} label="Donation history" />
             <LinkRow href="/pod/ready" icon={Shield} label="Pod readiness" hint="Check your Pod would answer when it counts" />

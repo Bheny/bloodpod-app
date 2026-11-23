@@ -53,7 +53,7 @@ export default async function PassportPage() {
               city={data.user.city}
               bloodType={data.user.bloodType}
               donationCount={passport.donationCount}
-              podCount={data.user.podsJoined}
+              podCount={data.user.podCount}
               isEligible={passport.isEligible}
               nextEligible={passport.nextEligible}
               verificationStatus={passport.verificationStatus}

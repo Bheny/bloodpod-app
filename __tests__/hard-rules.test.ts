@@ -35,8 +35,52 @@ const paid: EntitlementSubject = {
 describe("hard rules: no plan gates alerts, listing or Pod joining", () => {
   it("only planning tools are features", () => {
     const all = new Set(Object.values(PLAN_FEATURES).flat());
-    const allowed: Feature[] = ["care_dashboard", "donor_rota", "family_blood_card", "medical_id", "donor_reminders"];
+    // Adding a feature here is a deliberate product decision: it must be a tool, never reach.
+    const allowed: Feature[] = [
+      "care_dashboard",
+      "donor_rota",
+      "family_blood_card",
+      "medical_id",
+      "donor_reminders",
+      "request_tracker",
+      "saved_searches",
+      "pod_reminders",
+      "donation_export",
+      "dependant_cards",
+      "family_contacts_notify",
+      "second_manager",
+    ];
     expect([...all].sort()).toEqual([...allowed].sort());
+  });
+
+  it("Plus includes everything in Basic, and Care and Case never need either", () => {
+    for (const f of PLAN_FEATURES.BASIC) expect(PLAN_FEATURES.PLUS).toContain(f);
+    expect(PLAN_FEATURES.PLUS.length).toBeGreaterThan(PLAN_FEATURES.BASIC.length);
+    // Care and Case planning tools are not part of Basic or Plus: they are separate packages.
+    for (const f of ["care_dashboard", "donor_rota", "donor_reminders"] as const) {
+      expect(PLAN_FEATURES.BASIC).not.toContain(f);
+      expect(PLAN_FEATURES.PLUS).not.toContain(f);
+    }
+    expect(PLAN_FEATURES.CARE).toEqual(PLAN_FEATURES.CASE);
+  });
+
+  it("a plan only ever adds tools: Free has none, and the same plan gives the same tools to everyone", () => {
+    expect(PLAN_FEATURES.FREE).toEqual([]);
+    const live = (plan: "BASIC" | "PLUS"): EntitlementSubject => ({
+      subscriptions: [{ plan, status: "ACTIVE", currentPeriodEnd: new Date(Date.now() + 864e5) }],
+    });
+    expect(can(live("BASIC"), "request_tracker")).toBe(true);
+    expect(can(live("BASIC"), "dependant_cards")).toBe(false);
+    expect(can(live("PLUS"), "dependant_cards")).toBe(true);
+    expect(can(live("PLUS"), "care_dashboard")).toBe(false);
+    expect(can(free, "request_tracker")).toBe(false);
+  });
+
+  it("an ended plan stops giving tools", () => {
+    const ended: EntitlementSubject = {
+      subscriptions: [{ plan: "PLUS", status: "CANCELLED", currentPeriodEnd: new Date(Date.now() - 864e5) }],
+    };
+    expect(can(ended, "dependant_cards")).toBe(false);
   });
 
   it("no feature name refers to alerts, priority, listing or joining", () => {
@@ -69,7 +113,7 @@ describe("hard rules: no plan gates alerts, listing or Pod joining", () => {
   it("nothing outside care and billing code gates on can()", () => {
     const offenders = files.filter((f) => {
       if (f === "lib/entitlements.ts") return false;
-      if (/^(app\/(\(app\)\/)?(care|settings|plans)|app\/api\/(care|paystack|billing)|lib\/(care|billing|paystack|entitlements))/.test(f)) return false;
+      if (/^(app\/(\(app\)\/)?(care|settings|plans)|app\/api\/(care|paystack|billing|cron\/care-reminders)|lib\/(care|billing|paystack|entitlements|plan-access))/.test(f)) return false;
       return /\bcan\(/.test(read(join(ROOT, f)));
     });
     expect(offenders).toEqual([]);

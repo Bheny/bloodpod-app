@@ -9,6 +9,7 @@ const PROTECTED_PREFIXES = [
   "/discover",
   "/services",
   "/upgrade",
+  "/care",
   "/profile",
   "/essentials",
   "/medical-history",

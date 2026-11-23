@@ -24,6 +24,8 @@ import { LogoMark } from "@/components/ui/Logo";
 import { isAdminEmail } from "@/lib/admin/auth";
 import { getReceivedInvitations } from "@/lib/pod-invitations";
 import { PodInvitations } from "@/components/pod/PodInvitations";
+import { CareAsksBanner } from "@/components/care/CareAsksBanner";
+import { countCareAsksWaiting } from "@/lib/care";
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
@@ -32,12 +34,13 @@ export default async function DashboardPage() {
   if (user.labId) redirect("/lab");
   if (!user.onboardingComplete) redirect("/onboarding");
 
-  const [data, invitations, pods, allowance, network] = await Promise.all([
+  const [data, invitations, pods, allowance, network, careWaiting] = await Promise.all([
     getDashboardData(user.id),
     getReceivedInvitations({ id: user.id, email: user.email }),
     getPodList(user.id),
     getPodAllowance(user.id),
     getNetworkSummary(user.id),
+    countCareAsksWaiting(user.id),
   ]);
   if (!data) redirect("/sign-in");
 
@@ -56,9 +59,10 @@ export default async function DashboardPage() {
           <HomeHero initialEmergencies={data.emergencies} pods={pods} allowance={allowance} firstName={firstName} />
 
           {invitations.length > 0 && <PodInvitations invitations={invitations} />}
+          <CareAsksBanner waiting={careWaiting} />
 
           <div className="grid grid-cols-2 gap-3">
-            <BloodCardTile bloodType={data.user.bloodType} verified={data.passport?.verificationStatus === "VERIFIED"} />
+            <BloodCardTile bloodType={data.user.bloodType} verified={data.passport?.verificationStatus === "VERIFIED"} podCount={data.user.podCount} />
             <NextDonationTile
               isEligible={data.user.isEligible}
               nextEligible={data.user.nextEligible}
@@ -109,6 +113,7 @@ export default async function DashboardPage() {
             <EmergencySlot initial={data.emergencies} bloodType={data.user.bloodType} />
 
             {invitations.length > 0 && <PodInvitations invitations={invitations} />}
+            <CareAsksBanner waiting={careWaiting} />
 
             <div className={showNextSteps ? "grid grid-cols-2 gap-6" : undefined}>
               <ReadinessCard
@@ -133,7 +138,7 @@ export default async function DashboardPage() {
               city={data.user.city}
               bloodType={data.user.bloodType}
               donationCount={data.passport?.donationCount ?? 0}
-              podCount={data.user.podsJoined}
+              podCount={data.user.podCount}
               isEligible={data.passport?.isEligible ?? true}
               nextEligible={data.passport?.nextEligible ?? null}
               verificationStatus={data.passport?.verificationStatus ?? "UNVERIFIED"}
