@@ -95,10 +95,8 @@ model User {
   requestsSent     DonorRequest[] @relation("RequestsSent")
   requestsReceived DonorRequest[] @relation("RequestsReceived")
 
-  // Captain programme
-  drillResponses    DrillResponse[]
-  captainStatus     CaptainStatus?
-  captainPromotions CaptainPromotion[]
+  // Pod readiness
+  drillResponses DrillResponse[]
 }
 
 enum Genotype {
@@ -122,7 +120,7 @@ model Pod {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
 
-  // Captain programme. A Pod that grew out of another one points back at it. Set once, never changed.
+  // A Pod that grew out of another one (started from someone's invites) points back at it. Set once, never changed.
   parentPodId     String?
   parent          Pod?      @relation("PodLineage", fields: [parentPodId], references: [id], onDelete: SetNull)
   children        Pod[]     @relation("PodLineage")
@@ -735,8 +733,8 @@ model PlanInterest {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Captain programme. Recognition, tools and access only: nothing here pays anyone,
-// and nothing here changes who is alerted or in what order.
+// Pod readiness. A leader sends a practice alert to their own Pod to see it would answer.
+// Nothing here pays anyone, ranks anyone, or changes who is alerted or in what order.
 // ─────────────────────────────────────────────────────────────────────────────
 
 /// A practice alert a Pod leader sends to their own Pod. Never a real emergency.
@@ -770,64 +768,6 @@ model DrillResponse {
 
   @@unique([drillId, userId])
   @@index([userId])
-}
-
-/// One row per leader: the level their best Pod computes to, what is shown, and the lapse clock.
-model CaptainStatus {
-  id               String    @id @default(cuid())
-  userId           String    @unique
-  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  podId            String?
-  // What the rules say today (null = Pod Starter).
-  level            Int?
-  computedAt       DateTime  @default(now())
-  // The level the badge shows. Moves up only on approval.
-  approvedLevel    Int?
-  // Set when the rules stop being met. Cleared when they are met again.
-  lapseStartedAt   DateTime?
-  lapseWarnedAt    DateTime?
-  lapsedAt         DateTime?
-  pledgeAcceptedAt DateTime?
-  updatedAt        DateTime  @updatedAt
-}
-
-enum PromotionStatus {
-  PENDING
-  APPROVED
-  REJECTED
-}
-
-model CaptainPromotion {
-  id             String          @id @default(cuid())
-  userId         String
-  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  podId          String
-  toLevel        Int
-  status         PromotionStatus @default(PENDING)
-  // What the rules saw when it was created, so a decision can be checked later.
-  evidence       Json
-  flags          Json
-  autoApproved   Boolean         @default(false)
-  decidedBy      String?
-  decisionReason String?
-  createdAt      DateTime        @default(now())
-  decidedAt      DateTime?
-
-  @@index([status, createdAt])
-  @@index([userId])
-}
-
-model CaptainAuditLog {
-  id         String   @id @default(cuid())
-  actorEmail String
-  userId     String
-  action     String
-  fromLevel  Int?
-  toLevel    Int?
-  reason     String
-  createdAt  DateTime @default(now())
-
-  @@index([userId, createdAt])
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

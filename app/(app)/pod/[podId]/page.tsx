@@ -13,10 +13,8 @@ import { PodGarden } from "@/components/pod/PodGarden";
 import { InviteCard } from "@/components/pod/InviteCard";
 import { MemberList } from "@/components/pod/MemberList";
 import { PodReadyCard } from "@/components/dashboard/PodReadyCard";
-import { isCaptainEnabled } from "@/lib/captain/flag";
-import { getBadgeFor, getPodProgress } from "@/lib/captain/view";
-import { CaptainBadge } from "@/components/captain/CaptainBadge";
-import { StarterCard } from "@/components/captain/StarterCard";
+import { getPodReadiness } from "@/lib/readiness/drill";
+import { ReadinessCard } from "@/components/readiness/ReadinessCard";
 
 export default async function PodDetailPage({ params }: { params: Promise<{ podId: string }> }) {
   const { podId } = await params;
@@ -34,11 +32,8 @@ export default async function PodDetailPage({ params }: { params: Promise<{ podI
   ]);
   const dependable = dependableMap.get(pod.id);
 
-  // Captain programme: nothing below runs, and nothing shows, unless the flag is on.
-  const captainOn = await isCaptainEnabled();
-  const [captain, captainBadge] = captainOn
-    ? await Promise.all([isOwner ? getPodProgress(pod.id) : null, getBadgeFor(pod.ownerId)])
-    : [null, null];
+  // Every Pod leader can check their Pod is ready. Members do not see this card.
+  const readiness = isOwner ? await getPodReadiness(pod.id) : null;
   const hasOtherMembers = pod.members.length > 1;
   const readyCount = pod.members.filter((m) => m.isEligible).length;
   const inviteHref = `/pod/${pod.id}/invite`;
@@ -56,7 +51,6 @@ export default async function PodDetailPage({ params }: { params: Promise<{ podI
         }
         actions={
           <>
-            {captainBadge && <CaptainBadge title={captainBadge.title} />}
             {isOwner && (
               <Link
                 href={inviteHref}
@@ -121,9 +115,9 @@ export default async function PodDetailPage({ params }: { params: Promise<{ podI
         </div>
 
         <div className="contents lg:sticky lg:top-8 lg:flex lg:flex-col lg:gap-6">
-          {captain && (
+          {readiness && (
             <div className="order-1 lg:order-0">
-              <StarterCard podId={pod.id} result={captain.result} />
+              <ReadinessCard podId={pod.id} readiness={readiness} />
             </div>
           )}
           <div className="order-1 lg:order-0">
