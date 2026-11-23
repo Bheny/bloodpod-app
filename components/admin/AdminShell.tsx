@@ -6,12 +6,12 @@ import { AnimatePresence, m } from "framer-motion";
 import { usePathname } from "next/navigation";
 import {
   Activity,
+  BarChart3,
   Building2,
   FlaskConical,
   LayoutDashboard,
   Menu,
   Network,
-  ShieldCheck,
   Siren,
   Trophy,
   Users,
@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 const NAV: { href: string; label: string; icon: LucideIcon; badge?: "hospitals" | "emergencies" }[] = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
   { href: "/admin/users", label: "Users", icon: Users },
+  { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/network", label: "Network", icon: Network },
   { href: "/admin/leaderboard", label: "Garden leaders", icon: Trophy },
   { href: "/admin/hospitals", label: "Hospitals", icon: Building2, badge: "hospitals" },

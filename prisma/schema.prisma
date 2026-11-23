@@ -823,3 +823,33 @@ model DonorRequest {
   @@index([donorId, status])
   @@index([seekerId, createdAt])
 }
+
+// First-party, cookieless-style usage analytics (no IP, no query strings, no third party).
+// One row per page view. visitorId is a random id the browser makes for itself; it is not
+// linked to a person unless they are signed in (userId). Read only from the admin Analytics page.
+model PageView {
+  id        String   @id @default(cuid())
+  at        DateTime @default(now())
+  visitorId String
+  sessionId String
+  // Set from the signed-in session on the server. Plain column, no foreign key, so history can outlive an account.
+  userId    String?
+  // Normalised: ids and tokens are replaced, the query string is never stored.
+  path      String
+  // True for the first page view of a visit: only these carry a source.
+  entry     Boolean  @default(false)
+  // "google.com", "whatsapp", a utm_source, or null for direct.
+  source    String?
+  campaign  String?
+  // mobile | tablet | desktop
+  device    String
+  // Opened from the home screen (an installed PWA).
+  installed Boolean  @default(false)
+  country   String?
+  city      String?
+
+  @@index([at])
+  @@index([visitorId, at])
+  @@index([userId, at])
+  @@index([path, at])
+}

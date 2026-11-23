@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
+import { Tracker } from "@/components/analytics/Tracker";
 import { Inter } from "next/font/google";
 import { LazyMotion, domAnimation } from "framer-motion";
 import "./globals.css";
@@ -41,6 +42,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-surface text-ink">
         <ServiceWorkerRegister />
+        <Tracker />
         <LazyMotion features={domAnimation}>{children}</LazyMotion>
       </body>
     </html>

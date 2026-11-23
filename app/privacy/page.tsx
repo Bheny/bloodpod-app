@@ -36,6 +36,7 @@ const SECTIONS: LegalSection[] = [
       "Bookings: tests you ask laboratories for, the day you prefer, and any note you write.",
       "Payments: the plan, amount and reference of a payment. Paystack keeps your card or mobile money details. We never see them.",
       "Device details: a notification token if you turn on alerts, and basic technical logs, such as your device type and errors.",
+      "How BloodPod is used: which pages are opened, on what kind of device, from roughly where, and how the visit began. See \"Counting visits\" below.",
     ],
   },
   {
@@ -49,6 +50,19 @@ const SECTIONS: LegalSection[] = [
       "take payments for the Care plan and keep payment records;",
       "keep BloodPod safe, fix problems and prevent misuse;",
       "tell you about important changes.",
+    ],
+  },
+  {
+    title: "Counting visits",
+    body: [
+      "To learn what works and what does not, BloodPod keeps its own simple count of visits. We do not use Google Analytics or any other third party for this, and nothing about it is shared or sold.",
+    ],
+    bullets: [
+      "What we record: the page opened (never the web address after the question mark), a random number your browser makes up for itself, the kind of device, your country and city as the host works them out, and where the visit came from, such as a link or a search.",
+      "What we do not record: your IP address, anything you type, or the names of private links such as invitations.",
+      "If you are signed in, a page view is tied to your account so we can see how members use the app. When you are not, it is tied only to the random number.",
+      "If your browser sends Do Not Track or Global Privacy Control, we do not count you at all.",
+      "We keep page views for 13 months, then delete them.",
     ],
   },
   {
