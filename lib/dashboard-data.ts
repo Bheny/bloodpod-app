@@ -16,7 +16,7 @@ export async function getDashboardData(userId: string) {
     getPodData(userId),
     getPassportData(userId),
     getRecentActivity(userId, 5),
-    getOpenEmergencies(userId, user.bloodType),
+    getOpenEmergencies(userId),
     prisma.pushSubscription.count({ where: { userId } }),
   ]);
 

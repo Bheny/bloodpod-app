@@ -111,7 +111,6 @@ export function emailWelcome(p: { to: string; userId: string; name: string | nul
 }
 
 // ── Emergencies ─────────────────────────────────────────────────────────────
-// Ready to use once requests can be created ("Request blood" is still Coming soon).
 
 export function emailEmergencyAlert(p: {
   to: string;
@@ -140,7 +139,7 @@ export function emailEmergencyAlert(p: {
         { label: "Blood type", value: p.bloodType },
         { label: "Where", value: [p.facility, p.location].filter(Boolean).join(", ") },
       ],
-      cta: { label: "Yes, I can help", url: appUrl("/dashboard/request") },
+      cta: { label: "Yes, I can help", url: appUrl(`/dashboard/alert/${p.requestId}`) },
     },
     `emergency-alert/${p.requestId}/${p.to}`,
   );

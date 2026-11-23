@@ -173,7 +173,7 @@ export function HomeHero({
                 </span>
               </p>
               <p className="mt-2 text-[26px] font-extrabold leading-[1.1] tracking-[-0.8px]">
-                {top.bloodType} needed at {top.facility}
+                {top.isTest ? "Test: " : ""}{top.bloodType} needed at {top.facility}
               </p>
               <p className="mt-2 text-caption leading-snug text-white/85">
                 {[top.location, top.requesterName ? `Requested by ${top.requesterName}` : null].filter(Boolean).join(" · ")}
@@ -181,10 +181,10 @@ export function HomeHero({
               </p>
               <div className="mt-4 grid grid-cols-2 gap-2.5">
                 <Link
-                  href="/dashboard/request"
+                  href={`/dashboard/alert/${top.id}`}
                   className="rounded-full bg-white py-3 text-center text-body-sm font-bold text-red-dark transition-transform active:scale-[0.98]"
                 >
-                  Yes, I can help
+                  {top.myAnswer === "COMING" ? "You are coming" : "Answer now"}
                 </Link>
                 <button
                   type="button"

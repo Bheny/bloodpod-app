@@ -4,6 +4,7 @@ import { READINESS } from "@/lib/readiness-config";
 import { countedMembers } from "@/lib/readiness/members";
 import { podPeople } from "@/lib/readiness/people";
 import { recordTended } from "@/lib/garden-data";
+import { donorTypesFor } from "@/lib/alert-rules";
 
 /**
  * Drills: a practice alert a Pod leader sends to their own Pod, to show the Pod would answer.
@@ -31,10 +32,13 @@ export function drillResult(eligibleCount: number, responded: number): boolean {
   return eligibleCount >= READINESS.drillMinEligible && responded / eligibleCount >= READINESS.drillPassRate;
 }
 
-/** Blood types with a real request open right now. Anyone who could be asked to answer one is left alone. */
+/** Blood types that could be asked to answer a real request open right now. Anyone with one of them is left alone. */
 async function bloodTypesInRealNeed(): Promise<Set<string>> {
-  const open = await prisma.bloodRequest.findMany({ where: { status: "OPEN" }, select: { bloodType: true } });
-  return new Set(open.map((r) => r.bloodType));
+  const open = await prisma.bloodRequest.findMany({
+    where: { status: "OPEN", isTest: false, OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }] },
+    select: { bloodType: true },
+  });
+  return new Set(open.flatMap((r) => donorTypesFor(r.bloodType)));
 }
 
 export async function startDrill(userId: string, podId: string): Promise<Result<{ id: string; sent: number; eligible: number }>> {

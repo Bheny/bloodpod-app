@@ -48,7 +48,7 @@ export default async function NotificationsPage() {
   if (!user.onboardingComplete) redirect("/onboarding");
 
   const [emergencies, { items }, asks] = await Promise.all([
-    getOpenEmergencies(user.id, user.bloodType),
+    getOpenEmergencies(user.id),
     getActivityFeed(user.id, 1, 30),
     getReceivedRequests(user.id),
   ]);
@@ -76,7 +76,7 @@ export default async function NotificationsPage() {
             {emergencies.map((e) => (
               <Link
                 key={e.id}
-                href="/dashboard/request"
+                href={`/dashboard/alert/${e.id}`}
                 className="flex items-center gap-3 rounded-3xl bg-red p-4 text-white shadow-[0_14px_30px_-14px_rgba(221,0,0,0.55)] transition-transform active:scale-[0.98]"
               >
                 <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-white/20">

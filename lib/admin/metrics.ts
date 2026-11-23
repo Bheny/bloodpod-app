@@ -2,6 +2,7 @@ import { Prisma, type BloodType } from "@prisma/client";
 import { adb as prisma } from "@/lib/admin/db";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
 import { pct } from "@/lib/admin/format";
+import { effectiveStatus, secondsToFirstYes } from "@/lib/alert-rules";
 
 const DAY = 86_400_000;
 /** A Pod is "ready" when at least this many people in it can donate right now. */
@@ -96,7 +97,7 @@ export async function getOverview() {
     prisma.podInvite.groupBy({ by: ["senderId"] }).then((g) => g.length),
     prisma.pod.count(),
     prisma.hospital.groupBy({ by: ["status"], _count: { _all: true } }),
-    prisma.bloodRequest.count({ where: { status: "OPEN" } }),
+    prisma.bloodRequest.count({ where: { status: "OPEN", isTest: false, OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }] } }),
     prisma.contract.aggregate({ where: { status: "ACTIVE" }, _sum: { monthlyPesewas: true }, _count: { _all: true } }),
     prisma.hospital.findFirst({ where: { status: "PENDING" }, orderBy: { createdAt: "asc" }, select: { createdAt: true } }),
     prisma.ledgerEntry.count({ where: { type: "INCOME", status: "PENDING", date: { lt: daysAgo(14) } } }),
@@ -459,18 +460,43 @@ export async function getEmergencies() {
         location: true,
         status: true,
         createdAt: true,
+        isTest: true,
+        expiresAt: true,
+        widenedAt: true,
         requester: { select: { id: true, name: true } },
+        recipients: { select: { scope: true, answer: true, answeredAt: true } },
       },
     }),
-    prisma.bloodRequest.groupBy({ by: ["status"], _count: { _all: true } }),
-    prisma.bloodRequest.groupBy({ by: ["bloodType"], _count: { _all: true }, orderBy: { _count: { bloodType: "desc" } } }),
+    prisma.bloodRequest.groupBy({ by: ["status"], where: { isTest: false }, _count: { _all: true } }),
+    prisma.bloodRequest.groupBy({ by: ["bloodType"], where: { isTest: false }, _count: { _all: true }, orderBy: { _count: { bloodType: "desc" } } }),
   ]);
 
-  const status = { OPEN: 0, MATCHED: 0, FULFILLED: 0, CANCELLED: 0 } as Record<string, number>;
+  const status = { OPEN: 0, MATCHED: 0, FULFILLED: 0, CANCELLED: 0, EXPIRED: 0 } as Record<string, number>;
   for (const g of byStatus) status[g.status] = g._count._all;
 
+  // What the alert system is judged on. Tests are left out: they only reach the people running them.
+  const real = rows.filter((r) => !r.isTest);
+  const firstYes = real
+    .map((r) => secondsToFirstYes(r.createdAt, r.recipients))
+    .filter((s): s is number => s !== null)
+    .sort((a, b) => a - b);
+  const median = firstYes.length ? firstYes[Math.floor(firstYes.length / 2)] : null;
+  const alertedTotal = real.reduce((n, r) => n + r.recipients.length, 0);
+  const yesTotal = real.reduce((n, r) => n + r.recipients.filter((x) => x.answer === "COMING").length, 0);
+  const answeredTotal = real.reduce((n, r) => n + r.recipients.filter((x) => x.answer).length, 0);
+  const performance = {
+    requests: real.length,
+    gotYes: firstYes.length,
+    medianSecondsToYes: median,
+    avgAlerted: real.length ? Math.round(alertedTotal / real.length) : 0,
+    answerRate: pct(answeredTotal, alertedTotal),
+    yesRate: pct(yesTotal, alertedTotal),
+    widened: real.filter((r) => r.widenedAt).length,
+  };
+
   return {
-    rows,
+    performance,
+    rows: rows.map((r) => ({ ...r, status: effectiveStatus(r) })),
     status,
     total: Object.values(status).reduce((a, b) => a + b, 0),
     byType: byType.map((g) => ({ label: BLOOD_TYPE_LABELS[g.bloodType], value: g._count._all })),
@@ -500,7 +526,7 @@ export function getRecentSignups(take = 6) {
 export async function getAdminBadges() {
   const [hospitals, emergencies] = await Promise.all([
     prisma.hospital.count({ where: { status: "PENDING" } }),
-    prisma.bloodRequest.count({ where: { status: "OPEN" } }),
+    prisma.bloodRequest.count({ where: { status: "OPEN", isTest: false, OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }] } }),
   ]);
   return { hospitals, emergencies };
 }

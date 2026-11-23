@@ -5,7 +5,9 @@ import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
 import { Badge, EmptyState, HBars, PageTitle, Panel, StatCard, StatGrid } from "@/components/admin/ui";
 import { Card } from "@/components/ui/Card";
 
-const STATUS_TONE = { OPEN: "red", MATCHED: "blue", FULFILLED: "green", CANCELLED: "gray" } as const;
+const STATUS_TONE = { OPEN: "red", MATCHED: "blue", FULFILLED: "green", CANCELLED: "gray", EXPIRED: "amber" } as const;
+
+const span = (s: number | null) => (s === null ? "none yet" : s < 90 ? `${s}s` : s < 5400 ? `${Math.round(s / 60)} min` : `${Math.round(s / 3600)} h`);
 const URGENCY_TONE = { CRITICAL: "red", URGENT: "amber", STANDARD: "gray" } as const;
 
 export default async function AdminEmergenciesPage() {
@@ -23,9 +25,13 @@ export default async function AdminEmergenciesPage() {
         <StatCard label="All time" value={e.total} />
       </StatGrid>
 
-      <div className="mt-4 rounded-2xl border border-dashed border-hairline bg-card/60 px-4 py-3 text-caption text-ink-muted">
-        Response times, who said Yes and show-up rate are not tracked yet. They appear here once the Yes and No
-        alert system is built, and are what the Foresight pilot will be judged on.
+      <div className="mt-4">
+        <StatGrid cols={4}>
+          <StatCard label="Time to first yes" value={span(e.performance.medianSecondsToYes)} hint="median, real requests" />
+          <StatCard label="Got a yes" value={`${e.performance.gotYes} of ${e.performance.requests}`} hint="requests with someone coming" tone={e.performance.requests >= 3 && e.performance.gotYes < e.performance.requests ? "warn" : "default"} />
+          <StatCard label="Answered" value={`${e.performance.answerRate}%`} hint={`${e.performance.yesRate}% said yes · ${e.performance.avgAlerted} alerted on average`} />
+          <StatCard label="Needed to widen" value={e.performance.widened} hint="Pod could not cover it alone" />
+        </StatGrid>
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-[1.6fr_1fr] lg:gap-6">
@@ -42,7 +48,7 @@ export default async function AdminEmergenciesPage() {
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-body-sm font-semibold text-ink">{r.facility}</span>
                     <span className="block truncate text-caption text-ink-muted">
-                      {r.requester.name ?? "Unknown"} · {longDate(r.createdAt)}
+                      {r.isTest ? "TEST · " : ""}{r.requester.name ?? "Unknown"} · {longDate(r.createdAt)} · {r.recipients.length} alerted, {r.recipients.filter((x) => x.answer === "COMING").length} coming{r.widenedAt ? ", widened" : ""}
                     </span>
                   </span>
                   <Badge tone={URGENCY_TONE[r.urgency]}>{r.urgency.toLowerCase()}</Badge>

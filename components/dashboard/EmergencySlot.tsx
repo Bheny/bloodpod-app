@@ -83,7 +83,7 @@ export function EmergencySlot({
           </div>
 
           <p className="mt-2 text-title font-extrabold leading-tight tracking-[-0.4px] lg:text-title-lg">
-            {top.facility} needs {top.bloodType} blood
+            {top.isTest ? "Test: " : ""}{top.facility} needs {top.bloodType} blood
           </p>
           <p className="mt-1 text-caption text-white/70 lg:text-body-sm">
             {[top.location, top.requesterName ? `Requested by ${top.requesterName}` : null].filter(Boolean).join(" · ")}
@@ -91,10 +91,10 @@ export function EmergencySlot({
 
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <Link
-              href="/dashboard/request"
+              href={`/dashboard/alert/${top.id}`}
               className="rounded-full bg-red px-5 py-2.5 text-body-sm font-bold text-white transition-transform active:scale-95"
             >
-              Respond
+              {top.myAnswer === "COMING" ? "You are coming" : "Respond"}
             </Link>
             {emergencies.length > 1 && (
               <span className="text-caption text-white/70">+{emergencies.length - 1} more open</span>

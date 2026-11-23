@@ -25,6 +25,7 @@ model User {
   getStartedSeen        String[]   @default([])
   getStartedDismissedAt DateTime?
   tourSeenAt            DateTime?
+  alertsReceived        BloodRequestRecipient[] @relation("AlertRecipient")
   isEligible   Boolean    @default(true)
   isAvailable  Boolean    @default(false)
   lastDonated  DateTime?
@@ -232,6 +233,46 @@ model BloodRequest {
   respondedBy String?
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
+
+  // The alert system. A test alert only reaches the admin who sent it and their Pod, and never widens.
+  isTest     Boolean   @default(false)
+  expiresAt  DateTime?
+  // When to widen from the Pod to matching donors nearby, and when that happened.
+  widenAt    DateTime?
+  widenedAt  DateTime?
+  closedAt   DateTime?
+  recipients BloodRequestRecipient[]
+
+  @@index([status, expiresAt])
+  @@index([requesterId, createdAt])
+}
+
+enum AlertScope {
+  POD
+  NEARBY
+}
+
+enum AlertAnswer {
+  COMING
+  CANT
+}
+
+/// One row per person an alert was sent to: who, through which door, how, and what they said.
+model BloodRequestRecipient {
+  id         String       @id @default(cuid())
+  requestId  String
+  request    BloodRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User         @relation("AlertRecipient", fields: [userId], references: [id], onDelete: Cascade)
+  scope      AlertScope
+  notifiedAt DateTime     @default(now())
+  pushed     Boolean      @default(false)
+  emailed    Boolean      @default(false)
+  answer     AlertAnswer?
+  answeredAt DateTime?
+
+  @@unique([requestId, userId])
+  @@index([userId, notifiedAt])
 }
 
 model Activity {
@@ -256,6 +297,7 @@ enum RequestStatus {
   MATCHED
   FULFILLED
   CANCELLED
+  EXPIRED
 }
 
 enum ActivityType {
