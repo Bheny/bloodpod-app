@@ -175,7 +175,7 @@ describe("the Garden stays out of alerts, listing and joining", () => {
   it("only garden, readiness and profile code reads the Garden", () => {
     const readers = all.filter((f) => /@\/lib\/garden(-data)?["']/.test(read(f)));
     const allowed = (f: string) =>
-      /^(lib\/garden(-data)?\.ts|lib\/admin\/garden-leaderboard\.ts|lib\/readiness\/drill\.ts|app\/\(app\)\/(garden\/|dashboard\/page\.tsx)|app\/api\/garden\/|components\/garden\/|__tests__\/)/.test(f);
+      /^(lib\/garden(-data)?\.ts|lib\/admin\/(garden-leaderboard|pod-strength)\.ts|lib\/readiness\/drill\.ts|app\/\(app\)\/(garden\/|dashboard\/page\.tsx)|app\/api\/garden\/|components\/garden\/|__tests__\/)/.test(f);
     expect(readers.filter((f) => !allowed(f))).toEqual([]);
   });
 

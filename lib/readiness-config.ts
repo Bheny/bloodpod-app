@@ -5,6 +5,11 @@
 export const READINESS = {
   /** A drill counts only when the Pod has at least this many eligible members. */
   drillMinEligible: 5,
+  /**
+   * A complete Pod: this many ready people who know they may be called. A drill only needs
+   * drillMinEligible, but the goal is for every donor to have this many on hand.
+   */
+  podComplete: 10,
   /** Share of eligible members who must answer inside the window. */
   drillPassRate: 0.6,
   drillWindowMinutes: 10,

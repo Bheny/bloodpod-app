@@ -6,6 +6,8 @@ import { longDate } from "@/lib/admin/format";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
 import { Badge, EmptyState, FilterTabs, PageTitle } from "@/components/admin/ui";
 import { UsersSearch } from "@/components/admin/UsersSearch";
+import { getStrengthFor } from "@/lib/admin/pod-strength";
+import { PodStrengthCell } from "@/components/admin/PodStrengthCell";
 import { Card } from "@/components/ui/Card";
 
 const STATUSES = [
@@ -39,6 +41,8 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
     status: status === "all" ? undefined : status,
     page,
   });
+
+  const strength = await getStrengthFor(rows.map((u) => ({ id: u.id, ownedPods: u._count.ownedPods, podMemberships: u._count.podMemberships })));
 
   const exportParams = new URLSearchParams();
   if (sp.q) exportParams.set("q", sp.q);
@@ -76,11 +80,12 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
           </div>
         ) : (
           <>
-            <div className="hidden grid-cols-[1.6fr_0.8fr_1fr_0.9fr_0.6fr_0.9fr] gap-4 border-b-[0.5px] border-hairline px-5 py-3 text-caption font-bold uppercase tracking-wide text-ink-muted lg:grid">
+            <div className="hidden grid-cols-[1.6fr_0.8fr_1fr_0.9fr_1.1fr_0.6fr_0.9fr] gap-4 border-b-[0.5px] border-hairline px-5 py-3 text-caption font-bold uppercase tracking-wide text-ink-muted lg:grid">
               <span>Donor</span>
               <span>Blood</span>
               <span>City</span>
               <span>Status</span>
+              <span>Pod</span>
               <span>Alerts</span>
               <span>Joined</span>
             </div>
@@ -89,7 +94,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
                 <li key={u.id}>
                   <Link
                     href={`/admin/users/${u.id}`}
-                    className="grid items-center gap-x-4 gap-y-1 px-4 py-3.5 transition-colors hover:bg-surface lg:grid-cols-[1.6fr_0.8fr_1fr_0.9fr_0.6fr_0.9fr] lg:px-5"
+                    className="grid items-center gap-x-4 gap-y-1 px-4 py-3.5 transition-colors hover:bg-surface lg:grid-cols-[1.6fr_0.8fr_1fr_0.9fr_1.1fr_0.6fr_0.9fr] lg:px-5"
                   >
                     <span className="min-w-0">
                       <span className="block truncate text-body-sm font-bold text-ink">{u.name ?? "No name"}</span>
@@ -108,6 +113,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
                         <Badge>Resting</Badge>
                       )}
                     </span>
+                    <PodStrengthCell s={strength.get(u.id)!} />
                     <span>
                       {u._count.pushSubscriptions > 0 ? (
                         <BellRing className="size-4 text-[#1FA855]" aria-label="Alerts on" />

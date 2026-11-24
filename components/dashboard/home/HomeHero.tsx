@@ -53,9 +53,19 @@ function PodSlide({ pod, quiet }: { pod: PodListItem; quiet: boolean }) {
 
   const status = ready ? (quiet ? "All quiet" : "Ready to answer") : `${need} more ${need === 1 ? "person" : "people"} to be ready`;
   const sub = `${pod.readyCount} of ${pod.memberCount} can donate now`;
-  // A full ring must not read as finished: point the owner at the next goal, a Pod that can run a drill.
+  // A full ring must not read as finished: point the owner at the next goal. First a Pod that can run a
+  // drill, then a complete Pod of ten ready people.
   const toDrill = Math.max(READINESS.drillMinEligible - pod.readyCount, 0);
-  const goal = owner && ready && toDrill > 0 ? `${toDrill} more ${toDrill === 1 ? "person" : "people"} to run a drill` : null;
+  const toComplete = Math.max(READINESS.podComplete - pod.readyCount, 0);
+  const people = (n: number) => `${n} more ${n === 1 ? "person" : "people"}`;
+  const goal =
+    owner && ready
+      ? toDrill > 0
+        ? `${people(toDrill)} to run a drill`
+        : toComplete > 0
+          ? `${people(toComplete)} to reach ${READINESS.podComplete}`
+          : null
+      : null;
 
   const cta = owner
     ? ready
