@@ -17,7 +17,7 @@ export const STAGES = [
   { id: 0, name: "Bare ground", minReady: 0 },
   { id: 1, name: "Seed", minReady: 1 },
   { id: 2, name: "Sprout", minReady: 3 },
-  { id: 3, name: "Grove", minReady: 8 },
+  { id: 3, name: "Grove", minReady: 10 }, // the same 10 that makes a Pod complete (READINESS.podComplete)
   { id: 4, name: "Forest", minReady: 30 },
 ] as const;
 

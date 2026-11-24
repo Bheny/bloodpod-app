@@ -123,7 +123,7 @@ Phases 1 and 2 can ship without Phase 3. Phase 3 should be a day by itself, so p
 - **Merged Pods are surprising to owners.** Mitigation: keep the survivor's link and code, send the in-app note, and keep the old names in the log.
 - **A member in two of an owner's Pods** is counted once. Their category comes from the survivor Pod's row.
 - **Old invite links** to a merged Pod stop working. Mitigation: also keep the removed Pods' `slug`, code and token in a small redirect table that points to the survivor.
-- **The Garden's meaning shrinks.** With one plot, stage and plot health measure almost the same thing. Decide whether to keep both or fold plot health into the stage. Stages today: Sprout 3, Grove 8, Forest 30; with slots starting at 20, Forest at 30 needs the growth rule first.
+- **The Garden's meaning shrinks.** With one plot, stage and plot health measure almost the same thing. Decide whether to keep both or fold plot health into the stage. Stages now: Sprout 3, Grove 10 (the same 10 as a complete Pod), Forest 30; with slots starting at 20, Forest at 30 needs the growth rule first.
 - **Hard-rule tests** (`__tests__/garden.test.ts`, `__tests__/readiness-hard-rules.test.ts`, `__tests__/get-started.test.ts`) check file lists and wording. Expect to update them as files move.
 - **Terms and Privacy** do not yet describe categories. A category (for example "Church") can hint at a person's religion, so treat it as personal data: show it only to the Pod owner and the person, never in admin counts or on a poster, and say so in the Privacy page.
 

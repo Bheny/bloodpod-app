@@ -17,9 +17,9 @@ const person = (id: string, over: Partial<PodPerson> = {}): PodPerson => ({
 });
 
 describe("Garden stage", () => {
-  it("steps up at 1, 3, 8 and 30 ready people once a drill has passed", () => {
+  it("steps up at 1, 3, 10 and 30 ready people once a drill has passed", () => {
     const at = (n: number) => gardenStage(n, true).name;
-    expect([0, 1, 2, 3, 7, 8, 29, 30, 60].map(at)).toEqual(["Bare ground", "Seed", "Seed", "Sprout", "Sprout", "Grove", "Grove", "Forest", "Forest"]);
+    expect([0, 1, 2, 3, 9, 10, 29, 30, 60].map(at)).toEqual(["Bare ground", "Seed", "Seed", "Sprout", "Sprout", "Grove", "Grove", "Forest", "Forest"]);
   });
 
   it("holds a big Garden at Sprout until a drill has passed, and says so", () => {
@@ -30,7 +30,7 @@ describe("Garden stage", () => {
 
   it("says what is missing for the next stage", () => {
     expect(gardenStage(1, true).next?.line).toBe("2 more ready people to reach Sprout");
-    expect(gardenStage(7, true).next?.line).toBe("1 more ready person to reach Grove");
+    expect(gardenStage(9, true).next?.line).toBe("1 more ready person to reach Grove");
     expect(gardenStage(30, true).next).toBeNull();
   });
 
