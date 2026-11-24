@@ -1,5 +1,5 @@
 import { formatPesewas, PLUS_YEARLY, PRICING } from "@/lib/pricing";
-import { FREE_OWNED_POD_LIMIT, FREE_POD_MEMBER_LIMIT, PAID_OWNED_POD_LIMIT } from "@/lib/pod-limits";
+import { FREE_POD_MEMBER_LIMIT } from "@/lib/pod-limits";
 
 /**
  * What each plan says about itself, in one place for the landing page and /upgrade.
@@ -72,7 +72,7 @@ export const TIERS: Tier[] = [
     price: "GH₵0",
     cadence: "always",
     lines: [
-      { text: `A Pod of up to ${FREE_POD_MEMBER_LIMIT} people you trust, and up to ${FREE_OWNED_POD_LIMIT} Pods of your own` },
+      { text: `Your own Pod, starting at ${FREE_POD_MEMBER_LIMIT} places for people you trust, and growing as it gets stronger` },
       { text: "Send and receive emergency alerts" },
       { text: "Be listed as a donor, join any Pod and ask donors in Discover" },
       { text: "Your own Blood Card, working offline, and your donation log" },
@@ -88,7 +88,6 @@ export const TIERS: Tier[] = [
     cadence: "a month",
     yearly: yearlyOffer(PRICING.PLUS.pesewas, PLUS_YEARLY.pesewas),
     lines: [
-      { text: `Own up to ${PAID_OWNED_POD_LIMIT} Pods` },
       { text: "A result vault with no limit", soon: true },
       { text: "Snap a result and we read the values for you", soon: true },
       { text: "Trends over time, and retest reminders", soon: true },

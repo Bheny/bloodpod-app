@@ -146,7 +146,7 @@ export function HomeHero({
 }: {
   initialEmergencies: EmergencyView[];
   pods: PodListItem[];
-  allowance: { owned: number; limit: number };
+  allowance: { owned: number; limit: number; canCreate: boolean };
   firstName: string | null;
 }) {
   // Same key as the desktop emergency card, so SWR shares one request between them.
@@ -161,7 +161,8 @@ export function HomeHero({
   const open = emergencies.filter((e) => !dismissed.includes(e.id));
   const top = open[0];
 
-  const slides = pods.length + 1; // the last one starts another Pod
+  const canStart = allowance.canCreate; // only someone with no Pod yet is offered one to start
+  const slides = pods.length + (canStart ? 1 : 0);
   const scroller = useRef<HTMLUListElement>(null);
   const [active, setActive] = useState(0);
 
@@ -236,9 +237,11 @@ export function HomeHero({
                 <PodSlide pod={pod} quiet={emergencies.length === 0} />
               </li>
             ))}
-            <li className="w-[90%] shrink-0 snap-start">
-              <CreatePodCard owned={allowance.owned} limit={allowance.limit} firstName={firstName} variant="slide" />
-            </li>
+            {canStart && (
+              <li className="w-[90%] shrink-0 snap-start">
+                <CreatePodCard owned={allowance.owned} limit={allowance.limit} firstName={firstName} variant="slide" />
+              </li>
+            )}
           </ul>
 
           {slides > 1 && (
@@ -249,7 +252,7 @@ export function HomeHero({
                   type="button"
                   role="tab"
                   aria-selected={i === active}
-                  aria-label={pods[i] ? `Show ${pods[i].name}` : "Show start another Pod"}
+                  aria-label={pods[i] ? `Show ${pods[i].name}` : "Show start your Pod"}
                   onClick={() => goTo(i)}
                   className={cn("h-1.5 rounded-full transition-all", i === active ? "w-5 bg-panel" : "w-1.5 bg-ink-faint/50")}
                 />

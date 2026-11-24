@@ -16,11 +16,12 @@ export function PodCarousel({
 }: {
   pods: PodListItem[];
   /** How many Pods the person owns and may own; the add card shows only while there is room. */
-  allowance: { owned: number; limit: number };
+  allowance: { owned: number; limit: number; canCreate: boolean };
   firstName?: string | null;
 }) {
   // The last slide is always there: the create card, or a note that the limit is reached.
-  const slideCount = pods.length + 1;
+  const canStart = allowance.canCreate; // only someone with no Pod yet is offered one to start
+  const slideCount = pods.length + (canStart ? 1 : 0);
   const scroller = useRef<HTMLUListElement>(null);
   const [active, setActive] = useState(0);
 
@@ -120,9 +121,11 @@ export function PodCarousel({
           );
         })}
 
-        <li className="w-[88%] shrink-0 snap-start lg:w-full">
-          <CreatePodCard owned={allowance.owned} limit={allowance.limit} firstName={firstName} variant="slide" />
-        </li>
+        {canStart && (
+          <li className="w-[88%] shrink-0 snap-start lg:w-full">
+            <CreatePodCard owned={allowance.owned} limit={allowance.limit} firstName={firstName} variant="slide" />
+          </li>
+        )}
       </ul>
 
       {slideCount > 1 && (
@@ -133,7 +136,7 @@ export function PodCarousel({
               type="button"
               role="tab"
               aria-selected={i === active}
-              aria-label={pods[i] ? `Show ${pods[i].name}` : "Show start another Pod"}
+              aria-label={pods[i] ? `Show ${pods[i].name}` : "Show start your Pod"}
               onClick={() => goTo(i)}
               className={cn("h-1.5 rounded-full transition-all", i === active ? "w-5 bg-panel" : "w-1.5 bg-ink-faint/50")}
             />

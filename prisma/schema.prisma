@@ -150,6 +150,8 @@ model Pod {
   slotLimit       Int       @default(20)
 
   @@index([parentPodId])
+  // One Pod per donor.
+  @@unique([ownerId])
 }
 
 model PodMember {

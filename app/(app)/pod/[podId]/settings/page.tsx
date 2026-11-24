@@ -1,7 +1,6 @@
 import { redirect, notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { getPodDetail } from "@/lib/pod-data";
-import { prisma } from "@/lib/prisma";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { PodSettings } from "@/components/pod/PodSettings";
 
@@ -15,7 +14,6 @@ export default async function PodSettingsPage({ params }: { params: Promise<{ po
   if (!pod) notFound();
 
   const isOwner = pod.role === "owner";
-  const ownedCount = isOwner ? await prisma.pod.count({ where: { ownerId: user.id } }) : 0;
 
   return (
     <div>
@@ -25,7 +23,7 @@ export default async function PodSettingsPage({ params }: { params: Promise<{ po
         podName={pod.name}
         viewerId={user.id}
         isOwner={isOwner}
-        canDelete={ownedCount > 1}
+        canDelete={false} // a donor's one Pod is never deleted; they change who is in it
         members={pod.members
           .filter((m) => !m.isOwner)
           .map((m) => ({ id: m.id, name: m.name, bloodType: m.bloodType }))}

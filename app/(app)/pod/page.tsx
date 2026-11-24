@@ -56,7 +56,7 @@ export default async function PodsPage() {
         {summary.pods > 0 && <GardenStripLoader userId={user.id} />}
 
         <section>
-          <h2 className="mb-2.5 px-1 text-body-sm font-bold text-ink lg:text-title">Your Pods</h2>
+          <h2 className="mb-2.5 px-1 text-body-sm font-bold text-ink lg:text-title">Your Pod</h2>
           <div className="flex flex-col gap-3">
             {owned.map((pod) => (
               <PodListCard key={pod.id} pod={pod} dependable={dependable.get(pod.id)} />

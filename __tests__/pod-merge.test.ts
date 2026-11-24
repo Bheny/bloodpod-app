@@ -115,8 +115,8 @@ describe("the merge script is careful", () => {
     for (const table of ["podMember", "podInvite", "drill", "bloodRequest", "careProfile"]) expect(script).toMatch(new RegExp(`tx\\.${table}\\.`));
     expect(script.indexOf("tx.drill.updateMany")).toBeLessThan(script.indexOf("tx.pod.deleteMany"));
   });
-  it("keeps the one-per-owner rule out of the migrations until the merge has run", () => {
-    expect(readFileSync("prisma/pending/one_pod_per_owner/migration.sql", "utf8")).toMatch(/CREATE UNIQUE INDEX "Pod_ownerId_key"/);
-    expect(readFileSync("prisma/schema.prisma", "utf8")).not.toMatch(/@@unique\(\[ownerId\]\)/);
+  it("the one-per-owner rule is in the schema and has its own migration, after the merge was run", () => {
+    expect(readFileSync("prisma/migrations/20261129100000_one_pod_per_owner/migration.sql", "utf8")).toMatch(/CREATE UNIQUE INDEX "Pod_ownerId_key"/);
+    expect(readFileSync("prisma/schema.prisma", "utf8")).toMatch(/@@unique\(\[ownerId\]\)/);
   });
 });

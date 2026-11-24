@@ -37,7 +37,7 @@ export default async function UpgradeDonePage({
       </h1>
       <p className="mt-2 max-w-sm text-body-sm text-ink-muted">
         {paid
-          ? "Thank you. You can now own more Pods."
+          ? "Thank you. Your planning tools are ready."
           : "This can take a minute. If you were charged, your plan switches on automatically once the payment is confirmed."}
       </p>
       <Link href="/dashboard" className="mt-6 rounded-full bg-red px-6 py-3 text-body-sm font-bold text-white">

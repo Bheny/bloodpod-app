@@ -23,6 +23,9 @@ export interface SpinoffOffer {
 
 /** Pods where this person is a member (not the leader) and invited enough people who finished their profile. */
 export async function getSpinoffOffers(userId: string): Promise<SpinoffOffer[]> {
+  // Every donor leads one Pod. Someone who already leads one brings their people into it instead.
+  if ((await getPodAllowance(userId)).owned > 0) return [];
+
   const memberships = await prisma.podMember.findMany({
     where: { userId },
     select: { podId: true, pod: { select: { name: true, ownerId: true } } },
@@ -53,15 +56,14 @@ export async function startSpinoff(user: { id: string; name: string | null }, po
   const trimmed = name.trim().slice(0, 60);
   if (trimmed.length < 2) return fail("Give your Pod a name (at least 2 characters).");
 
+  if (!(await getPodAllowance(user.id)).canCreate) return fail("You already lead a Pod. Invite those people to it instead.", 409);
   const offer = (await getSpinoffOffers(user.id)).find((o) => o.podId === podId);
   if (!offer) return fail("You can only start a Pod from a Pod you joined.", 404);
   if (!offer.canStart) {
     return fail(`You need ${READINESS.spinoffMinInvitees} people you invited to have joined and finished their profile. You have ${offer.invitees.length}.`, 409);
   }
 
-  // The usual limit on leading Pods, plus a weekly cap on spin-offs.
-  const allowance = await getPodAllowance(user.id);
-  if (!allowance.canCreate) return fail(`You can lead up to ${allowance.limit} Pods.`, 402);
+  // A weekly cap on spin-offs.
   const thisWeek = await prisma.pod.count({
     where: { spawnedByUserId: user.id, createdAt: { gt: new Date(Date.now() - 7 * DAY) } },
   });

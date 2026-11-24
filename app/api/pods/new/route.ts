@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { getPodAllowance } from "@/lib/pod-access";
 import { slugify } from "@/lib/slugify";
 
-/** Creates an additional Pod (the first one is made during onboarding by /api/pods). */
+/** Creates a donor's Pod, only if they do not lead one yet. Every donor has one Pod, and it grows by adding people. */
 export async function POST(request: Request) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -17,10 +18,8 @@ export async function POST(request: Request) {
 
   const allowance = await getPodAllowance(user.id);
   if (!allowance.canCreate) {
-    return NextResponse.json(
-      { error: `You can own up to ${allowance.limit} Pods. Delete one, or upgrade for more.` },
-      { status: 402 },
-    );
+    const existing = await prisma.pod.findFirst({ where: { ownerId: user.id }, orderBy: { createdAt: "asc" }, select: { id: true } });
+    return NextResponse.json({ error: "You already have a Pod. Add people to it instead.", podId: existing?.id }, { status: 409 });
   }
 
   const baseSlug = slugify(trimmed);
@@ -30,6 +29,15 @@ export async function POST(request: Request) {
     slug = `${baseSlug}-${suffix++}`;
   }
 
-  const pod = await prisma.pod.create({ data: { name: trimmed, slug, ownerId: user.id } });
-  return NextResponse.json({ podId: pod.id, slug: pod.slug });
+  try {
+    const pod = await prisma.pod.create({ data: { name: trimmed, slug, ownerId: user.id } });
+    return NextResponse.json({ podId: pod.id, slug: pod.slug });
+  } catch (e) {
+    // Two taps at once: the database allows one Pod per owner, so the second one finds the first.
+    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
+      const existing = await prisma.pod.findFirst({ where: { ownerId: user.id }, select: { id: true, slug: true } });
+      if (existing) return NextResponse.json({ podId: existing.id, slug: existing.slug });
+    }
+    throw e;
+  }
 }

@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { Lock, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
@@ -35,44 +34,8 @@ export function CreatePodCard({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  if (owned >= limit && variant === "slide") {
-    return (
-      <div className="flex h-full min-h-[176px] flex-col items-center justify-center gap-2 rounded-3xl border-[1.5px] border-dashed border-hairline bg-card/40 p-4 text-center lg:p-6">
-        <span className="flex size-11 items-center justify-center rounded-full bg-surface text-ink-faint">
-          <Lock className="size-5" />
-        </span>
-        <span className="text-body-sm font-bold text-ink">Pod limit reached</span>
-        <span className="max-w-[240px] text-caption text-ink-muted">
-          You own {owned} of {limit} Pods, the most your plan allows.
-        </span>
-        <Link href="/upgrade" className="mt-1 rounded-full bg-red px-4 py-2 text-caption font-bold text-white">
-          See plans
-        </Link>
-      </div>
-    );
-  }
-
-  if (owned >= limit) {
-    return (
-      <div className="flex items-center gap-3 rounded-3xl border-[1.5px] border-dashed border-hairline bg-card/40 px-4 py-3.5">
-        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-surface text-ink-faint">
-          <Lock className="size-4.5" />
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="text-body-sm font-bold text-ink">Pod limit reached</p>
-          <p className="text-caption text-ink-muted">
-            You own {owned} of {limit}, the most this plan allows.
-          </p>
-        </div>
-        <Link
-          href="/upgrade"
-          className="shrink-0 rounded-full bg-red px-3.5 py-2 text-caption font-bold text-white transition-transform active:scale-95"
-        >
-          More Pods
-        </Link>
-      </div>
-    );
-  }
+  // Every donor leads one Pod. Once they have it, there is nothing to create: they add people to it instead.
+  if (owned >= limit) return null;
 
   async function create(e: React.FormEvent) {
     e.preventDefault();
@@ -104,9 +67,9 @@ export function CreatePodCard({
         <span className="flex size-11 items-center justify-center rounded-full bg-red-light text-red-fg">
           <Plus className="size-6" />
         </span>
-        <span className="text-body-sm font-bold text-ink">Start another Pod</span>
+        <span className="text-body-sm font-bold text-ink">Start your Pod</span>
         <span className="max-w-[220px] text-caption text-ink-muted">
-          A separate circle, such as family, friends or colleagues.
+          The people you trust to answer when blood is needed.
         </span>
       </button>
     ) : (
@@ -115,10 +78,7 @@ export function CreatePodCard({
         onClick={() => setOpen(true)}
         className="flex w-full items-center justify-center gap-2 rounded-3xl border-[1.5px] border-dashed border-red-mid bg-red-light/40 px-4 py-4 text-body-sm font-bold text-red-fg transition-colors hover:bg-red-light"
       >
-        <Plus className="size-4" /> Create another Pod
-        <span className="text-caption font-semibold text-ink-muted">
-          {owned} of {limit}
-        </span>
+        <Plus className="size-4" /> Start your Pod
       </button>
     );
 
@@ -127,7 +87,7 @@ export function CreatePodCard({
       {trigger}
       <Modal open={open} onClose={() => !busy && setOpen(false)}>
         <form onSubmit={create}>
-          <p className="pr-10 text-title font-bold text-ink">Name your new Pod</p>
+          <p className="pr-10 text-title font-bold text-ink">Name your Pod</p>
           <p className="mt-0.5 text-caption text-ink-muted">Pick a group for a ready-made name, or type your own.</p>
           <Input
             autoFocus

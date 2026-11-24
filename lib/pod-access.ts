@@ -1,31 +1,16 @@
 import { prisma } from "@/lib/prisma";
-import { ownedPodLimit } from "@/lib/pod-limits";
 
-/** Paid means the legacy PREMIUM flag, or any Basic, Plus, Care or Case plan that has not run out. */
-async function isPaid(userId: string): Promise<boolean> {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      plan: true,
-      subscriptions: {
-        where: { status: { not: "EXPIRED" }, currentPeriodEnd: { gt: new Date() } },
-        select: { id: true },
-        take: 1,
-      },
-    },
-  });
-  if (!user) return false;
-  return user.plan === "PREMIUM" || user.subscriptions.length > 0;
-}
+/** Every donor leads one Pod. Joining other people's Pods is never limited. */
+export const OWNED_POD_LIMIT = 1;
 
 export interface PodAllowance {
   owned: number;
   limit: number;
+  /** True only for someone who does not lead a Pod yet. */
   canCreate: boolean;
 }
 
 export async function getPodAllowance(userId: string): Promise<PodAllowance> {
-  const [owned, paid] = await Promise.all([prisma.pod.count({ where: { ownerId: userId } }), isPaid(userId)]);
-  const limit = ownedPodLimit(paid);
-  return { owned, limit, canCreate: owned < limit };
+  const owned = await prisma.pod.count({ where: { ownerId: userId } });
+  return { owned, limit: OWNED_POD_LIMIT, canCreate: owned < OWNED_POD_LIMIT };
 }
