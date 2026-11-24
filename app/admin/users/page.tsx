@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { BellOff, BellRing, Download, Search } from "lucide-react";
+import { BellOff, BellRing, Download } from "lucide-react";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getUsers, USER_PAGE_SIZE } from "@/lib/admin/metrics";
 import { longDate } from "@/lib/admin/format";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
 import { Badge, EmptyState, FilterTabs, PageTitle } from "@/components/admin/ui";
+import { UsersSearch } from "@/components/admin/UsersSearch";
 import { Card } from "@/components/ui/Card";
 
 const STATUSES = [
@@ -59,35 +60,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
         }
       />
 
-      <form method="get" action="/admin/users" className="flex flex-col gap-3 sm:flex-row">
-        <div className="relative flex-1">
-          <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-ink-faint" />
-          <input
-            name="q"
-            defaultValue={sp.q ?? ""}
-            placeholder="Search name, email, phone or city"
-            aria-label="Search users"
-            className="w-full rounded-xl border border-hairline bg-card py-3 pl-11 pr-4 text-body-sm text-ink placeholder:text-ink-faint focus:border-red focus:outline-none focus:ring-3 focus:ring-red/8"
-          />
-        </div>
-        <select
-          name="blood"
-          defaultValue={sp.blood ?? ""}
-          aria-label="Blood type"
-          className="rounded-xl border border-hairline bg-card px-4 py-3 text-body-sm text-ink focus:border-red focus:outline-none"
-        >
-          <option value="">All blood types</option>
-          {Object.entries(BLOOD_TYPE_LABELS).map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
-        {status !== "all" && <input type="hidden" name="status" value={status} />}
-        <button type="submit" className="rounded-xl bg-panel px-6 py-3 text-body-sm font-bold text-white">
-          Search
-        </button>
-      </form>
+      <UsersSearch q={sp.q ?? ""} blood={sp.blood ?? ""} status={status} />
 
       <div className="mt-4">
         <FilterTabs

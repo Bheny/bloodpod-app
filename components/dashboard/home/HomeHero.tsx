@@ -9,6 +9,7 @@ import type { EmergencyView } from "@/lib/emergencies";
 import type { PodListItem } from "@/lib/pod-data";
 import { POD_READY_THRESHOLD } from "@/components/dashboard/PodReadyCard";
 import { CreatePodCard } from "@/components/pod/CreatePodCard";
+import { READINESS } from "@/lib/readiness-config";
 import { formatRelativeTime } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 
@@ -52,6 +53,9 @@ function PodSlide({ pod, quiet }: { pod: PodListItem; quiet: boolean }) {
 
   const status = ready ? (quiet ? "All quiet" : "Ready to answer") : `${need} more ${need === 1 ? "person" : "people"} to be ready`;
   const sub = `${pod.readyCount} of ${pod.memberCount} can donate now`;
+  // A full ring must not read as finished: point the owner at the next goal, a Pod that can run a drill.
+  const toDrill = Math.max(READINESS.drillMinEligible - pod.readyCount, 0);
+  const goal = owner && ready && toDrill > 0 ? `${toDrill} more ${toDrill === 1 ? "person" : "people"} to run a drill` : null;
 
   const cta = owner
     ? ready
@@ -70,6 +74,15 @@ function PodSlide({ pod, quiet }: { pod: PodListItem; quiet: boolean }) {
           <p className="truncate text-label text-ink-muted">{sub}</p>
         </div>
       </div>
+      {goal && (
+        <Link
+          href={`/pod/${pod.id}/invite`}
+          className="mt-3 flex min-h-11 items-center justify-between rounded-2xl bg-card px-4 text-body-sm font-semibold text-ink"
+        >
+          <span>Next: {goal}</span>
+          <span className="text-red-fg">Invite</span>
+        </Link>
+      )}
       <div className="mt-4 flex gap-2">
         <Link
           href={cta.href}
