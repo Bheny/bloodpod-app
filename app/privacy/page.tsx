@@ -30,7 +30,7 @@ const SECTIONS: LegalSection[] = [
       "Account details: your name, email address, phone number and profile photo.",
       "Health and donor details: your blood type, whether you are eligible and available to donate, your donation history, and any medical history you choose to add.",
       "Location: your city, and, if you allow it, your approximate position so we can sort results by distance.",
-      "Pod details: which Pods you own or belong to, and who is in them.",
+      "Pod details: which Pods you own or belong to, and who is in them. If you lead a Pod, you can sort each person into a group, such as Family, Friends, School, Church, Work or Neighbours. We keep that group with the person's place in your Pod.",
       "Essentials: any ID cards or documents you choose to store.",
       "Care profiles: for families using the Care plan, details about the person needing blood, such as blood type, condition and hospital.",
       "Bookings: tests you ask laboratories for, the day you prefer, and any note you write.",
@@ -76,6 +76,7 @@ const SECTIONS: LegalSection[] = [
     title: "Who can see what",
     bullets: [
       "Your Pod: members can see your first name, your blood type, and whether you can donate right now. They do not see more than that unless you share it.",
+      "Groups in a Pod: a group such as Church or School can say something personal about a person, so only the Pod's owner and the person themselves can see it. Other members, laboratories, hospitals and other donors never see it. It is not shown in our reports or counts, on any leaderboard or poster, or in alerts, and we do not use it to decide who is alerted.",
       "Discover: people only see your blood type, an approximate area and a rough distance, and only if you choose to appear. We never show your name, photo, phone number or exact position there. We move positions onto a coarse grid before showing them.",
       "Laboratories: a laboratory sees your name and phone number only for a booking you asked for, after you ticked the consent box.",
       "Hospitals: partner hospitals see anonymous counts until a donor chooses to respond to a request.",

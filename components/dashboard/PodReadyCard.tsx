@@ -11,6 +11,8 @@ export interface PodReadyMember {
   name: string;
   initials: string;
   bgColor: string;
+  /** Dark enough to read on the pastel background, in light and dark mode alike. */
+  textColor?: string;
   isEligible: boolean;
 }
 
@@ -58,9 +60,9 @@ export function PodReadyCard({
           <span
             key={m.id}
             title={`${m.name}${m.isEligible ? "" : " (resting)"}`}
-            style={{ backgroundColor: m.bgColor }}
+            style={{ backgroundColor: m.bgColor, color: m.textColor ?? "#1A1A1A" }}
             className={cn(
-              "relative flex size-9 items-center justify-center rounded-full border-2 border-card text-label font-bold text-ink",
+              "relative flex size-9 items-center justify-center rounded-full border-2 border-card text-label font-bold",
               !m.isEligible && "opacity-50",
             )}
           >

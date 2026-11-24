@@ -47,6 +47,7 @@ export async function getDashboardData(userId: string) {
             name: m.name,
             initials: m.initials,
             bgColor: m.bgColor,
+            textColor: m.textColor,
             bloodType: m.bloodType,
             isEligible: m.isEligible,
             donationCount: m.donationCount,
