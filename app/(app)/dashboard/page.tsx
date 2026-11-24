@@ -28,6 +28,8 @@ import { getGardenSummary } from "@/lib/garden-data";
 import { GardenStrip } from "@/components/garden/GardenStrip";
 import { GetStartedCard } from "@/components/get-started/GetStartedCard";
 import { getGetStartedState } from "@/lib/get-started-data";
+import { NudgeCard } from "@/components/nudges/NudgeCard";
+import { nudgeForHome } from "@/lib/nudges";
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
@@ -36,7 +38,7 @@ export default async function DashboardPage() {
   if (user.labId) redirect("/lab");
   if (!user.onboardingComplete) redirect("/onboarding");
 
-  const [data, invitations, pods, allowance, network, careWaiting, garden, getStarted] = await Promise.all([
+  const [data, invitations, pods, allowance, network, careWaiting, garden, getStarted, nudge] = await Promise.all([
     getDashboardData(user.id),
     getReceivedInvitations({ id: user.id, email: user.email }),
     getPodList(user.id),
@@ -45,6 +47,7 @@ export default async function DashboardPage() {
     countCareAsksWaiting(user.id),
     getGardenSummary(user.id),
     getGetStartedState(user),
+    nudgeForHome(user).catch(() => null),
   ]);
   if (!data) redirect("/sign-in");
 
@@ -63,6 +66,7 @@ export default async function DashboardPage() {
 
           {invitations.length > 0 && <PodInvitations invitations={invitations} />}
           <CareAsksBanner waiting={careWaiting} />
+          {nudge && <NudgeCard nudge={nudge} />}
 
           <div className="grid grid-cols-2 gap-3">
             <BloodCardTile bloodType={data.user.bloodType} verified={data.passport?.verificationStatus === "VERIFIED"} podCount={data.user.podCount} />
@@ -119,6 +123,7 @@ export default async function DashboardPage() {
 
             {invitations.length > 0 && <PodInvitations invitations={invitations} />}
             <CareAsksBanner waiting={careWaiting} />
+            {nudge && <NudgeCard nudge={nudge} />}
 
             <div className={showGetStarted ? "grid grid-cols-2 gap-6" : undefined}>
               <ReadinessCard

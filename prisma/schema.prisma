@@ -26,6 +26,15 @@ model User {
   getStartedDismissedAt DateTime?
   tourSeenAt            DateTime?
   alertsReceived        BloodRequestRecipient[] @relation("AlertRecipient")
+  // Nudges: friendly prompts to grow their Pod. They can switch them all off.
+  nudgesOff             Boolean    @default(false)
+  nudges                Nudge[]
+  // Trust: set when enough people report the account. Held accounts are not listed, asked or able to raise requests until an admin reviews them.
+  heldAt                DateTime?
+  heldReason            String?
+  reportsMade           UserReport[] @relation("ReportMade")
+  reportsAgainst        UserReport[] @relation("ReportAgainst")
+  outreach              Outreach[]
   isEligible   Boolean    @default(true)
   isAvailable  Boolean    @default(false)
   lastDonated  DateTime?
@@ -894,4 +903,70 @@ model PageView {
   @@index([visitorId, at])
   @@index([userId, at])
   @@index([path, at])
+}
+
+// One time the nudge bot put something in front of a person. The history is what keeps it from nagging:
+// how often, how recently, and whether they ever acted.
+model Nudge {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind        String
+  // What it was about, when the same kind can be about different things (the person who joined).
+  key         String    @default("")
+  createdAt   DateTime  @default(now())
+  pushedAt    DateTime?
+  emailedAt   DateTime?
+  dismissedAt DateTime?
+  actedAt     DateTime?
+
+  @@index([userId, kind, createdAt])
+  @@index([kind, createdAt])
+}
+
+enum ReportReason {
+  FAKE_DETAILS
+  ASKED_FOR_PAYMENT
+  NO_SHOW
+  HARASSMENT
+  OTHER
+}
+
+enum ReportStatus {
+  OPEN
+  DISMISSED
+  ACTIONED
+}
+
+// One person telling us about another. The reported person is never told who.
+model UserReport {
+  id         String       @id @default(cuid())
+  reporterId String
+  reporter   User         @relation("ReportMade", fields: [reporterId], references: [id], onDelete: Cascade)
+  reportedId String
+  reported   User         @relation("ReportAgainst", fields: [reportedId], references: [id], onDelete: Cascade)
+  reason     ReportReason
+  note       String?
+  status     ReportStatus @default(OPEN)
+  createdAt  DateTime     @default(now())
+  handledAt  DateTime?
+  handledBy  String?
+  adminNote  String?
+
+  @@index([reportedId, status])
+  @@index([status, createdAt])
+  @@index([reporterId, createdAt])
+}
+
+// A time an admin reached out to someone (a WhatsApp chat) to help or educate them.
+model Outreach {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  adminEmail String
+  channel    String   @default("whatsapp")
+  template   String
+  createdAt  DateTime @default(now())
+
+  @@index([userId, createdAt])
 }

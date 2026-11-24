@@ -12,6 +12,7 @@ import { ACTIVITY_ICONS } from "@/components/dashboard/ActivityFeed";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { PushToggle } from "@/components/pwa/PushToggle";
 import { AvailabilityRow } from "@/components/profile/AvailabilityRow";
+import { NudgeSwitch } from "@/components/nudges/NudgeSwitch";
 import { Card } from "@/components/ui/Card";
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
@@ -143,6 +144,7 @@ export default async function NotificationsPage() {
           <SectionLabel>Your alerts</SectionLabel>
           <PushToggle />
           <AvailabilityRow initiallyAvailable={user.isAvailable} />
+          <NudgeSwitch initiallyOff={user.nudgesOff} />
         </section>
 
         <section className="flex flex-col gap-2.5" aria-label="How alerts work">

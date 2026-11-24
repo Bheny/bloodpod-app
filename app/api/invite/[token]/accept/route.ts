@@ -6,6 +6,8 @@ import { logActivity } from "@/lib/activity";
 import { findInviteByIdentifier } from "@/lib/pod-invite";
 import { isPodFull } from "@/lib/pod-limits";
 import { emailMemberJoined } from "@/lib/email/notify";
+import { deferEmail } from "@/lib/email/send";
+import { nudgeNow } from "@/lib/nudges";
 
 export async function POST(
   _request: Request,
@@ -107,6 +109,8 @@ export async function POST(
         joinKey: `${invite.podId}/${user.id}`,
       });
     }
+    // A friendly word for the owner right now, if the nudge limits allow one.
+    deferEmail(() => nudgeNow(invite.pod.ownerId));
   }
 
   return NextResponse.json({ success: true, pod: { name: invite.pod.name, slug: invite.pod.slug } });

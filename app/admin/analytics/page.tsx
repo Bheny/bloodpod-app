@@ -1,5 +1,8 @@
+import Link from "next/link";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getAnalytics, getRetention } from "@/lib/admin/analytics";
+import { getNudgeStats } from "@/lib/admin/nudges";
+import { getSetupDropOff } from "@/lib/admin/onboarding";
 import { delta, shortDate } from "@/lib/admin/format";
 import { Delta, EmptyState, FilterTabs, Funnel, HBars, PageTitle, Panel, StatCard, StatGrid } from "@/components/admin/ui";
 import { BarChart, DONUT_COLORS, Donut, LineChart } from "@/components/admin/charts";
@@ -40,6 +43,8 @@ export default async function AdminAnalyticsPage({ searchParams }: { searchParam
 
   const a = await getAnalytics(range);
   const retention = await getRetention(a.trackingSince);
+  const nudges = await getNudgeStats(range);
+  const setup = await getSetupDropOff(range);
   const empty = a.trackingSince === null;
 
   return (
@@ -239,6 +244,99 @@ export default async function AdminAnalyticsPage({ searchParams }: { searchParam
                 </tbody>
               </table>
               <p className="mt-3 text-caption text-ink-muted">Week 0 is the week they joined, so it is usually the highest.</p>
+            </div>
+          )}
+        </Panel>
+      </div>
+
+      {/* Where sign-ups stop */}
+      <div className="mt-6">
+        <Panel
+          title="Where people stop in setup"
+          subtitle={`Of ${setup.signedUp} sign-ups in the last ${range} days, ${setup.finished} finished (${setup.finishedShare}%). Each person is placed at the first thing they have not given us.`}
+          actions={
+            <Link href="/admin/users?status=stalled" className="text-caption font-bold text-red-fg">
+              See them
+            </Link>
+          }
+        >
+          {setup.stuck === 0 ? (
+            <EmptyState title="Nobody is stuck" body="Everyone who signed up in this time has finished." />
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-120 text-left text-body-sm">
+                <thead>
+                  <tr className="text-label font-bold uppercase tracking-wide text-ink-muted">
+                    <th className="py-2 pr-3">They stopped at</th>
+                    <th className="px-2 py-2 text-right">This week</th>
+                    <th className="px-2 py-2 text-right">Earlier</th>
+                    <th className="py-2 pl-2 text-right">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {setup.stages.map((s) => (
+                    <tr key={s.id} className="border-t-[0.5px] border-hairline">
+                      <td className="py-2 pr-3">
+                        <span className="block font-bold text-ink">{s.label}</span>
+                        <span className="block text-caption text-ink-muted">{s.hint}</span>
+                      </td>
+                      <td className="px-2 py-2 text-right tabular-nums">{s.recent}</td>
+                      <td className="px-2 py-2 text-right tabular-nums">{s.older}</td>
+                      <td className="py-2 pl-2 text-right font-bold tabular-nums">{s.recent + s.older}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {setup.biggest && (
+                <p className="mt-3 text-caption text-ink-muted">
+                  Most people stop at <span className="font-bold text-ink">{setup.biggest.label.toLowerCase()}</span>. If that step is asking too much, make it easier before chasing people.
+                  Friendly emails go out at 1 and 4 days, then stop.
+                </p>
+              )}
+            </div>
+          )}
+        </Panel>
+      </div>
+
+      {/* The nudge bot */}
+      <div className="mt-6">
+        <Panel
+          title="Nudges"
+          subtitle={`Friendly prompts to grow Pods, last ${range} days. ${nudges.switchedOff} ${nudges.switchedOff === 1 ? "person has" : "people have"} switched them off (${nudges.switchedOffShare}%).`}
+        >
+          {nudges.shown === 0 ? (
+            <EmptyState title="No nudges yet" body="They start once people have been here a couple of days." />
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-120 text-left text-body-sm">
+                <thead>
+                  <tr className="text-label font-bold uppercase tracking-wide text-ink-muted">
+                    <th className="py-2 pr-3">Nudge</th>
+                    <th className="px-2 py-2 text-right">Shown</th>
+                    <th className="px-2 py-2 text-right">Pushed</th>
+                    <th className="px-2 py-2 text-right">Emailed</th>
+                    <th className="px-2 py-2 text-right">Not now</th>
+                    <th className="px-2 py-2 text-right">Did it</th>
+                    <th className="py-2 pl-2 text-right">Rate</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {nudges.kinds.map((k) => (
+                    <tr key={k.kind} className="border-t-[0.5px] border-hairline">
+                      <td className="py-2 pr-3 font-bold text-ink">{k.label}</td>
+                      <td className="px-2 py-2 text-right tabular-nums">{k.shown}</td>
+                      <td className="px-2 py-2 text-right tabular-nums">{k.pushed}</td>
+                      <td className="px-2 py-2 text-right tabular-nums">{k.emailed}</td>
+                      <td className="px-2 py-2 text-right tabular-nums">{k.dismissed}</td>
+                      <td className="px-2 py-2 text-right tabular-nums">{k.acted}</td>
+                      <td className="py-2 pl-2 text-right font-bold tabular-nums">{k.shown > 0 ? `${k.actRate}%` : "-"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <p className="mt-3 text-caption text-ink-muted">
+                Overall {nudges.actRate}% of nudges were acted on. A nudge that keeps being closed is worth rewording or removing.
+              </p>
             </div>
           )}
         </Panel>
