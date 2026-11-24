@@ -1,3 +1,4 @@
+import { ReportButton } from "@/components/reports/ReportButton";
 import { Modal } from "@/components/ui/Modal";
 import { StatusDot, type StatusDotColor } from "@/components/ui/StatusDot";
 import { formatDate } from "@/lib/formatters";
@@ -85,6 +86,12 @@ export function MemberDetailModal({
             <p className="mt-3 text-center text-xs text-ink-muted">
               Eligible again from {formatDate(member.nextEligible)}
             </p>
+          )}
+
+          {!member.isCurrentUser && (
+            <div className="mt-3 flex justify-center border-t-[0.5px] border-hairline pt-2">
+              <ReportButton userId={member.id} name={member.name.split(" ")[0]} />
+            </div>
           )}
         </div>
       )}

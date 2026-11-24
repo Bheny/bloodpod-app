@@ -1,5 +1,6 @@
 "use client";
 
+import { ReportButton } from "@/components/reports/ReportButton";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Check, Droplet, Phone } from "lucide-react";
@@ -117,6 +118,12 @@ export function AnswerPanel({ view }: { view: DonorView }) {
         <p role="alert" className="text-center text-caption text-red-fg">
           {error}
         </p>
+      )}
+
+      {!view.isTest && (
+        <div className="flex justify-center">
+          <ReportButton userId={view.requester.id} name={who === "them" ? "this person" : who} />
+        </div>
       )}
     </div>
   );

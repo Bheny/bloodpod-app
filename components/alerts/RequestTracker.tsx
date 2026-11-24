@@ -1,5 +1,6 @@
 "use client";
 
+import { ReportButton } from "@/components/reports/ReportButton";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { Check, Clock, MessageCircle, Phone, Radio, Users } from "lucide-react";
@@ -153,6 +154,7 @@ export function RequestTracker({ initial }: { initial: RequesterView }) {
                   >
                     <MessageCircle className="size-5" aria-hidden="true" />
                   </a>
+                  <ReportButton icon userId={c.userId} name={c.firstName ?? "this person"} />
                 </div>
               )}
             </div>

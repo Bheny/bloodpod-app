@@ -9,6 +9,7 @@ import {
   BarChart3,
   Building2,
   FlaskConical,
+  Flag,
   LayoutDashboard,
   Lightbulb,
   Menu,
@@ -26,6 +27,7 @@ import { cn } from "@/lib/utils";
 const NAV: { href: string; label: string; icon: LucideIcon; badge?: "hospitals" | "emergencies" }[] = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
   { href: "/admin/users", label: "Users", icon: Users },
+  { href: "/admin/reports", label: "Reports", icon: Flag },
   { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/network", label: "Network", icon: Network },
   { href: "/admin/insights", label: "Insights", icon: Lightbulb },

@@ -64,6 +64,7 @@ export async function getDiscoverDonors(
       id: { not: viewerId },
       // Everyone who finished joining can be found. Staff accounts are not donors.
       onboardingComplete: true,
+      heldAt: null,
       hospitalId: null,
       labId: null,
       // Only people with a position can be shown on a map.

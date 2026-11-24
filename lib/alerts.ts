@@ -76,7 +76,7 @@ async function podmates(requesterId: string): Promise<string[]> {
 async function podAudience(requesterId: string, needed: BloodType, now = new Date()): Promise<Asked[]> {
   const ids = await podmates(requesterId);
   if (ids.length === 0) return [];
-  const users = await prisma.user.findMany({ where: { id: { in: ids } }, select: askSelect });
+  const users = await prisma.user.findMany({ where: { id: { in: ids }, heldAt: null }, select: askSelect });
   const seen = new Set<string>();
   const out: Asked[] = [];
   for (const u of users.filter((x) => canBeAsked(x, needed, now))) {
@@ -138,6 +138,8 @@ export async function createAlert(user: User, raw: Record<string, unknown>, opts
   if (user.hospitalId || user.labId) return fail("Hospitals and labs use their own portal to reach donors.", 403);
   if (!user.onboardingComplete) return fail("Finish setting up your profile first.", 403);
   if (!user.phone) return fail("Add your phone number to your profile first, so the people who come can reach you.", 400);
+
+  if (user.heldAt) return fail("Your account is being looked at by our team, so you cannot send a request right now. Please contact us and we will sort it out quickly. If it is an emergency, call the hospital blood bank directly.", 403);
 
   const test = Boolean(opts.test);
   if (test && !isAdminEmail(user.email)) return fail("Not found", 404);
@@ -211,6 +213,7 @@ export async function widenAlert(requestId: string, opts: { force?: boolean } = 
     where: {
       id: { notIn: [...skip] },
       isPublic: true,
+      heldAt: null,
       onboardingComplete: true,
       isAvailable: true,
       isEligible: true,
@@ -401,14 +404,14 @@ export interface DonorView {
   expiresAt: string | null;
   scope: "POD" | "NEARBY";
   answer: "COMING" | "CANT" | null;
-  requester: { firstName: string | null; phone: string | null };
+  requester: { id: string; firstName: string | null; phone: string | null };
   othersComing: number;
 }
 
 export async function getDonorView(userId: string, id: string): Promise<DonorView | null> {
   const row = await prisma.bloodRequestRecipient.findUnique({
     where: { requestId_userId: { requestId: id, userId } },
-    include: { request: { include: { requester: { select: { name: true, phone: true } }, recipients: { select: { answer: true, userId: true } } } } },
+    include: { request: { include: { requester: { select: { id: true, name: true, phone: true } }, recipients: { select: { answer: true, userId: true } } } } },
   });
   if (!row) return null;
   const r = row.request;
@@ -425,7 +428,7 @@ export async function getDonorView(userId: string, id: string): Promise<DonorVie
     expiresAt: r.expiresAt?.toISOString() ?? null,
     scope: row.scope,
     answer: row.answer,
-    requester: requesterView(row, r.requester),
+    requester: { id: r.requester.id, ...requesterView(row, r.requester) },
     othersComing: comingCount(r.recipients.filter((x) => x.userId !== userId)),
   };
 }

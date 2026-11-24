@@ -7,6 +7,10 @@ import { longDate } from "@/lib/admin/format";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
 import { Badge, EmptyState, Panel } from "@/components/admin/ui";
 import { Card } from "@/components/ui/Card";
+import { getTrust } from "@/lib/admin/reports";
+import { OutreachPanel } from "@/components/admin/OutreachPanel";
+import { getDonorPods } from "@/lib/admin/pod-strength";
+import { PodStrengthPanel } from "@/components/admin/PodStrengthPanel";
 
 function Check1({ ok, label, detail }: { ok: boolean; label: string; detail?: string }) {
   return (
@@ -29,6 +33,8 @@ export default async function AdminUserPage({ params }: { params: Promise<{ id: 
   const { id } = await params;
   const u = await getUserDetail(id);
   if (!u) notFound();
+  const trust = await getTrust(id);
+  const garden = await getDonorPods(id);
 
   return (
     <div>
@@ -49,6 +55,7 @@ export default async function AdminUserPage({ params }: { params: Promise<{ id: 
               {u.hospital ? <Badge tone="blue">Hospital staff</Badge> : null}
               {!u.onboardingComplete ? <Badge tone="amber">Onboarding</Badge> : u.isEligible ? <Badge tone="green">Can donate</Badge> : <Badge>Resting</Badge>}
               {u.isAvailable && <Badge tone="green">Available</Badge>}
+              {trust.heldAt && <Badge tone="amber">Reach paused</Badge>}
             </div>
 
             <div className="mt-5 space-y-2 border-t-[0.5px] border-hairline pt-4 text-left text-body-sm">
@@ -67,6 +74,24 @@ export default async function AdminUserPage({ params }: { params: Promise<{ id: 
               <p className="text-caption text-ink-muted">Joined {longDate(u.createdAt)}</p>
             </div>
           </Card>
+
+          <Panel title="Reach out" subtitle="Open a WhatsApp chat with a kind message ready to send">
+            <OutreachPanel userId={u.id} name={u.name} phone={u.phone} suggest={u.onboardingComplete ? undefined : "finish_setup"} />
+            {trust.outreach.length > 0 && (
+              <ul className="mt-4 space-y-1 border-t-[0.5px] border-hairline pt-3 text-caption text-ink-muted">
+                {trust.outreach.map((o) => (
+                  <li key={o.id}>
+                    {longDate(o.createdAt)} · {o.template} · {o.adminEmail}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {trust.reports > 0 && (
+              <p className="mt-3 text-caption text-ink-muted">
+                {trust.reports} report{trust.reports === 1 ? "" : "s"} on file. <Link href="/admin/reports" className="font-bold text-red-fg">Open reports</Link>
+              </p>
+            )}
+          </Panel>
 
           <Panel title="Ready to be alerted?">
             <ul className="space-y-3">
@@ -93,6 +118,8 @@ export default async function AdminUserPage({ params }: { params: Promise<{ id: 
         </div>
 
         <div className="flex flex-col gap-4 lg:gap-6">
+          {u.ownedPods.length > 0 && <PodStrengthPanel garden={garden} />}
+
           <Panel title="Pods">
             {u.ownedPods.length === 0 && u.podMemberships.length === 0 ? (
               <EmptyState title="Not in any Pod" />
