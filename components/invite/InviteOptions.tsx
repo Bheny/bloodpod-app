@@ -5,6 +5,7 @@ import { Mail, Share2, RefreshCw } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { InviteQr } from "@/components/invite/InviteQr";
+import { POD_CATEGORIES, POD_CATEGORY_LABELS, type PodCategoryId } from "@/lib/pod-categories";
 
 function WhatsAppIcon() {
   return (
@@ -35,6 +36,30 @@ export function InviteOptions({
   const [emailSentTo, setEmailSentTo] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [sendingEmail, setSendingEmail] = useState(false);
+  // Who the owner is inviting. Each category has its own link and code, so the person is filed correctly on joining.
+  const [category, setCategory] = useState<PodCategoryId>("OTHER");
+  const [switching, setSwitching] = useState(false);
+
+  async function chooseCategory(next: PodCategoryId) {
+    if (next === category || switching) return;
+    setSwitching(true);
+    try {
+      const res = await fetch("/api/pod/share-invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ podId, category: next }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Something went wrong");
+      setInviteUrl(data.inviteUrl);
+      setInviteCode(data.code);
+      setCategory(next);
+    } catch {
+      // keep the link that is showing; the chip does not change
+    } finally {
+      setSwitching(false);
+    }
+  }
 
   const whatsAppText = encodeURIComponent(
     `I just built my emergency blood network on BloodPod. If anything ever happened to me, I'd want you in my circle. Join my pod here: ${inviteUrl} (or use code ${inviteCode})`,
@@ -70,7 +95,7 @@ export function InviteOptions({
       const res = await fetch("/api/pod/share-invite/regenerate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ podId }),
+        body: JSON.stringify({ podId, category }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Something went wrong");
@@ -90,7 +115,7 @@ export function InviteOptions({
       const res = await fetch("/api/pod/invite", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, podId }),
+        body: JSON.stringify({ email, podId, category }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Something went wrong");
@@ -117,6 +142,26 @@ export function InviteOptions({
 
   return (
     <div className="px-4 py-4">
+      <div className="mb-3">
+        <p className="text-[11px] font-bold uppercase tracking-wide text-ink-muted">Who are you inviting?</p>
+        <div className="mt-2 flex flex-wrap gap-1.5" role="radiogroup" aria-label="Who are you inviting?">
+          {POD_CATEGORIES.map((c) => (
+            <button
+              key={c}
+              type="button"
+              role="radio"
+              aria-checked={c === category}
+              disabled={switching}
+              onClick={() => chooseCategory(c)}
+              className={`min-h-9 rounded-full px-3 text-[12px] font-bold transition-colors disabled:opacity-60 ${c === category ? "bg-panel text-white" : "bg-surface text-ink-mid"}`}
+            >
+              {POD_CATEGORY_LABELS[c]}
+            </button>
+          ))}
+        </div>
+        <p className="mt-1.5 text-[10px] text-ink-faint">People who join through this link or code are filed under {POD_CATEGORY_LABELS[category]}. You can change it later.</p>
+      </div>
+
       <div className="rounded-2xl bg-surface p-3">
         <p className="text-[13px] font-extrabold text-ink">{podName}</p>
         <p className="mb-1.5 text-[10px] text-ink-faint">Anyone with this link or code can join</p>

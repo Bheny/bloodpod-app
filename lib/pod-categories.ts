@@ -16,6 +16,9 @@ export const POD_CATEGORY_LABELS: Record<PodCategoryId, string> = {
   OTHER: "Other",
 };
 
+export const isPodCategory = (value: unknown): value is PodCategoryId =>
+  typeof value === "string" && (POD_CATEGORIES as readonly string[]).includes(value);
+
 /** Anything that is not a known category becomes OTHER, so a bad value can never be stored. */
 export function parsePodCategory(value: unknown): PodCategoryId {
   return typeof value === "string" && (POD_CATEGORIES as readonly string[]).includes(value) ? (value as PodCategoryId) : "OTHER";

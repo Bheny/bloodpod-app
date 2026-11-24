@@ -3,6 +3,8 @@ import { Modal } from "@/components/ui/Modal";
 import { StatusDot, type StatusDotColor } from "@/components/ui/StatusDot";
 import { formatDate } from "@/lib/formatters";
 import type { PodMemberView } from "@/lib/pod-data";
+import { POD_CATEGORY_LABELS, type PodCategoryId } from "@/lib/pod-categories";
+import { CategoryPicker } from "@/components/pod/CategoryPicker";
 
 function statusFor(member: PodMemberView): StatusDotColor {
   if (!member.bloodType) return "grey";
@@ -12,9 +14,14 @@ function statusFor(member: PodMemberView): StatusDotColor {
 export function MemberDetailModal({
   member,
   onClose,
+  podId,
+  onCategory,
 }: {
   member: PodMemberView | null;
   onClose: () => void;
+  /** Given only to the Pod's owner: lets them change how they know this person. */
+  podId?: string;
+  onCategory?: (userId: string, category: PodCategoryId) => void;
 }) {
   return (
     <Modal open={Boolean(member)} onClose={onClose}>
@@ -86,6 +93,15 @@ export function MemberDetailModal({
             <p className="mt-3 text-center text-xs text-ink-muted">
               Eligible again from {formatDate(member.nextEligible)}
             </p>
+          )}
+
+          {podId && member.category && !member.isOwner && onCategory && (
+            <div className="mt-4 border-t-[0.5px] border-hairline pt-3">
+              <CategoryPicker podId={podId} userId={member.id} value={member.category} onChanged={(c) => onCategory(member.id, c)} />
+            </div>
+          )}
+          {!podId && member.category && member.isCurrentUser && (
+            <p className="mt-3 text-center text-xs text-ink-muted">The Pod owner knows you as: {POD_CATEGORY_LABELS[member.category]}</p>
           )}
 
           {!member.isCurrentUser && (

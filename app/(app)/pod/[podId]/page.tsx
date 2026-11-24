@@ -90,7 +90,7 @@ export default async function PodDetailPage({ params }: { params: Promise<{ podI
 
               {hasOtherMembers ? (
                 <div className="mt-2 pb-2">
-                  <MemberList members={pod.members} />
+                  <MemberList members={pod.members} podId={isOwner ? pod.id : undefined} />
                 </div>
               ) : (
                 <div className="px-4 py-10 text-center lg:px-6">

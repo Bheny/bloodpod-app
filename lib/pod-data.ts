@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { recalculatePodStrength, type PodStrengthStep } from "@/lib/pod-strength";
 import { BLOOD_TYPE_LABELS } from "@/lib/blood-type";
 import { getAvatarColor, getAvatarTextColor, getInitials } from "@/lib/formatters";
+import type { PodCategoryId } from "@/lib/pod-categories";
 
 export interface PodMemberView {
   id: string;
@@ -18,6 +19,8 @@ export interface PodMemberView {
   isOwner: boolean;
   isCurrentUser: boolean;
   joinedAt: Date;
+  /** How the owner knows this person. Set only for the Pod's owner, and for the person on their own row; null for everyone else. */
+  category: PodCategoryId | null;
 }
 
 export interface PodDataResult {
@@ -74,10 +77,11 @@ function buildMemberViews(
   pod: {
     owner: UserWithDonationCount;
     createdAt: Date;
-    members: { user: UserWithDonationCount; joinedAt: Date }[];
+    members: { user: UserWithDonationCount; joinedAt: Date; category: PodCategoryId }[];
   },
   viewerId: string,
 ): PodMemberView[] {
+  const viewerIsOwner = pod.owner.id === viewerId;
   return [
     {
       id: pod.owner.id,
@@ -93,6 +97,7 @@ function buildMemberViews(
       isOwner: true,
       isCurrentUser: pod.owner.id === viewerId,
       joinedAt: pod.createdAt,
+      category: null, // the owner is not sorted into a category of their own Pod
     },
     ...pod.members.map((m) => ({
       id: m.user.id,
@@ -108,6 +113,7 @@ function buildMemberViews(
       isOwner: false,
       isCurrentUser: m.user.id === viewerId,
       joinedAt: m.joinedAt,
+      category: viewerIsOwner || m.user.id === viewerId ? m.category : null,
     })),
   ];
 }

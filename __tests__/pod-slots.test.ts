@@ -90,6 +90,38 @@ describe("hard rules for one Pod per donor", () => {
     }
   });
 
+  it("only the owner can change a category, and only to one on the list", () => {
+    const route = read("app/api/pods/[podId]/members/[userId]/route.ts");
+    const patch = route.slice(route.indexOf("export async function PATCH"), route.indexOf("export async function DELETE"));
+    expect(patch).toMatch(/pod\.ownerId !== user\.id/);
+    expect(patch).toMatch(/isPodCategory\(category\)/);
+    expect(patch).toMatch(/getCurrentUser\(\)/);
+  });
+
+  it("a category is shown only to the owner and to the person it describes", () => {
+    const data = read("lib/pod-data.ts");
+    expect(data).toMatch(/viewerIsOwner \|\| m\.user\.id === viewerId \? m\.category : null/);
+    expect(data).toMatch(/category: null, \/\/ the owner is not sorted/);
+  });
+
+  it("sorting people uses the owner-only route, and only the owner is offered it", () => {
+    const sort = read("components/pod/SortPeople.tsx");
+    expect(sort).toMatch(/method: "PATCH"/);
+    expect(sort).toMatch(/\/api\/pods\/\$\{podId\}\/members\/\$\{person\.id\}/);
+    const list = read("components/pod/MemberList.tsx");
+    expect(list).toMatch(/podId && unsorted\.length > 0/); // the banner needs the owner's podId
+    expect(read("app/(app)/pod/[podId]/page.tsx")).toMatch(/podId=\{isOwner \? pod\.id : undefined\}/);
+  });
+
+  it("the share-link routes are for the Pod's owner only", () => {
+    for (const f of ["app/api/pod/share-invite/route.ts", "app/api/pod/share-invite/regenerate/route.ts"]) {
+      const src = read(f);
+      expect(src, f).toMatch(/getCurrentUser\(\)/);
+      expect(src, f).toMatch(/pod\.ownerId !== user\.id/);
+      expect(src, f).toMatch(/parsePodCategory\(category\)/);
+    }
+  });
+
   it("an unknown category from a request is cleaned before it is stored", () => {
     expect(read("app/api/pod/invite/route.ts")).toMatch(/parsePodCategory\(category\)/);
     expect(read("app/api/pods/[podId]/invite/route.ts")).toMatch(/parsePodCategory\(category\)/);

@@ -1,5 +1,6 @@
 import { StatusDot, type StatusDotColor } from "@/components/ui/StatusDot";
 import type { PodMemberView } from "@/lib/pod-data";
+import { POD_CATEGORY_LABELS } from "@/lib/pod-categories";
 
 function statusFor(member: PodMemberView): StatusDotColor {
   if (!member.bloodType) return "grey";
@@ -51,6 +52,7 @@ export function MemberItem({
           )}
         </div>
         <p className="truncate text-caption text-ink-muted">
+          {member.category && `${POD_CATEGORY_LABELS[member.category]} · `}
           {member.donationCount} donation{member.donationCount === 1 ? "" : "s"} ·{" "}
           {member.isEligible ? "eligible" : "not yet eligible"}
         </p>

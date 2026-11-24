@@ -76,22 +76,25 @@ export async function createPodInvite({
  * meant to be reused by many different people, so it's long-lived and reuses
  * an existing live one rather than minting a new token every page load.
  */
-export async function getOrCreateShareInvite(podId: string, senderId: string) {
+export async function getOrCreateShareInvite(podId: string, senderId: string, category: PodCategoryId = "OTHER") {
   const existing = await prisma.podInvite.findFirst({
-    where: { podId, kind: "SHARE", status: "PENDING", expiresAt: { gt: new Date() } },
+    where: { podId, kind: "SHARE", category, status: "PENDING", expiresAt: { gt: new Date() } },
     orderBy: { createdAt: "desc" },
   });
   if (existing) return existing;
-  return createPodInvite({ podId, senderId, email: null, kind: "SHARE" });
+  return createPodInvite({ podId, senderId, email: null, kind: "SHARE", category });
 }
 
-/** Retires the pod's current share invite and mints a fresh token+code. */
-export async function regenerateShareInvite(podId: string, senderId: string) {
+/**
+ * Retires the pod's current share invite for one category and mints a fresh token+code. Each category has
+ * its own link, so someone who joins through the "Family" link is filed under Family.
+ */
+export async function regenerateShareInvite(podId: string, senderId: string, category: PodCategoryId = "OTHER") {
   await prisma.podInvite.updateMany({
-    where: { podId, kind: "SHARE", status: "PENDING" },
+    where: { podId, kind: "SHARE", category, status: "PENDING" },
     data: { status: "REVOKED" },
   });
-  return createPodInvite({ podId, senderId, email: null, kind: "SHARE" });
+  return createPodInvite({ podId, senderId, email: null, kind: "SHARE", category });
 }
 
 /** Resolves an invite by either its long token (from a link) or short code (typed in). */
