@@ -23,7 +23,7 @@ export default async function PodInvitePage({ params }: { params: Promise<{ podI
     <AppHeader title="Invite members" subtitle={`Share ${pod.name} with your circle`} backHref={`/pod/${pod.id}`} />
   );
 
-  if (isPodFull(pod.memberCount)) {
+  if (isPodFull(pod.memberCount, pod.slotLimit)) {
     return (
       <div>
         {header}

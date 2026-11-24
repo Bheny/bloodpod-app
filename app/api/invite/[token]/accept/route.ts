@@ -5,6 +5,7 @@ import { recalculatePodStrength } from "@/lib/pod-strength";
 import { logActivity } from "@/lib/activity";
 import { findInviteByIdentifier } from "@/lib/pod-invite";
 import { isPodFull } from "@/lib/pod-limits";
+import { growSlotsIfEarned } from "@/lib/pod-slots";
 import { emailMemberJoined } from "@/lib/email/notify";
 import { deferEmail } from "@/lib/email/send";
 import { nudgeNow } from "@/lib/nudges";
@@ -68,18 +69,19 @@ export async function POST(
       include: { owner: true, _count: { select: { members: true } } },
     });
     const memberCount = (pod?._count.members ?? 0) + 1; // +1 for the owner
-    if (pod && isPodFull(memberCount)) {
-      return NextResponse.json(
-        { error: "This pod is full. Ask the owner to upgrade to Pod Pro." },
-        { status: 409 },
-      );
+    if (pod && isPodFull(memberCount, pod.slotLimit)) {
+      // A full Pod that now qualifies for more slots gets them here, so the person is not turned away for nothing.
+      const grown = await growSlotsIfEarned(invite.podId);
+      if (grown === null || isPodFull(memberCount, grown)) {
+        return NextResponse.json({ error: "This Pod is full for now. Ask the owner: Pods get more room as they grow stronger." }, { status: 409 });
+      }
     }
   }
 
   await prisma.podMember.upsert({
     where: { podId_userId: { podId: invite.podId, userId: user.id } },
     // Remember who brought this person in, so the network graph can show invite chains.
-    create: { podId: invite.podId, userId: user.id, invitedById: invite.senderId },
+    create: { podId: invite.podId, userId: user.id, invitedById: invite.senderId, category: invite.category },
     update: {},
   });
 

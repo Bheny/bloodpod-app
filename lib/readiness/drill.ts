@@ -4,6 +4,7 @@ import { READINESS } from "@/lib/readiness-config";
 import { countedMembers } from "@/lib/readiness/members";
 import { podPeople } from "@/lib/readiness/people";
 import { recordTended } from "@/lib/garden-data";
+import { growSlotsIfEarned } from "@/lib/pod-slots";
 import { donorTypesFor } from "@/lib/alert-rules";
 
 /**
@@ -136,6 +137,8 @@ export async function closeDrillIfOver(drillId: string): Promise<{ closedNow: bo
     where: { id: drillId, closedAt: null },
     data: { closedAt: drillClosesAt(drill), passed: drillResult(drill.eligibleCount, drill.respondedCount) },
   });
+  // A drill that just passed may make the Pod eligible for more slots.
+  if (done.count === 1 && drillResult(drill.eligibleCount, drill.respondedCount)) await growSlotsIfEarned(drill.podId);
   return { closedNow: done.count === 1, podId: drill.podId };
 }
 

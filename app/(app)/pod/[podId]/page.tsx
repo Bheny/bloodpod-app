@@ -77,7 +77,8 @@ export default async function PodDetailPage({ params }: { params: Promise<{ podI
               members={pod.members}
               covered={pod.bloodTypesCovered}
               gaps={pod.bloodTypeGaps}
-              inviteHref={isOwner && !isPodFull(pod.memberCount) ? inviteHref : undefined}
+              limit={pod.slotLimit}
+              inviteHref={isOwner && !isPodFull(pod.memberCount, pod.slotLimit) ? inviteHref : undefined}
             />
           </div>
 
@@ -140,7 +141,7 @@ export default async function PodDetailPage({ params }: { params: Promise<{ podI
                 podName={pod.name}
                 inviteUrl={inviteUrlFor(shareInvite.token)}
                 inviteCode={shareInvite.code}
-                full={isPodFull(pod.memberCount)}
+                full={isPodFull(pod.memberCount, pod.slotLimit)}
                 moreHref={inviteHref}
               />
             </div>

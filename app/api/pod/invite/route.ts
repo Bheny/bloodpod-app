@@ -3,13 +3,15 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { createPodInvite, inviteUrlFor, isValidEmail } from "@/lib/pod-invite";
 import { isPodFull } from "@/lib/pod-limits";
+import { growSlotsIfEarned } from "@/lib/pod-slots";
+import { parsePodCategory } from "@/lib/pod-categories";
 import { emailPodInvite } from "@/lib/email/notify";
 
 export async function POST(request: Request) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { email, podId } = (await request.json()) as { email?: string; podId?: string };
+  const { email, podId, category } = (await request.json()) as { email?: string; podId?: string; category?: string };
   if (!podId) {
     return NextResponse.json({ error: "podId is required" }, { status: 400 });
   }
@@ -24,14 +26,14 @@ export async function POST(request: Request) {
   if (!pod || pod.ownerId !== user.id) {
     return NextResponse.json({ error: "Pod not found" }, { status: 404 });
   }
-  if (isPodFull(pod._count.members + 1)) {
-    return NextResponse.json(
-      { error: "Your pod is at the Free plan's 20-member limit. Upgrade to Pod Pro to invite more." },
-      { status: 402 },
-    );
+  if (isPodFull(pod._count.members + 1, pod.slotLimit)) {
+    const grown = await growSlotsIfEarned(podId);
+    if (grown === null || isPodFull(pod._count.members + 1, grown)) {
+      return NextResponse.json({ error: "Your Pod is full for now. It gets more room as it grows stronger." }, { status: 409 });
+    }
   }
 
-  const invite = await createPodInvite({ podId, senderId: user.id, email });
+  const invite = await createPodInvite({ podId, senderId: user.id, email, category: parsePodCategory(category) });
 
   // The invite and its link exist either way; the email is a convenience on top.
   if (invite.email) {

@@ -146,6 +146,8 @@ model Pod {
   // Last drill or real-alert answer from anyone in the Pod.
   lastActivityAt  DateTime?
   drills          Drill[]
+  // How many people the Pod can hold, owner included. Starts at 20 and grows by the rule in lib/pod-slot-rules.ts.
+  slotLimit       Int       @default(20)
 
   @@index([parentPodId])
 }
@@ -161,6 +163,9 @@ model PodMember {
   // Who brought this person in (the sender of the invite they used), when known.
   invitedById String?
   invitedBy   User?   @relation("MemberInvitedBy", fields: [invitedById], references: [id], onDelete: SetNull)
+
+  // How the owner knows this person. Only the owner and the person see it.
+  category PodCategory @default(OTHER)
 
   @@unique([podId, userId])
 }
@@ -178,6 +183,18 @@ model PodInvite {
   status    InviteStatus @default(PENDING)
   expiresAt DateTime
   createdAt DateTime     @default(now())
+  // The category the person gets when they join through this invite.
+  category  PodCategory  @default(OTHER)
+}
+
+enum PodCategory {
+  FAMILY
+  FRIENDS
+  SCHOOL
+  CHURCH
+  WORK
+  NEIGHBOURS
+  OTHER
 }
 
 enum InviteKind {

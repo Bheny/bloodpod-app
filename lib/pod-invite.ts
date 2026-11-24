@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import type { InviteKind } from "@prisma/client";
+import type { PodCategoryId } from "@/lib/pod-categories";
 
 const DIRECT_EXPIRY_DAYS = 7;
 const SHARE_EXPIRY_DAYS = 365;
@@ -46,11 +47,14 @@ export async function createPodInvite({
   senderId,
   email,
   kind = "DIRECT",
+  category = "OTHER",
 }: {
   podId: string;
   senderId: string;
   email?: string | null;
   kind?: InviteKind;
+  /** The category the person gets on joining through this invite. */
+  category?: PodCategoryId;
 }) {
   const code = await generateInviteCode();
   return prisma.podInvite.create({
@@ -60,6 +64,7 @@ export async function createPodInvite({
       email: email || null,
       code,
       kind,
+      category,
       expiresAt: kind === "SHARE" ? shareInviteExpiryDate() : inviteExpiryDate(),
     },
   });

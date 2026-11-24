@@ -28,7 +28,7 @@ export async function getReceivedInvitations(user: { id: string; email: string }
     take: 20,
     include: {
       sender: { select: { name: true } },
-      pod: { select: { name: true, _count: { select: { members: true } } } },
+      pod: { select: { name: true, slotLimit: true, _count: { select: { members: true } } } },
     },
   });
 
@@ -40,7 +40,7 @@ export async function getReceivedInvitations(user: { id: string; email: string }
       podName: inv.pod.name,
       inviterName: inv.sender.name ?? "A BloodPod member",
       memberCount,
-      full: isPodFull(memberCount),
+      full: isPodFull(memberCount, inv.pod.slotLimit),
       expiresAt: inv.expiresAt.toISOString(),
     };
   });

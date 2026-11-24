@@ -290,6 +290,8 @@ export interface PodDetail {
   ownerId: string;
   ownerName: string;
   memberCount: number;
+  /** How many people the Pod can hold, owner included. */
+  slotLimit: number;
   bloodTypesCovered: string[];
   bloodTypeGaps: string[];
   members: PodMemberView[];
@@ -322,6 +324,7 @@ export async function getPodDetail(userId: string, podId: string): Promise<PodDe
     ownerId: pod.ownerId,
     ownerName: pod.owner.name ?? "Pod owner",
     memberCount: members.length,
+    slotLimit: pod.slotLimit,
     bloodTypesCovered,
     bloodTypeGaps,
     members,

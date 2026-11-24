@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { Card, CardTitle } from "@/components/ui/Card";
 import { FREE_POD_MEMBER_LIMIT } from "@/lib/pod-limits";
+import { READINESS } from "@/lib/readiness-config";
 import type { PodMemberView } from "@/lib/pod-data";
 import { InfoTip } from "@/components/ui/InfoTip";
 
@@ -122,15 +123,18 @@ export function PodGarden({
   covered,
   gaps,
   inviteHref,
+  limit = FREE_POD_MEMBER_LIMIT,
 }: {
   members: PodMemberView[];
   covered: string[];
   gaps: string[];
+  /** The Pod's own slot limit; it starts at 20 and grows when the Pod earns more. */
+  limit?: number;
   /** Where an empty plot leads. Leave out for members, who can't invite. */
   inviteHref?: string;
 }) {
   const count = members.length;
-  const seats = Math.max(count < FIRST_GOAL ? FIRST_GOAL : FREE_POD_MEMBER_LIMIT, count);
+  const seats = Math.max(count < FIRST_GOAL ? FIRST_GOAL : limit, count);
   const missing = seats - count;
   const readyCount = members.filter((m) => m.isEligible).length;
 
@@ -143,7 +147,7 @@ export function PodGarden({
       <CardTitle
         aside={
           <span className="text-caption font-bold text-ink-muted">
-            {count} of {FREE_POD_MEMBER_LIMIT} max
+            {count} of {limit} slots
           </span>
         }
       >
@@ -151,10 +155,10 @@ export function PodGarden({
       </CardTitle>
       <p className="mt-1 text-caption text-ink-muted lg:text-body-sm">
         {count < FIRST_GOAL
-          ? `Aim for ${FIRST_GOAL} to ${FREE_POD_MEMBER_LIMIT} people you trust.`
+          ? `Aim for ${READINESS.podComplete} or more people you trust.`
           : missing > 0
-            ? `Room for ${missing} more, up to ${FREE_POD_MEMBER_LIMIT}.`
-            : `${inviteHref ? "Your" : "This"} Pod is full at ${FREE_POD_MEMBER_LIMIT}.`}
+            ? `Room for ${missing} more, up to ${limit}.`
+            : `${inviteHref ? "Your" : "This"} Pod is full at ${limit}.`}
         {readyCount > 0 && ` ${readyCount} in bloom, ready to donate.`}
       </p>
 
