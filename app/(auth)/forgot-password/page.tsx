@@ -5,7 +5,7 @@ export default function ForgotPasswordPage() {
     <div className="text-center">
       <h1 className="mt-6 text-2xl font-bold text-ink">Reset your password</h1>
       <p className="mt-2 text-sm text-ink-muted">
-        Password reset is coming soon. Contact hello@bloodpod.gh for help in the meantime.
+        Password reset is coming soon. Contact hello@bloodpod.app for help in the meantime.
       </p>
       <Link href="/sign-in" className="mt-8 inline-block text-sm font-semibold text-red-fg">
         ← Back to sign in

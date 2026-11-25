@@ -32,10 +32,10 @@ export function Footer() {
 
         <div className="flex items-center gap-4">
           <a
-            href="mailto:hello@bloodpod.gh"
+            href="mailto:hello@bloodpod.app"
             className="text-sm text-ink-muted transition-colors duration-150 hover:text-red-fg"
           >
-            hello@bloodpod.gh
+            hello@bloodpod.app
           </a>
         </div>
       </div>
